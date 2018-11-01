@@ -108,6 +108,7 @@ I'd recommend navigating the code top down – the Jupyter notebooks are the pla
 The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking thing I've put in the code, but they're just my version of implementing progressive GAN training, suited to a Unet generator.  That's all that's going on there really.
 
 As far as pretrained weights go:  I'll get them up in the next few days – I'm working on a new set now that's looking better than ever.  
+
 Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  And it just gets better from there.
 
 I'm sure I screwed up something putting this up, so please let me know if that's the case. 
