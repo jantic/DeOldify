@@ -2,7 +2,7 @@
 
 Simply put, the mission of this project is to colorize and restore old images.  I'll get into the details in a bit, but first let's get to the pictures!  BTW – most of these source images originally came from the r/TheWayWeWere subreddit, so credit to them for finding such great photos.
 
-#### Some of many results- These are pretty typical results!
+#### Some of many results- These are pretty typical!
 
 Maria Anderson as the Fairy Fleur de farine and Lyubov Rabtsova as her page in the ballet “Sleeping Beauty” at the Imperial Theater, St. Petersburg, Russia, 1890.
 ![Ballerinas](result_images/Ballerinas.jpg)
