@@ -71,7 +71,7 @@ Seneca Native in 1908
 This is a deep learning based model.  More specifically, what I've done is combined the following approaches:
 * **Self-Attention Generative Adversarial Network** (https://arxiv.org/abs/1805.08318) .  Except the generator is a **pretrained Unet**, and I've just modified it to have the spectral normalization and self attention.  It's a pretty straightforward translation. I'll tell you what though- it made all the difference when I switched to this after trying desperately to get a Wasserstein GAN version to work.  I liked the theory of Wasserstein GANs but it just didn't pan out in practice.  But I'm in *love* with Self-Attention GANs.
 * Training structure inspired by (but not the same as) **Progressive Growing of GANs** (https://arxiv.org/abs/1710.10196).  The difference here is the number of layers remain constant- I just changed the size of the input progressively and adjusted learning rates to make sure that the transitions between sizes happened successfully.  It seems to have the same basic end result- training is faster, stable, and generalizes better.  
-* **Two Time-Scale Update Rule** (https://arxiv.org/abs/1706.08500).  This is also very straighforward- it's just one to one generator/critic iterations and higher critic learning rate. 
+* **Two Time-Scale Update Rule** (https://arxiv.org/abs/1706.08500).  This is also very straightforward- it's just one to one generator/critic iterations and higher critic learning rate. 
 * **Generator Loss** is two parts:  One is a basic Perceptual Loss (or Feature Loss) based on VGG16- this basically just biases the generator model to replicate the input image.  The second of course is the loss score from the critic.  For the curious- Perceptual Loss isn't sufficient by itself to produce good results.  It tends to just encourage a bunch of brown/green/blue- you know, cheating to the test, basically, which neural networks are really good at doing!  Key thing to realize here is that GANs essentially are learning the loss function for you- which is really one big step closer to toward the ideal that we're shooting for in machine learning.  And of course you generally get much better results when you get the machine to learn something you were previously hand coding.  That's certainly the case here.
 
 The beauty of this model is that it should be generally useful for all sorts of image modification, and it should do it quite well.  What you're seeing above is the results of the colorization model, but that's just one component in a pipeline that I'm looking to develop here with the exact same model. 
@@ -117,6 +117,10 @@ I'm sure I screwed up something putting this up, so please let me know if that's
 * To complicate matters- this model is a **memory hog** currently, so on my 1080TI I can only do 500-600px max on the sz parameter for the images.  I'm betting there's plenty of low hanging fruit to get some wins on this but I just haven't done it yet.
 * I added zero padding in the Unet generator for whenever the pretrained resnet winds up passing up a tensor that doesn't match expected dimensions (namely so I could throw any arbitrarily sized image at it).  This was a super quick hack and it results in **stupid right and bottom borders on the outputs** for those arbitarily sized test images. I'm sure there's a better way, but I just haven't gotten around to addressing it yet.  
 * The model *loves* blue clothing.  Not quite sure what the answer is yet, but I'll be on the lookout for a solution!
+
+### Want More?
+
+I'll be posting more results here on Twitter: https://twitter.com/citnaj
 
 
 
