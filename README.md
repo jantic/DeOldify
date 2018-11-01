@@ -99,7 +99,7 @@ This project is built around the wonderful Fast.AI library.  Unfortunately, it's
 
 Visualizations of generated images as training progresses -can- be done in Jupyter as well- it's just a simple boolean flag here when you instantiate this visualization hook:  GANVisualizationHook(TENSORBOARD_PATH, trainer, 'trainer', jupyter=True, visual_iters=100)
 
-I prefer keeping this false and just using Tensorboard though.  Trust me- you'll want it. PLus if you leave it running to long Jupyter will eat up a lot of memory with said images.
+I prefer keeping this false and just using Tensorboard though.  Trust me- you'll want it. Plus if you leave it running to long Jupyter will eat up a lot of memory with said images.
 
 Model weight saves are also done automatically during the training runs by the GANTrainer- defaulting to saving every 1000 iterations (it's an expensive operation).  They're stored in the root training folder you provide, and the name goes by the save_base_name you provide to the training schedule.  Weights are saved for each training size separately.
 
@@ -116,6 +116,7 @@ I'm sure I screwed up something putting this up, so please let me know if that's
 * You'll have to **play around with the size of the image** a bit to get the best result output.  The model clearly has some dependence on aspect ratio/size when generating images. It used to be much worse but the situation improved greatly with lighting/contrast augmentation and introducing progressive training.  I'd like to eliminate this issue entirely and will obsess about it but in the meantime- don't dispair if the image looks over-saturated or has weird glitches at the first go. There's a good chance that it'll look right with a slightly different size.  Generally over-saturated means go bigger.
 * To complicate matters- this model is a **memory hog** currently, so on my 1080TI I can only do 500-600px max on the sz parameter for the images.  I'm betting there's plenty of low hanging fruit to get some wins on this but I just haven't done it yet.
 * I added zero padding in the Unet generator for whenever the pretrained resnet winds up passing up a tensor that doesn't match expected dimensions (namely so I could throw any arbitrarily sized image at it).  This was a super quick hack and it results in **stupid right and bottom borders on the outputs** for those arbitarily sized test images. I'm sure there's a better way, but I just haven't gotten around to addressing it yet.  
+* The model *loves* blue clothing.  Not quite sure what the answer is yet, but I'll be on the lookout for a solution!
 
 
 
