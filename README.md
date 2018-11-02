@@ -2,7 +2,7 @@
 
 Simply put, the mission of this project is to colorize and restore old images.  I'll get into the details in a bit, but first let's get to the pictures!  BTW – most of these source images originally came from the r/TheWayWeWere subreddit, so credit to them for finding such great photos.
 
-#### Some of many results- These are pretty typical results!
+#### Some of many results- These are pretty typical!
 
 Maria Anderson as the Fairy Fleur de farine and Lyubov Rabtsova as her page in the ballet “Sleeping Beauty” at the Imperial Theater, St. Petersburg, Russia, 1890.
 ![Ballerinas](result_images/Ballerinas.jpg)
@@ -108,6 +108,8 @@ I'd recommend navigating the code top down – the Jupyter notebooks are the pla
 The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking thing I've put in the code, but they're just my version of implementing progressive GAN training, suited to a Unet generator.  That's all that's going on there really.
 
 As far as pretrained weights go:  I'll get them up in the next few days – I'm working on a new set now that's looking better than ever.  
+
+Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  And it just gets better from there.
 
 I'm sure I screwed up something putting this up, so please let me know if that's the case. 
 
