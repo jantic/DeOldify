@@ -81,12 +81,12 @@ What I develop next with this model will be based on trying to solve the problem
 ![DeloresTwoChanges](result_images/DeloresTwoChanges.jpg)
 
 ### This Project, Going Forward
-So that's the gist of this project – I'm looking to make old photos look reeeeaaaly good with GANs, and more importantly, make the project *useful*.  And yes, I'm definitely interested in doing video, but first I need to sort out how to get this model under control with memory (it's a beast).  It'd be nice if the models didn't take two to three days to train on a 1080TI as well (typical of GANs, unfortunately). In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
+So that's the gist of this project – I'm looking to make old photos look reeeeaaally good with GANs, and more importantly, make the project *useful*.  And yes, I'm definitely interested in doing video, but first I need to sort out how to get this model under control with memory (it's a beast).  It'd be nice if the models didn't take two to three days to train on a 1080TI as well (typical of GANs, unfortunately). In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
 
 Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *one of those* people who believes in "self documenting code" (LOL).
 
 ### Getting Started Yourself
-This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda).  So prereqs, in summary:
+This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda.)  So prereqs, in summary:
 * ***Old* Fast.AI library**  After being buried in this project for two months I'm a bit lost as to what happened to the old Fast.AI library because the one marked "old" doesn't really look like the one I have.  This all changed in the past two months or so.  So if all else fails you should be able to use the one I forked here: https://github.com/jantic/fastai .  Again, getting upgraded to the latest Fast.AI is on the agenda fo sho, and I apologize in advance.
 * **Whatever dependencies Fast.AI has** – there's already convenient requirements.txt and environment.yml there.
 * **Pytorch 0.4.1** (needs spectral_norm, so  latest stable release is needed).
