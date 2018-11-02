@@ -95,6 +95,19 @@ This project is built around the wonderful Fast.AI library.  Unfortunately, it's
 * **ImageNet** – It proved to be a great dataset for training.  
 * **BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
 
+**For those wanting to start transforming their own images right away:** To start right away with your own images without training the model yourself (understandable)...well, you'll need me to upload pre-trained weights first.  I'm working on that now.  Once those are available, you'll be able to refer to them in the visualization notebooks. I'd use ColorizationVisualization.ipynb.  Basically you'd replace 
+
+colorizer_path = IMAGENET.parent/('bwc_rc_gen_192.h5') 
+
+With the weight file I upload for the generator (colorizer).
+
+Then you'd just drop whatever images in the /test_images/ folder you want to run this against and you can visualize the results inside the notebook with lines like this:
+
+vis.plot_transformed_image("test_images/derp.jpg", netG, md.val_ds, tfms=x_tfms, sz=500)
+
+I'd keep the size around 500px, give or take, given you're running this on a gpu with plenty of memory (11 GB GeForce 1080Ti, for example).  If you have less than that, you'll have to go smaller or try running it on CPU.  I actually tried the latter but for some reason it was -really- absurdly slow and I didn't take the time to investigate why that was other than to find out that the Pytorch people were recommending building from source to get a big performance boost.  Yeah...I didn't want to bother at that point.
+
+
 ### Additional Things to Know
 
 Visualizations of generated images as training progresses -can- be done in Jupyter as well – it's just a simple boolean flag here when you instantiate this visualization hook:  GANVisualizationHook(TENSORBOARD_PATH, trainer, 'trainer', jupyter=True, visual_iters=100)
