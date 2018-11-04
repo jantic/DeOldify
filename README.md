@@ -122,7 +122,7 @@ I'd recommend navigating the code top down – the Jupyter notebooks are the pla
 
 The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking thing I've put in the code, but they're just my version of implementing progressive GAN training, suited to a Unet generator.  That's all that's going on there really.
 
-Pretrained weights again are here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5 (right click and download from this link).
+Pretrained weights for the colorizer generator again are here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5 (right click and download from this link). The DeFade stuff is still a work in progress so I'll try to get good weights for those up in a few days.
 
 Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  
 
