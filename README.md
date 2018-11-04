@@ -95,7 +95,7 @@ This project is built around the wonderful Fast.AI library.  Unfortunately, it's
 * **ImageNet** – It proved to be a great dataset for training.  
 * **BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
 
-**For those wanting to start transforming their own images right away:** To start right away with your own images without training the model yourself, download the weights here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5.  I'm working on that now.  Once those are available, you'll be able to refer to them in the visualization notebooks. I'd use ColorizationVisualization.ipynb.  Make sure that there's this sort of line in the notebook referencing the weights:
+**For those wanting to start transforming their own images right away:** To start right away with your own images without training the model yourself, download the weights here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5 (right click and download from this link). Then open the ColorizationVisualization.ipynb in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
 
   colorizer_path = Path('/path/to/colorizer_gen_192.h5') 
 
@@ -122,7 +122,7 @@ I'd recommend navigating the code top down – the Jupyter notebooks are the pla
 
 The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking thing I've put in the code, but they're just my version of implementing progressive GAN training, suited to a Unet generator.  That's all that's going on there really.
 
-Pretrained weights again are here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5
+Pretrained weights again are here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5 (right click and download from this link).
 
 Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  
 
