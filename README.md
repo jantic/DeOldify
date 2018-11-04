@@ -95,11 +95,13 @@ This project is built around the wonderful Fast.AI library.  Unfortunately, it's
 * **ImageNet** – It proved to be a great dataset for training.  
 * **BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
 
-**For those wanting to start transforming their own images right away:** To start right away with your own images without training the model yourself (understandable)...well, you'll need me to upload pre-trained weights first.  I'm working on that now.  Once those are available, you'll be able to refer to them in the visualization notebooks. I'd use ColorizationVisualization.ipynb.  Basically you'd replace 
+**For those wanting to start transforming their own images right away:** To start right away with your own images without training the model yourself, download the weights here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5.  I'm working on that now.  Once those are available, you'll be able to refer to them in the visualization notebooks. I'd use ColorizationVisualization.ipynb.  Make sure that there's this sort of line in the notebook referencing the weights:
 
-colorizer_path = IMAGENET.parent/('bwc_rc_gen_192.h5') 
+  colorizer_path = Path('/path/to/colorizer_gen_192.h5') 
 
-With the weight file I upload for the generator (colorizer).
+Then the colorizer model needs to be loaded via this line after netG is initialized:
+
+  load_model(netG, colorizer_path)
 
 Then you'd just drop whatever images in the /test_images/ folder you want to run this against and you can visualize the results inside the notebook with lines like this:
 
@@ -120,9 +122,9 @@ I'd recommend navigating the code top down – the Jupyter notebooks are the pla
 
 The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking thing I've put in the code, but they're just my version of implementing progressive GAN training, suited to a Unet generator.  That's all that's going on there really.
 
-As far as pretrained weights go:  I'll get them up in the next few days – I'm working on a new set now that's looking better than ever.  
+Pretrained weights again are here:  https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5
 
-Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  And it just gets better from there.
+Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  
 
 I'm sure I screwed up something putting this up, so please let me know if that's the case. 
 
