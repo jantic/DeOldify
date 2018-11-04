@@ -19,6 +19,9 @@ class GeneratorModule(ABC, nn.Module):
         for l in c:     set_trainable(l, False)
         for l in c[n:]: set_trainable(l, True)
 
+    def get_device(self):
+        next(self.parameters()).device
+
  
 class Unet34(GeneratorModule): 
     @staticmethod
@@ -37,6 +40,7 @@ class Unet34(GeneratorModule):
         bn=True
         sn=True
         self.rn, self.lr_cut = Unet34.get_pretrained_resnet_base()
+        self.relu = nn.ReLU()
         self.sfs = [SaveFeatures(self.rn[i]) for i in [2,4,5,6]]
 
         self.up1 = UnetBlock(512,256,512*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn)
@@ -46,8 +50,8 @@ class Unet34(GeneratorModule):
         self.up5 = UpSampleBlock(256*nf_factor, 32*nf_factor, 2*scale, sn=sn, leakyReLu=leakyReLu, bn=bn) 
         self.out= nn.Sequential(ConvBlock(32*nf_factor, 3, ks=3, actn=False, bn=False, sn=sn), nn.Tanh())
 
-    #Gets around irritating inconsistent halving come from resnet
-    def _pad_xtensor(self, x, target):
+    #Gets around irritating inconsistent halving coming from resnet
+    def _pad(self, x, target):
         h = x.shape[2] 
         w = x.shape[3]
 
@@ -62,11 +66,12 @@ class Unet34(GeneratorModule):
         return x
            
     def forward(self, x_in: torch.Tensor):
-        x = F.relu(self.rn(x_in))
-        x = self.up1(x, self._pad_xtensor(self.sfs[3].features, x))
-        x = self.up2(x, self._pad_xtensor(self.sfs[2].features, x))
-        x = self.up3(x, self._pad_xtensor(self.sfs[1].features, x))
-        x = self.up4(x, self._pad_xtensor(self.sfs[0].features, x))
+        x = self.rn(x_in)
+        x = self.relu(x)
+        x = self.up1(x, self._pad(self.sfs[3].features, x))
+        x = self.up2(x, self._pad(self.sfs[2].features, x))
+        x = self.up3(x, self._pad(self.sfs[1].features, x))
+        x = self.up4(x, self._pad(self.sfs[0].features, x))
         x = self.up5(x)
         x = self.out(x)
         return x
