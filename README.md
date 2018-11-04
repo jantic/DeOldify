@@ -81,12 +81,12 @@ What I develop next with this model will be based on trying to solve the problem
 ![DeloresTwoChanges](result_images/DeloresTwoChanges.jpg)
 
 ### This Project, Going Forward
-So that's the gist of this project – I'm looking to make old photos look reeeeaaaly good with GANs, and more importantly, make the project *useful*.  And yes, I'm definitely interested in doing video, but first I need to sort out how to get this model under control with memory (it's a beast).  It'd be nice if the models didn't take two to three days to train on a 1080TI as well (typical of GANs, unfortunately). In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
+So that's the gist of this project – I'm looking to make old photos look reeeeaaally good with GANs, and more importantly, make the project *useful*.  And yes, I'm definitely interested in doing video, but first I need to sort out how to get this model under control with memory (it's a beast).  It'd be nice if the models didn't take two to three days to train on a 1080TI as well (typical of GANs, unfortunately). In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
 
 Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *one of those* people who believes in "self documenting code" (LOL).
 
 ### Getting Started Yourself
-This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda).  So prereqs, in summary:
+This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda.)  So prereqs, in summary:
 * ***Old* Fast.AI library**  After being buried in this project for two months I'm a bit lost as to what happened to the old Fast.AI library because the one marked "old" doesn't really look like the one I have.  This all changed in the past two months or so.  So if all else fails you should be able to use the one I forked here: https://github.com/jantic/fastai .  Again, getting upgraded to the latest Fast.AI is on the agenda fo sho, and I apologize in advance.
 * **Whatever dependencies Fast.AI has** – there's already convenient requirements.txt and environment.yml there.
 * **Pytorch 0.4.1** (needs spectral_norm, so  latest stable release is needed).
@@ -94,6 +94,19 @@ This project is built around the wonderful Fast.AI library.  Unfortunately, it's
 * **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  And I've conveniently provided hooks/callbacks to automatically write all kinds of stuff to tensorboard for you already!  The notebooks have examples of these being instantiated (or commented out since I didn't really need the ones doing histograms of the model weights).  Noteably, progress images will be written to Tensorboard every 200 iterations by default, so you get a constant and convenient look at what the model is doing. 
 * **ImageNet** – It proved to be a great dataset for training.  
 * **BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
+
+**For those wanting to start transforming their own images right away:** To start right away with your own images without training the model yourself (understandable)...well, you'll need me to upload pre-trained weights first.  I'm working on that now.  Once those are available, you'll be able to refer to them in the visualization notebooks. I'd use ColorizationVisualization.ipynb.  Basically you'd replace 
+
+colorizer_path = IMAGENET.parent/('bwc_rc_gen_192.h5') 
+
+With the weight file I upload for the generator (colorizer).
+
+Then you'd just drop whatever images in the /test_images/ folder you want to run this against and you can visualize the results inside the notebook with lines like this:
+
+vis.plot_transformed_image("test_images/derp.jpg", netG, md.val_ds, tfms=x_tfms, sz=500)
+
+I'd keep the size around 500px, give or take, given you're running this on a gpu with plenty of memory (11 GB GeForce 1080Ti, for example).  If you have less than that, you'll have to go smaller or try running it on CPU.  I actually tried the latter but for some reason it was -really- absurdly slow and I didn't take the time to investigate why that was other than to find out that the Pytorch people were recommending building from source to get a big performance boost.  Yeah...I didn't want to bother at that point.
+
 
 ### Additional Things to Know
 
@@ -116,6 +129,7 @@ I'm sure I screwed up something putting this up, so please let me know if that's
 ### Known Issues
 
 * You'll have to **play around with the size of the image** a bit to get the best result output.  The model clearly has some dependence on aspect ratio/size when generating images. It used to be much worse but the situation improved greatly with lighting/contrast augmentation and introducing progressive training.  I'd like to eliminate this issue entirely and will obsess about it but in the meantime – don't despair if the image looks over-saturated or has weird glitches at the first go. There's a good chance that it'll look right with a slightly different size.  Generally, over-saturated means go bigger.
+* To expand on the above- Getting the best images really boils down to the **art of selection**.  Yes, results are cherry picked.  I'm very happy with the quality of the outputs and there's a pretty good amount of consistency, but it's not perfect.  This is still an ongoing project!  I'd consider this tool at this point fit for the "AI artist" but not something I'd deploy as a general purpose tool for all consumers.  It's just not there yet.
 * To complicate matters – this model is a **memory hog** currently, so on my 1080TI I can only do 500-600px max on the sz parameter for the images.  I'm betting there's plenty of low-hanging fruit to get some wins on this but I just haven't done it yet.
 * I added zero padding in the Unet generator for whenever the pretrained resnet winds up passing up a tensor that doesn't match expected dimensions (namely so I could throw any arbitrarily-sized image at it).  This was a super-quick hack and it results in **stupid right and bottom borders on the outputs** for those arbitarily-sized test images. I'm sure there's a better way, but I  haven't gotten around to addressing it yet.  
 * The model *loves* blue clothing.  Not quite sure what the answer is yet, but I'll be on the lookout for a solution!
