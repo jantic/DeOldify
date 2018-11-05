@@ -27,6 +27,9 @@ class CriticModule(ABC, nn.Module):
     def get_layer_groups(self)->[]:
         pass
 
+    def get_device(self):
+        return next(self.parameters()).device
+
 class DCCritic(CriticModule):
 
     def _generate_reduce_layers(self, nf:int):
