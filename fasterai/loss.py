@@ -7,12 +7,10 @@ import torchvision.models as models
 
 
 class FeatureLoss(nn.Module):
-    def __init__(self, block_wgts: [float] = [0.2,0.7,0.1], multiplier:float=1.0):
+    def __init__(self, block_wgts:[float]=[0.2,0.7,0.1], multiplier:float=1.0):
         super().__init__()
-        m_vgg = vgg16(True)
-        
-        blocks = [i-1 for i,o in enumerate(children(m_vgg))
-              if isinstance(o,nn.MaxPool2d)]
+        m_vgg = vgg16(True)  
+        blocks = [i-1 for i,o in enumerate(children(m_vgg)) if isinstance(o,nn.MaxPool2d)]
         blocks, [m_vgg[i] for i in blocks]
         layer_ids = blocks[:3]
         
@@ -24,7 +22,7 @@ class FeatureLoss(nn.Module):
         self.sfs = [SaveFeatures(m_vgg[i]) for i in layer_ids]
         self.multiplier = multiplier
 
-    def forward(self, input, target, sum_layers=True):
+    def forward(self, input, target, sum_layers:bool=True):
         self.m(VV(target.data))
         res = [F.l1_loss(input,target)/100]
         targ_feat = [V(o.features.data.clone()) for o in self.sfs]
@@ -34,7 +32,7 @@ class FeatureLoss(nn.Module):
         if sum_layers: res = sum(res)
         return res*self.multiplier
     
-    def _flatten(self, x): 
+    def _flatten(self, x:torch.Tensor): 
         return x.view(x.size(0), -1)
     
     def close(self):

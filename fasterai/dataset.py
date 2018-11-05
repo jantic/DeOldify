@@ -4,11 +4,11 @@ from fastai.core import *
 
 
 class MatchedFilesDataset(FilesDataset):
-    def __init__(self, fnames, y, transform, path, x_tfms=[], x_noise=None):
+    def __init__(self, fnames:np.array, y:np.array, transforms:[Transform], path:Path, x_tfms:[Transform]=[]):
         self.y=y
         self.x_tfms=x_tfms
         assert(len(fnames)==len(y))
-        super().__init__(fnames, transform, path)
+        super().__init__(fnames, transforms, path)
     def get_x(self, i): 
         x = super().get_x(i)
         for tfm in self.x_tfms:
@@ -19,33 +19,15 @@ class MatchedFilesDataset(FilesDataset):
     def get_c(self): 
         return 0 
 
-class NoiseVectorToImageDataset(FilesDataset):
-    def __init__(self, fnames, y, transform, path:Path, x_tfms=[], x_noise=64):
-        self.y=y
-        assert(len(fnames)==len(y))
-        self.x_noise=x_noise
-        super().__init__(fnames, transform, path)
-    def get_y(self, i): 
-        return open_image(os.path.join(self.path, self.y[i]))
-    def get_x(self, i): 
-        return np.random.normal(loc=0.0, scale=1.0, size=(self.x_noise,1,1))
-    def get_c(self): 
-        return 0 
-    def get(self, tfm, x, y):
-        return (x,y) if tfm is None else (x, tfm(y,y)[1])
-
-
 class ImageGenDataLoader():
-    def __init__(self, sz:int, bs:int, path:Path, random_seed=None, x_noise:int=None, 
-            keep_pct:float=1.0, x_tfms:[Transform]=[], file_exts=('jpg','jpeg','png'), 
-            extra_aug_tfms:[Transform]=[], reduce_x_scale=1):
+    def __init__(self, sz:int, bs:int, path:Path, random_seed:int=None, keep_pct:float=1.0, x_tfms:[Transform]=[], 
+            file_exts=('jpg','jpeg','png'), extra_aug_tfms:[Transform]=[], reduce_x_scale:int=1):
         
         self.md = None
         self.sz = sz
         self.bs = bs 
         self.path = path
         self.x_tfms = x_tfms
-        self.x_noise = x_noise
         self.random_seed = random_seed
         self.keep_pct = keep_pct
         self.file_exts = file_exts
@@ -64,8 +46,8 @@ class ImageGenDataLoader():
         sz_x = self.sz//self.reduce_x_scale
         sz_y = self.sz
         tfms = (tfms_from_stats(inception_stats, sz=sz_x, sz_y=sz_y, tfm_y=TfmType.PIXEL, aug_tfms=aug_tfms))
-        dstype = NoiseVectorToImageDataset if self.x_noise is not None else MatchedFilesDataset
-        datasets = ImageData.get_ds(dstype, (trn_x,trn_y), (val_x,val_y), tfms, path=self.path, x_tfms=self.x_tfms, x_noise=self.x_noise)
+        dstype = MatchedFilesDataset
+        datasets = ImageData.get_ds(dstype, (trn_x,trn_y), (val_x,val_y), tfms, path=self.path, x_tfms=self.x_tfms)
         resize_path = os.path.join(self.path,resize_folder,str(resize_amt))
         self.md = self._load_model_data(resize_folder, resize_path, resize_amt, datasets, trn_x)
         return self.md
@@ -106,7 +88,7 @@ class ImageGenDataLoader():
         return self.sz
 
     
-    def _find_files_recursively(self, root_path: Path, extensions: (str)):
+    def _find_files_recursively(self, root_path:Path, extensions:(str)):
         matches = []
         for root, dirnames, filenames in os.walk(str(root_path)):
             for filename in filenames:

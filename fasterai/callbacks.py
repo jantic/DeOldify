@@ -3,11 +3,10 @@ from fastai.sgdr import Callback
 from fastai.dataset import ModelData, ImageData
 from fasterai.visualize import ModelStatsVisualizer, ImageGenVisualizer, GANTrainerStatsVisualizer
 from fasterai.visualize import LearnerStatsVisualizer, ModelGraphVisualizer, ModelHistogramVisualizer
-from matplotlib.axes import Axes
 from fasterai.training import GenResult, CriticResult, GANTrainer
 from tensorboardX import SummaryWriter
 
-def clear_directory(dir: Path):
+def clear_directory(dir:Path):
     for f in dir.glob('*'):
         os.remove(f)
 
@@ -23,7 +22,7 @@ class ModelVisualizationHook():
         self.iter_count = 0
         self.model_vis = ModelStatsVisualizer() 
 
-    def forward_hook(self, module: nn.Module, input, output): 
+    def forward_hook(self, module:nn.Module, input, output): 
         self.iter_count += 1
         if self.iter_count % self.stats_iters == 0:
             self.model_vis.write_tensorboard_stats(module, iter_count=self.iter_count, tbwriter=self.tbwriter)  
@@ -34,8 +33,8 @@ class ModelVisualizationHook():
         self.hook.remove()
 
 class GANVisualizationHook():
-    def __init__(self, base_dir: Path, trainer: GANTrainer, name: str, stats_iters: int=10, 
-            visual_iters: int=200, weight_iters: int=1000, jupyter:bool=False):
+    def __init__(self, base_dir:Path, trainer:GANTrainer, name:str, stats_iters:int=10, 
+            visual_iters:int=200, weight_iters:int=1000, jupyter:bool=False):
         super().__init__()
         self.base_dir = base_dir
         self.name = name
@@ -59,7 +58,7 @@ class GANVisualizationHook():
         self.graph_vis.write_model_graph_to_tensorboard(ds=ds, model=self.trainer.netD, tbwriter=self.tbwriter) 
         self.graph_vis.write_model_graph_to_tensorboard(ds=ds, model=self.trainer.netG, tbwriter=self.tbwriter) 
 
-    def train_loop_hook(self, gresult: GenResult, cresult: CriticResult): 
+    def train_loop_hook(self, gresult:GenResult, cresult:CriticResult): 
         if self.trainer.iters % self.stats_iters == 0:
             self.stats_vis.print_stats_in_jupyter(gresult, cresult)
             self.stats_vis.write_tensorboard_stats(gresult, cresult, iter_count=self.trainer.iters, tbwriter=self.tbwriter) 
@@ -80,8 +79,8 @@ class GANVisualizationHook():
 
 
 class ModelVisualizationCallback(Callback):
-    def __init__(self, base_dir: Path, model: nn.Module,  md: ModelData, name: str, stats_iters: int=25, 
-        visual_iters: int=200, weight_iters: int=25, jupyter:bool=False):
+    def __init__(self, base_dir:Path, model:nn.Module, md:ModelData, name:str, stats_iters:int=25, 
+            visual_iters:int=200, weight_iters:int=25, jupyter:bool=False):
         super().__init__()
         self.base_dir = base_dir
         self.name = name
@@ -98,6 +97,7 @@ class ModelVisualizationCallback(Callback):
         self.learner_vis = LearnerStatsVisualizer()
         self.graph_vis = ModelGraphVisualizer()
         self.weight_vis = ModelHistogramVisualizer()
+        self.img_gen_vis = ImageGenVisualizer()
 
     def on_train_begin(self):
         self.output_model_graph()

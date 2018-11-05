@@ -17,7 +17,7 @@ class ModelImageVisualizer():
     def __init__(self, default_sz:int=500):
         self.default_sz=default_sz 
 
-    def plot_transformed_image(self, path: Path, model: nn.Module, ds:FilesDataset, figsize=(20,20), sz:int=None, 
+    def plot_transformed_image(self, path:Path, model:nn.Module, ds:FilesDataset, figsize:(int,int)=(20,20), sz:int=None, 
             tfms:[Transform]=[], compare:bool=True):
         result = self.get_transformed_image_ndarray(path, model,ds, sz, tfms=tfms)
         if compare: 
@@ -28,7 +28,7 @@ class ModelImageVisualizer():
         else:
             self.plot_image_from_ndarray(result, figsize=figsize)
 
-    def get_transformed_image_ndarray(self, path: Path, model: nn.Module, ds:FilesDataset, sz:int=None, tfms:[Transform]=[]):
+    def get_transformed_image_ndarray(self, path:Path, model:nn.Module, ds:FilesDataset, sz:int=None, tfms:[Transform]=[]):
         training = model.training 
         model.eval()
         orig = self.get_model_ready_image_ndarray(path, model, ds, sz, tfms)
@@ -39,7 +39,7 @@ class ModelImageVisualizer():
             model.train()
         return result[0]
 
-    def _transform(self, orig, tfms:[Transform], model: nn.Module, sz:int):
+    def _transform(self, orig:ndarray, tfms:[Transform], model:nn.Module, sz:int):
         for tfm in tfms:
             orig,_=tfm(orig, False)
         _,val_tfms = tfms_from_stats(inception_stats, sz, crop_type=CropType.NO, aug_tfms=[])
@@ -47,14 +47,14 @@ class ModelImageVisualizer():
         orig = val_tfms(orig)
         return orig
 
-    def get_model_ready_image_ndarray(self, path: Path, model: nn.Module, ds:FilesDataset, sz:int=None, tfms:[Transform]=[]):
+    def get_model_ready_image_ndarray(self, path:Path, model:nn.Module, ds:FilesDataset, sz:int=None, tfms:[Transform]=[]):
         im = open_image(str(path))
         sz = self.default_sz if sz is None else sz
         im = scale_min(im, sz)
         im = self._transform(im, tfms, model, sz)
         return im
 
-    def plot_image_from_ndarray(self, image: ndarray, axes:Axes=None, figsize=(20,20)):
+    def plot_image_from_ndarray(self, image:ndarray, axes:Axes=None, figsize=(20,20)):
         if axes is None: 
             _,axes = plt.subplots(figsize=figsize)
         clipped_image =np.clip(image,0,1)
@@ -62,7 +62,8 @@ class ModelImageVisualizer():
         axes.axis('off')
 
 
-    def plot_images_from_image_sets(self, image_sets: [ModelImageSet], validation:bool, figsize=(20,20), max_columns=6, immediate_display=True):
+    def plot_images_from_image_sets(self, image_sets:[ModelImageSet], validation:bool, figsize:(int,int)=(20,20), 
+            max_columns:int=6, immediate_display:bool=True):
         num_sets = len(image_sets)
         num_images = num_sets * 2
         rows, columns = self._get_num_rows_columns(num_images, max_columns)
@@ -79,11 +80,12 @@ class ModelImageVisualizer():
             display(fig)
 
 
-    def plot_image_outputs_from_model(self, ds: FilesDataset, model: nn.Module, idxs: [int], figsize=(20,20), max_columns=6, immediate_display=True):
+    def plot_image_outputs_from_model(self, ds:FilesDataset, model:nn.Module, idxs:[int], figsize:(int,int)=(20,20), max_columns:int=6, 
+            immediate_display:bool=True):
         image_sets = ModelImageSet.get_list_from_model(ds=ds, model=model, idxs=idxs)
         self.plot_images_from_image_sets(image_sets=image_sets, figsize=figsize, max_columns=max_columns, immediate_display=immediate_display)
 
-    def _get_num_rows_columns(self, num_images: int, max_columns: int):
+    def _get_num_rows_columns(self, num_images:int, max_columns:int):
         columns = min(num_images, max_columns)
         rows = num_images//columns
         rows = rows if rows * columns == num_images else rows + 1
@@ -94,7 +96,7 @@ class ModelGraphVisualizer():
     def __init__(self):
         return 
      
-    def write_model_graph_to_tensorboard(self, ds: FilesDataset, model: nn.Module, tbwriter: SummaryWriter):
+    def write_model_graph_to_tensorboard(self, ds:FilesDataset, model:nn.Module, tbwriter:SummaryWriter):
         try:
             x,_=ds[0]
             tbwriter.add_graph(model, V(x[None]))
@@ -106,7 +108,7 @@ class ModelHistogramVisualizer():
     def __init__(self):
         return 
 
-    def write_tensorboard_histograms(self, model: nn.Module, iter_count:int, tbwriter: SummaryWriter):
+    def write_tensorboard_histograms(self, model:nn.Module, iter_count:int, tbwriter:SummaryWriter):
         for name, param in model.named_parameters():
             tbwriter.add_histogram('/weights/' + name, param, iter_count)
     
@@ -116,7 +118,7 @@ class ModelStatsVisualizer():
     def __init__(self):
         return 
 
-    def write_tensorboard_stats(self, model: nn.Module, iter_count:int, tbwriter: SummaryWriter):
+    def write_tensorboard_stats(self, model:nn.Module, iter_count:int, tbwriter:SummaryWriter):
         gradients = [x.grad  for x in model.parameters() if x.grad is not None]
         gradient_nps = [to_np(x.data) for x in gradients]
  
@@ -155,11 +157,11 @@ class ImageGenVisualizer():
     def __init__(self):
         self.model_vis = ModelImageVisualizer()
 
-    def output_image_gen_visuals(self, md: ImageData, model: nn.Module, iter_count:int, tbwriter: SummaryWriter, jupyter:bool=False):
+    def output_image_gen_visuals(self, md:ImageData, model:nn.Module, iter_count:int, tbwriter:SummaryWriter, jupyter:bool=False):
         self._output_visuals(ds=md.val_ds, model=model, iter_count=iter_count, tbwriter=tbwriter, jupyter=jupyter, validation=True)
         self._output_visuals(ds=md.trn_ds, model=model, iter_count=iter_count, tbwriter=tbwriter, jupyter=jupyter, validation=False)
 
-    def _output_visuals(self, ds: FilesDataset, model: nn.Module, iter_count:int, tbwriter: SummaryWriter, 
+    def _output_visuals(self, ds:FilesDataset, model:nn.Module, iter_count:int, tbwriter:SummaryWriter, 
             validation:bool, jupyter:bool=False):
         #TODO:  Parameterize these
         start_idx=0
@@ -171,7 +173,7 @@ class ImageGenVisualizer():
         if jupyter:
             self._show_images_in_jupyter(image_sets, validation=validation)
     
-    def _write_tensorboard_images(self, image_sets:[ModelImageSet], iter_count:int, tbwriter: SummaryWriter, validation:bool):
+    def _write_tensorboard_images(self, image_sets:[ModelImageSet], iter_count:int, tbwriter:SummaryWriter, validation:bool):
         orig_images = []
         gen_images = []
         real_images = []
@@ -201,7 +203,7 @@ class GANTrainerStatsVisualizer():
     def __init__(self):
         return
 
-    def write_tensorboard_stats(self, gresult: GenResult, cresult: CriticResult, iter_count:int, tbwriter: SummaryWriter):
+    def write_tensorboard_stats(self, gresult:GenResult, cresult:CriticResult, iter_count:int, tbwriter:SummaryWriter):
         tbwriter.add_scalar('/loss/hingeloss', cresult.hingeloss, iter_count)
         tbwriter.add_scalar('/loss/dfake', cresult.dfake, iter_count)
         tbwriter.add_scalar('/loss/dreal', cresult.dreal, iter_count)
@@ -209,7 +211,7 @@ class GANTrainerStatsVisualizer():
         tbwriter.add_scalar('/loss/gcount', gresult.iters, iter_count)
         tbwriter.add_scalar('/loss/gaddlloss', gresult.gaddlloss, iter_count)
 
-    def print_stats_in_jupyter(self, gresult: GenResult, cresult: CriticResult):
+    def print_stats_in_jupyter(self, gresult:GenResult, cresult:CriticResult):
         print(f'\nHingeLoss {cresult.hingeloss}; RScore {cresult.dreal}; FScore {cresult.dfake}; GAddlLoss {gresult.gaddlloss}; ' + 
                 f'Iters: {gresult.iters}; GCost: {gresult.gcost};')
 

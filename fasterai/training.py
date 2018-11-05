@@ -31,7 +31,6 @@ class CriticModule(ABC, nn.Module):
         return next(self.parameters()).device
 
 class DCCritic(CriticModule):
-
     def _generate_reduce_layers(self, nf:int):
         layers=[]
         layers.append(nn.Dropout2d(0.5))
@@ -74,13 +73,13 @@ class DCCritic(CriticModule):
 
 
 class GenResult():
-    def __init__(self, gcost: np.array, iters: int, gaddlloss: np.array):
+    def __init__(self, gcost:np.array, iters:int, gaddlloss:np.array):
         self.gcost=gcost
         self.iters=iters
         self.gaddlloss=gaddlloss
 
 class CriticResult():
-    def __init__(self, hingeloss: np.array, dreal: np.array, dfake: np.array, dcost: np.array):
+    def __init__(self, hingeloss:np.array, dreal:np.array, dfake:np.array, dcost:np.array):
         self.hingeloss=hingeloss
         self.dreal=dreal
         self.dfake=dfake
@@ -91,8 +90,8 @@ class GANTrainSchedule():
     @staticmethod
     def generate_schedules(szs:[int], bss:[int], path:Path, keep_pcts:[float], save_base_name:str, 
         c_lrs:[float], g_lrs:[float], gen_freeze_tos:[int], lrs_unfreeze_factor:float=0.1, 
-        x_noise:int=None, random_seed=None, x_tfms:[Transform]=[], extra_aug_tfms:[Transform]=[],
-        reduce_x_scale=1):
+        random_seed:int=None, x_tfms:[Transform]=[], extra_aug_tfms:[Transform]=[],
+        reduce_x_scale:int=1):
 
         scheds = []
 
@@ -107,7 +106,7 @@ class GANTrainSchedule():
             gen_save_path = path.parent/(save_base_name + '_gen_' + str(sz) + '.h5')
             sched = GANTrainSchedule(sz=sz, bs=bs, path=path, critic_lrs=critic_lrs, gen_lrs=gen_lrs,
                 critic_save_path=critic_save_path, gen_save_path=gen_save_path, random_seed=random_seed,
-                x_noise=x_noise, keep_pct=keep_pct, x_tfms=x_tfms, extra_aug_tfms=extra_aug_tfms,  
+                keep_pct=keep_pct, x_tfms=x_tfms, extra_aug_tfms=extra_aug_tfms,  
                 reduce_x_scale=reduce_x_scale, gen_freeze_to=gen_freeze_to)
             scheds.append(sched)
         
@@ -115,12 +114,12 @@ class GANTrainSchedule():
 
 
     def __init__(self, sz:int, bs:int, path:Path, critic_lrs:[float], gen_lrs:[float],
-            critic_save_path: Path, gen_save_path: Path, random_seed=None, x_noise:int=None, 
-            keep_pct:float=1.0, num_epochs=1, x_tfms:[Transform]=[], extra_aug_tfms:[Transform]=[], 
-            reduce_x_scale=1, gen_freeze_to=0):
+            critic_save_path:Path, gen_save_path:Path, random_seed:int=None, 
+            keep_pct:float=1.0, num_epochs:int=1, x_tfms:[Transform]=[], extra_aug_tfms:[Transform]=[], 
+            reduce_x_scale:int=1, gen_freeze_to:int=0):
         self.md = None
 
-        self.data_loader = ImageGenDataLoader(sz=sz, bs=bs, path=path, random_seed=random_seed, x_noise=x_noise,
+        self.data_loader = ImageGenDataLoader(sz=sz, bs=bs, path=path, random_seed=random_seed,
             keep_pct=keep_pct, x_tfms=x_tfms, extra_aug_tfms=extra_aug_tfms, reduce_x_scale=reduce_x_scale)
         self.sz = sz
         self.bs = bs
@@ -184,7 +183,7 @@ class GANTrainer():
     def _get_inner_module(self, model:nn.Module):
         return model.module if isinstance(model, nn.DataParallel) else model
 
-    def _generate_clr_sched(self, model:nn.Module, use_clr_beta: (int), lrs: [float], cycle_len: int):
+    def _generate_clr_sched(self, model:nn.Module, use_clr_beta:(int), lrs:[float], cycle_len:int):
         wds = 1e-7
         opt_fn = partial(optim.Adam, betas=(0.0,0.9))
         layer_opt = LayerOptimizer(opt_fn, self._get_inner_module(model).get_layer_groups(), lrs, wds)
@@ -223,7 +222,7 @@ class GANTrainer():
                     "train begin hooks should never return any values, but '{}'"
                     "didn't return None".format(hook))
 
-    def _call_train_loop_hooks(self, gresult: GenResult, cresult: CriticResult):
+    def _call_train_loop_hooks(self, gresult:GenResult, cresult:CriticResult):
         for hook in self._train_loop_hooks.values():
             hook_result = hook(gresult, cresult)
             if hook_result is not None:
@@ -231,7 +230,7 @@ class GANTrainer():
                     "train loop hooks should never return any values, but '{}'"
                     "didn't return None".format(hook))
 
-    def _get_next_training_images(self, data_iter: Iterable)->(torch.Tensor,torch.Tensor):
+    def _get_next_training_images(self, data_iter:Iterable)->(torch.Tensor,torch.Tensor):
         x, y = next(data_iter, (None, None))
 
         if x is None or y is None:
@@ -242,7 +241,7 @@ class GANTrainer():
         return (orig_image, real_image)
 
 
-    def _train_critic(self, data_iter: Iterable, pbar: tqdm)->CriticResult:
+    def _train_critic(self, data_iter:Iterable, pbar:tqdm)->CriticResult:
         self._get_inner_module(self.netD).set_trainable(True)
         self._get_inner_module(self.netG).set_trainable(False)
         orig_image, real_image = self._get_next_training_images(data_iter)
@@ -253,7 +252,7 @@ class GANTrainer():
         pbar.update()
         return cresult
 
-    def _train_critic_once(self, orig_image: torch.Tensor, real_image: torch.Tensor)->CriticResult:                     
+    def _train_critic_once(self, orig_image:torch.Tensor, real_image:torch.Tensor)->CriticResult:                     
         fake_image = self.netG(orig_image)
         dfake_raw,_ = self.netD(fake_image)
         dfake = torch.nn.ReLU()(1.0+dfake_raw).mean()
@@ -267,7 +266,7 @@ class GANTrainer():
         self.gen_sched.on_batch_end(to_np(-dfake))
         return CriticResult(to_np(hingeloss), to_np(dreal), to_np(dfake), to_np(hingeloss))
 
-    def _train_generator(self, data_iter: Iterable, pbar: tqdm, cresult: CriticResult)->GenResult:
+    def _train_generator(self, data_iter:Iterable, pbar:tqdm, cresult:CriticResult)->GenResult:
         orig_image, real_image = self._get_next_training_images(data_iter)   
         if orig_image is None:
             return None
@@ -276,7 +275,7 @@ class GANTrainer():
         pbar.update() 
         return gresult
 
-    def _train_generator_once(self, orig_image: torch.Tensor, real_image: torch.Tensor, 
+    def _train_generator_once(self, orig_image:torch.Tensor, real_image:torch.Tensor, 
             cresult: CriticResult)->GenResult:
         self._get_inner_module(self.netD).set_trainable(False)
         self._get_inner_module(self.netG).set_trainable(True)
@@ -297,12 +296,12 @@ class GANTrainer():
             save_model(self.netD, self.dpath)
             save_model(self.netG, self.gpath)
 
-    def _get_dscore(self, new_image: torch.Tensor):
+    def _get_dscore(self, new_image:torch.Tensor):
         scores, _ = self.netD(new_image)
         return scores.mean()
     
 
-    def _calc_addl_gen_loss(self, real_data: torch.Tensor, fake_data: torch.Tensor)->torch.Tensor:
+    def _calc_addl_gen_loss(self, real_data:torch.Tensor, fake_data:torch.Tensor)->torch.Tensor:
         total_loss = V(0.0)
         for loss_fn in self.genloss_fns:
             loss = loss_fn(fake_data, real_data)
