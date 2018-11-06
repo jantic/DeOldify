@@ -140,8 +140,8 @@ I'm sure I screwed up something putting this up, so please let me know if that's
 
 I'll be posting more results here on Twitter: https://twitter.com/citnaj
 
-
-
+### UPDATE 11/6/2018
+Wow this project blew up in popularity way more than I expected, in just a few days.  As you might have gathered from the state of the project- I don't know what the hell I'm doing with managing a large GitHub project with lots of people.  Never expected that I'd need to.  So I'll be trying to get things caught up over the next few days with things like requirements.txt, documentation, not storing large files in your git history, etc.  The whole point is to make this useful, after all, right?
 
 
 
