@@ -66,7 +66,7 @@ Seneca Native in 1908
 
 
 
-### The Technical Details
+### The Technical Details.
 
 This is a deep learning based model.  More specifically, what I've done is combined the following approaches:
 * **Self-Attention Generative Adversarial Network** (https://arxiv.org/abs/1805.08318).  Except the generator is a **pretrained Unet**, and I've just modified it to have the spectral normalization and self-attention.  It's a pretty straightforward translation. I'll tell you what though – it made all the difference when I switched to this after trying desperately to get a Wasserstein GAN version to work.  I liked the theory of Wasserstein GANs but it just didn't pan out in practice.  But I'm in *love* with Self-Attention GANs.
