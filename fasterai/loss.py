@@ -2,7 +2,7 @@
 from fastai.torch_imports import *
 from fastai.core import *
 from fastai.conv_learner import children
-from fasterai.modules import SaveFeatures
+from .modules import SaveFeatures
 import torchvision.models as models
 
 

@@ -3,9 +3,9 @@ from fastai.torch_imports import *
 from fastai.dataset import Transform
 from fastai.layer_optimizer import LayerOptimizer
 from fastai.sgdr import CircularLR_beta
-from fasterai.modules import ConvBlock
-from fasterai.generators import GeneratorModule
-from fasterai.dataset import ImageGenDataLoader
+from .modules import ConvBlock
+from .generators import GeneratorModule
+from .dataset import ImageGenDataLoader
 from collections import Iterable
 import torch.utils.hooks as hooks
 from abc import ABC

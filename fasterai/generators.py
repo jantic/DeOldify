@@ -1,6 +1,6 @@
 from fastai.core import *
 from fastai.conv_learner import model_meta, cut_model
-from fasterai.modules import ConvBlock, UnetBlock, UpSampleBlock, SaveFeatures
+from .modules import ConvBlock, UnetBlock, UpSampleBlock, SaveFeatures
 from abc import ABC, abstractmethod
 
 class GeneratorModule(ABC, nn.Module):

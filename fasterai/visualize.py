@@ -5,8 +5,8 @@ from matplotlib.axes import Axes
 from fastai.dataset import FilesDataset, ImageData, ModelData, open_image
 from fastai.transforms import Transform, scale_min, tfms_from_stats, inception_stats
 from fastai.transforms import CropType, NoCrop, Denormalize
-from fasterai.training import GenResult, CriticResult, GANTrainer
-from fasterai.images import ModelImageSet, EasyTensorImage
+from .training import GenResult, CriticResult, GANTrainer
+from .images import ModelImageSet, EasyTensorImage
 from IPython.display import display
 from tensorboardX import SummaryWriter
 import torchvision.utils as vutils

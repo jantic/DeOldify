@@ -1,9 +1,9 @@
 from fastai.core import *
 from fastai.sgdr import Callback
 from fastai.dataset import ModelData, ImageData
-from fasterai.visualize import ModelStatsVisualizer, ImageGenVisualizer, GANTrainerStatsVisualizer
-from fasterai.visualize import LearnerStatsVisualizer, ModelGraphVisualizer, ModelHistogramVisualizer
-from fasterai.training import GenResult, CriticResult, GANTrainer
+from .visualize import ModelStatsVisualizer, ImageGenVisualizer, GANTrainerStatsVisualizer
+from .visualize import LearnerStatsVisualizer, ModelGraphVisualizer, ModelHistogramVisualizer
+from .training import GenResult, CriticResult, GANTrainer
 from tensorboardX import SummaryWriter
 
 def clear_directory(dir:Path):
