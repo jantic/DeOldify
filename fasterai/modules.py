@@ -95,7 +95,6 @@ class UnetBlock(nn.Module):
         x = torch.cat([up_p,x_p], dim=1)
         x = self.relu(x)
         return self.out(x)
-        return out
 
 class SaveFeatures():
     features=None
