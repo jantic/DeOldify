@@ -81,7 +81,7 @@ What I develop next with this model will be based on trying to solve the problem
 ![DeloresTwoChanges](result_images/DeloresTwoChanges.jpg)
 
 ### This Project, Going Forward
-So that's the gist of this project – I'm looking to make old photos look reeeeaaally good with GANs, and more importantly, make the project *useful*.  And yes, I'm definitely interested in doing video, but first I need to sort out how to get this model under control with memory (it's a beast).  It'd be nice if the models didn't take two to three days to train on a 1080TI as well (typical of GANs, unfortunately). In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
+So that's the gist of this project – I'm looking to make old photos look reeeeaaally good with GANs, and more importantly, make the project *useful*.  And yes, I'm definitely interested in doing video, but first I need to sort out how to get this model under control with memory (it's a beast).  It'd be nice if the models didn't take two to three days to train on a 1080TI as well (typical of GANs, unfortunately). In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the forseeable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
 
 Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *one of those* people who believes in "self documenting code" (LOL).
 
