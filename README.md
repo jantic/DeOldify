@@ -87,7 +87,7 @@ Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *on
 
 ### Getting Started Yourself
 This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda.)  So prereqs, in summary:
-* ***Old* Fast.AI library**  After being buried in this project for two months I'm a bit lost as to what happened to the old Fast.AI library because the one marked "old" doesn't really look like the one I have.  This all changed in the past two months or so.  So if all else fails you should be able to use the one I forked here: https://github.com/jantic/fastai .  Again, getting upgraded to the latest Fast.AI is on the agenda fo sho, and I apologize in advance.
+* ***Old* Fast.AI library**  After being buried in this project for two months I'm a bit lost as to what happened to the old Fast.AI library because the one marked "old" doesn't really look like the one I have.  This all changed in the past two months or so.  So if all else fails you should be able to use the one I forked here: https://github.com/jantic/fastai .  Again, getting upgraded to the latest Fast.AI is on the agenda fo sho, and I apologize in advance.  **UPDATE** Easiest thing to do in my mind is just to take the fastai/fastai folder and drop it in the root of this project, right next to fasterai's folder.  Also added a requirements.txt file to help people along with getting through dependency hell.
 * **Whatever dependencies Fast.AI has** – there's already convenient requirements.txt and environment.yml there.
 * **Pytorch 0.4.1** (needs spectral_norm, so  latest stable release is needed).
 * **Jupyter Lab**
@@ -141,7 +141,7 @@ I'm sure I screwed up something putting this up, so please let me know if that's
 I'll be posting more results here on Twitter: https://twitter.com/citnaj
 
 ### UPDATE 11/6/2018
-Wow this project blew up in popularity way more than I expected, in just a few days.  As you might have gathered from the state of the project- I don't know what the hell I'm doing with managing a large GitHub project with lots of people.  Never expected that I'd need to.  So I'll be trying to get things caught up over the next few days with things like requirements.txt, documentation, not storing large files in your git history, etc.  The whole point is to make this useful, after all, right?
+Wow this project blew up in popularity way more than I expected, in just a few days.  As you might have gathered from the state of the project- I don't know what the hell I'm doing with managing a large GitHub project with lots of people.  Never expected that I'd need to.  So I'll be trying to get things caught up over the next few days with things like documentation and whatnot.  Looks like even a Colab notebook!  The whole point is to make this useful, after all, right?
 
 
 
