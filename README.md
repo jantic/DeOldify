@@ -1,5 +1,7 @@
 # DeOldify
 
+**NEW** Try out colorization here on Colab:  https://colab.research.google.com/github/mc-robinson/DeOldify/blob/master/DeOldify_colab.ipynb .  Huge thanks to Matt Robinson.
+
 Simply put, the mission of this project is to colorize and restore old images.  I'll get into the details in a bit, but first let's get to the pictures!  BTW – most of these source images originally came from the r/TheWayWeWere subreddit, so credit to them for finding such great photos.
 
 #### Some of many results- These are pretty typical!
@@ -86,6 +88,9 @@ So that's the gist of this project – I'm looking to make old photos look reeee
 Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *one of those* people who believes in "self documenting code" (LOL).
 
 ### Getting Started Yourself
+
+The easest way to get started is to simply try out colorization here on Colab:  https://colab.research.google.com/github/mc-robinson/DeOldify/blob/master/DeOldify_colab.ipynb .  This was contributed by Matt Robinson, and it's simply awesome.
+
 This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda.)  So prereqs, in summary:
 * ***Old* Fast.AI library** [**UPDATE 11/7/2018**] Easiest thing to do in my mind is just to take the fastai/fastai folder and drop it in the root of this project, right next to fasterai's folder. Just today, I found this thread on installing fast.ai 0.7-  This is probably your best resource on this subject!  https://forums.fast.ai/t/fastai-v0-7-install-issues-thread/24652 .  Do this first- this will take you most of the way, including dependencies.
 * **Pytorch 0.4.1** (needs spectral_norm, so  latest stable release is needed). https://pytorch.org/get-started/locally/
