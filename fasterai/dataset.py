@@ -41,6 +41,10 @@ class ImageGenDataLoader():
         resize_amt = self._get_resize_amount()
         resize_folder = 'tmp'
         ((val_x,trn_x),(val_y,trn_y)) = self._get_filename_sets(resize_folder)
+
+        if len(trn_x) == 0:
+            raise ValueError('No image files were found in specified image directory. Path provided was: ' + str(self.path))
+
         aug_tfms = [RandomFlip(tfm_y=TfmType.PIXEL), RandomZoom(zoom_max=0.18, tfm_y=TfmType.PIXEL)] 
         aug_tfms.extend(self.extra_aug_tfms)
         sz_x = self.sz//self.reduce_x_scale
