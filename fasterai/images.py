@@ -8,7 +8,6 @@ from PIL import Image
 from numpy import ndarray
 from datetime import datetime
 
-
 class EasyTensorImage():
     def __init__(self, source_tensor:torch.Tensor, ds:FilesDataset):
         self.array = self._convert_to_denormed_ndarray(source_tensor, ds=ds)   

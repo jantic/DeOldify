@@ -2,7 +2,6 @@ from fastai.torch_imports import *
 from fastai.conv_learner import *
 from torch.nn.utils.spectral_norm import spectral_norm
 
-
 class ConvBlock(nn.Module):
     def __init__(self, ni:int, no:int, ks:int=3, stride:int=1, pad:int=None, actn:bool=True, 
             bn:bool=True, bias:bool=True, sn:bool=False, leakyReLu:bool=False, self_attention:bool=False,

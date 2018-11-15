@@ -5,7 +5,6 @@ from fastai.conv_learner import children
 from .modules import SaveFeatures
 import torchvision.models as models
 
-
 class FeatureLoss(nn.Module):
     def __init__(self, block_wgts:[float]=[0.2,0.7,0.1], multiplier:float=1.0):
         super().__init__()

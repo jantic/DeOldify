@@ -4,6 +4,7 @@ from fastai.dataset import ModelData, ImageData
 from .visualize import ModelStatsVisualizer, ImageGenVisualizer, GANTrainerStatsVisualizer
 from .visualize import LearnerStatsVisualizer, ModelGraphVisualizer, ModelHistogramVisualizer
 from .training import GenResult, CriticResult, GANTrainer
+from .generators import GeneratorModule
 from tensorboardX import SummaryWriter
 
 def clear_directory(dir:Path):
@@ -66,7 +67,7 @@ class GANVisualizationHook():
         if self.trainer.iters % self.visual_iters == 0:
             model = self.trainer.netG
             self.img_gen_vis.output_image_gen_visuals(md=self.trainer.md, model=model, iter_count=self.trainer.iters, 
-                tbwriter=self.tbwriter, jupyter=self.jupyter)
+                tbwriter=self.tbwriter)
 
         if self.trainer.iters % self.weight_iters == 0:
             self.weight_vis.write_tensorboard_histograms(model=self.trainer.netG, iter_count=self.trainer.iters, tbwriter=self.tbwriter)
@@ -79,7 +80,7 @@ class GANVisualizationHook():
 
 
 class ModelVisualizationCallback(Callback):
-    def __init__(self, base_dir:Path, model:nn.Module, md:ModelData, name:str, stats_iters:int=25, 
+    def __init__(self, base_dir:Path, model:GeneratorModule, md:ModelData, name:str, stats_iters:int=25, 
             visual_iters:int=200, weight_iters:int=25, jupyter:bool=False):
         super().__init__()
         self.base_dir = base_dir
@@ -146,7 +147,7 @@ class ModelVisualizationCallback(Callback):
         self.tbwriter.close()
 
 class ImageGenVisualizationCallback(ModelVisualizationCallback):
-    def __init__(self, base_dir: Path, model: nn.Module,  md: ImageData, name: str, stats_iters: int=25, visual_iters: int=200, jupyter:bool=False):
+    def __init__(self, base_dir: Path, model: GeneratorModule,  md: ImageData, name: str, stats_iters: int=25, visual_iters: int=200, jupyter:bool=False):
         super().__init__(base_dir=base_dir, model=model,  md=md, name=name, stats_iters=stats_iters, visual_iters=visual_iters, jupyter=jupyter)
         self.img_gen_vis = ImageGenVisualizer()
 
