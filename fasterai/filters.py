@@ -26,6 +26,11 @@ class Filter(ABC):
     def filter(self, orig_image:ndarray, render_factor:int)->ndarray:
         pass
 
+    def _init_model(self, model:nn.Module, weights_path:Path):
+        load_model(model, weights_path)
+        model.eval()
+        torch.no_grad() 
+
     def _transform(self, orig:ndarray, sz:int):
         for tfm in self.tfms:
             orig,_=tfm(orig, False)
@@ -65,17 +70,19 @@ class Filter(ABC):
         im_array = np.clip(im_array,0,1)
         return misc.toimage(im_array)
 
+    def _unsquare(self, result:ndarray, orig:ndarray):
+        sz = (orig.shape[1], orig.shape[0])
+        return cv2.resize(result, sz, interpolation=cv2.INTER_AREA)  
+
 
 class Colorizer(Filter):
     def __init__(self, gpu:int, weights_path:Path):
         super().__init__(tfms=[BlackAndWhiteTransform()])
         self.model = Unet34(nf_factor=2).cuda(gpu)
-        load_model(self.model, weights_path)
-        self.model.eval()
-        torch.no_grad()
-        self.render_base = 32
+        self._init_model(self.model, weights_path)
+        self.render_base=16
     
-    def filter(self, orig_image:ndarray, render_factor:int=14)->ndarray:
+    def filter(self, orig_image:ndarray, render_factor:int=36)->ndarray:
         render_sz = render_factor * self.render_base
         model_image = self._model_process(self.model, orig=orig_image, sz=render_sz)
         return self._post_process(model_image, orig_image)
@@ -90,11 +97,24 @@ class Colorizer(Filter):
         for tfm in self.tfms:
             orig,_=tfm(orig, False)
 
-        sz = (orig.shape[1], orig.shape[0])
-        raw_color = cv2.resize(raw_color, sz, interpolation=cv2.INTER_AREA)
+        raw_color = self._unsquare(raw_color, orig)
         color_yuv = cv2.cvtColor(raw_color, cv2.COLOR_BGR2YUV)
         #do a black and white transform first to get better luminance values
         orig_yuv = cv2.cvtColor(orig, cv2.COLOR_BGR2YUV)
         hires = np.copy(orig_yuv)
         hires[:,:,1:3] = color_yuv[:,:,1:3]
-        return cv2.cvtColor(hires, cv2.COLOR_YUV2BGR)    
+        return cv2.cvtColor(hires, cv2.COLOR_YUV2BGR)   
+
+#TODO:  May not want to do square rendering here like in colorization- it definitely loses 
+#fidelity visibly (but not too terribly).  Will revisit.
+class DeFader(Filter): 
+    def __init__(self, gpu:int, weights_path:Path):
+        super().__init__(tfms=[])
+        self.model = Unet34(nf_factor=2).cuda(gpu)
+        self._init_model(self.model, weights_path)
+        self.render_base=16    
+
+    def filter(self, orig_image:ndarray, render_factor:int=36)->ndarray:
+        render_sz = render_factor * self.render_base
+        model_image = self._model_process(self.model, orig=orig_image, sz=render_sz)
+        return self._unsquare(model_image, orig_image)
