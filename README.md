@@ -1,7 +1,9 @@
 # DeOldify
 
+[<img src="https://colab.research.google.com/assets/colab-badge.svg">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/DeOldify_colab.ipynb) 
 
-**NEW!** Try out colorization here on Colab:  https://colab.research.google.com/github/jantic/DeOldify/blob/master/DeOldify_colab.ipynb.  Huge thanks to Matt Robinson.
+Get more updates on Twitter.  Click here:  [<img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
+
 
 Simply put, the mission of this project is to colorize and restore old images.  I'll get into the details in a bit, but first let's get to the pictures!  BTW – most of these source images originally came from the [TheWayWeWere](https://www.reddit.com/r/TheWayWeWere) subreddit, so credit to them for finding such great photos.
 
@@ -108,47 +110,54 @@ Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *on
 ### Getting Started Yourself
 The easiest way to get started is to simply try out colorization here on Colab: https://colab.research.google.com/github/jantic/DeOldify/blob/master/DeOldify_colab.ipynb.  This was contributed by Matt Robinson, and it's simply awesome.
 
+#### On Your Own Machine
 This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda.)  So prereqs, in summary:
-* ***Old* Fast.AI library** [**UPDATE 11/7/2018**] Easiest thing to do in my mind is just to take the fastai/fastai folder and drop it in the root of this project, right next to fasterai's folder. Just today, I found this thread on installing fast.ai 0.7-  This is probably your best resource on this subject!  https://forums.fast.ai/t/fastai-v0-7-install-issues-thread/24652 .  Do this first- this will take you most of the way, including dependencies.
+* ***Old* Fast.AI library (version 0.7)** [**UPDATE 11/7/2018**] Easiest thing to do in my mind is just to take the fastai/fastai folder and drop it in the root of this project, right next to fasterai's folder. Just today, I found this thread on installing fast.ai 0.7-  This is probably your best resource on this subject!  https://forums.fast.ai/t/fastai-v0-7-install-issues-thread/24652 .  Do this first- this will take you most of the way, including dependencies.
 * **Pytorch 0.4.1** (needs spectral_norm, so  latest stable release is needed). https://pytorch.org/get-started/locally/
 * **Jupyter Lab** `conda install -c conda-forge jupyterlab`
 * **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  And I've conveniently provided hooks/callbacks to automatically write all kinds of stuff to tensorboard for you already!  The notebooks have examples of these being instantiated (or commented out since I didn't really need the ones doing histograms of the model weights).  Notably, progress images will be written to Tensorboard every 200 iterations by default, so you get a constant and convenient look at what the model is doing.  `conda install -c anaconda tensorflow-gpu` 
 * **ImageNet** – Only if training of course. It proved to be a great dataset.  http://www.image-net.org/download-images
-* **BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
+* **(Training Only) BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
+* **(Colorization Alone) A decent graphics card**. You'll benefit from having more memory in a graphics card in terms of the quality of the output achievable by .  
 * **Linux** (I'm using Ubuntu 16.04) is assumed, but nothing from the above precludes Windows 10 support as far as I know.  I just haven't tested it and am not going to make it a priority for now.
 
-**For those wanting to start transforming their own images right away:** To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). Then open the [ColorizationVisualization.ipynb](ColorizationVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
-
+### Pretrained Weights 
+To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). Then open the [ColorizationVisualization.ipynb](ColorizationVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
 ```python
-colorizer_path = Path('/path/to/colorizer_gen_192.h5') 
+colorizer_path = IMAGENET.parent/('colorize_gen_192.h5')
 ```
 
-Then the colorizer model needs to be loaded via this line after `netG` is initialized:
-
+Then you simply pass it to this (all this should be in the notebooks already):
 ```python
-load_model(netG, colorizer_path)
+filters = [Colorizer(gpu=0, weights_path=colorizer_path)]
 ```
 
-Then you'd just drop whatever images in the `/test_images/` folder you want to run this against and you can visualize the results inside the notebook with lines like this:
+Which then feed into this:
 
 ```python
-vis.plot_transformed_image("test_images/derp.jpg", netG, md.val_ds, tfms=x_tfms, sz=500)
+vis = ModelImageVisualizer(filters, render_factor=render_factor, results_dir='result_images')
 ```
 
-I'd keep the size around 500px, give or take, given you're running this on a gpu with plenty of memory (11 GB GeForce 1080Ti, for example).  If you have less than that, you'll have to go smaller or try running it on CPU.  I actually tried the latter but for some reason it was -really- absurdly slow and I didn't take the time to investigate why that was other than to find out that the Pytorch people were recommending building from source to get a big performance boost.  Yeah... I didn't want to bother at that point.
+### Colorizing Your Own Photos
+Just drop whatever images in the `/test_images/` folder you want to run this against and you can visualize the results inside the notebook with lines like this:
 
+```python
+vis.plot_transformed_image("test_images/derp.jpg")
+```
+
+The result images will automatically go into that **result_dir** defined above, in addition to being displayed in Jupyter.
+
+There's a **render_factor** variable that basically determines the quality of the rendered colors (but not the resolution of the output image).  The higher it is, the better, but you'll also need more GPU memory to accomodate this.  The max I've been able to have my GeForce 1080TI use is 42.  Lower the number if you get a CUDA_OUT_OF_MEMORY error.  You can customize this render_factor per image like this, overriding the default:
+
+```python
+vis.plot_transformed_image("test_images/Chief.jpg", render_factor=17)
+```
+
+For older and low quality images in particular, this seems to improve the colorization pretty reliably.  In contrast, more detailed and higher quality images tend to do better with a higher render_factor.
 
 ### Additional Things to Know
 
-Visualizations of generated images as training progresses -can- be done in Jupyter as well – it's just a simple boolean flag here when you instantiate this visualization hook:
-
-```python
-GANVisualizationHook(TENSORBOARD_PATH, trainer, 'trainer', jupyter=True, visual_iters=100)
-```
-
-I prefer keeping this false and just using Tensorboard though.  Trust me – you'll want it. Plus if you leave it running too long Jupyter will eat up a lot of memory with said images.
-
-Model weight saves are also done automatically during the training runs by the `GANTrainer` – defaulting to saving every 1000 iterations (it's an expensive operation).  They're stored in the root training folder you provide, and the name goes by the save_base_name you provide to the training schedule.  Weights are saved for each training size separately.
+Model weight saves are also done automatically during the training runs by the `GANTrainer` – defaulting to saving every 1000 iterations (it's an expensive operation).  They're stored in the root training data folder you provide, and the name goes by the save_base_name you provide to the training schedule.  Weights are saved for each training size separately.
 
 I'd recommend navigating the code top down – the Jupyter notebooks are the place to start.  I treat them just as a convenient interface to prototype and visualize – everything else goes into `.py` files (and therefore a proper IDE) as soon as I can find a place for them.  I already have visualization examples conveniently included – just open the `xVisualization` notebooks to run these – they point to test images already included in the project so you can start right away (in test_images). 
 
@@ -156,21 +165,55 @@ The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking
 
 [Pretrained weights for the colorizer generator again are here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). The DeFade stuff is still a work in progress so I'll try to get good weights for those up in a few days.
 
-Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  
+Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  Note that this training regime is still a work in progress- I'm stil trying to figure out what exactly is optimal.  In other words, there's a good chance you'll find something to improve upon there.
 
 I'm sure I screwed up something putting this up, so [please let me know](https://github.com/jantic/DeOldify/issues/new) if that's the case. 
 
 ### Known Issues
 
-* You'll have to **play around with the size of the image** a bit to get the best result output.  The model clearly has some dependence on aspect ratio/size when generating images. It used to be much worse but the situation improved greatly with lighting/contrast augmentation and introducing progressive training.  I'd like to eliminate this issue entirely and will obsess about it but in the meantime – don't despair if the image looks over-saturated or has weird glitches at the first go. There's a good chance that it'll look right with a slightly different size.  Generally, over-saturated means go bigger.
-* To expand on the above- Getting the best images really boils down to the **art of selection**.  Yes, results are cherry picked.  I'm very happy with the quality of the outputs and there's a pretty good amount of consistency, but it's not perfect.  This is still an ongoing project!  I'd consider this tool at this point fit for the "AI artist" but not something I'd deploy as a general purpose tool for all consumers.  It's just not there yet.
-* To complicate matters – this model is a **memory hog** currently, so on my 1080TI I can only do 500-600px max on the sz parameter for the images.  I'm betting there's plenty of low-hanging fruit to get some wins on this but I just haven't done it yet.
-* A small portion of the bottom and right sides of images will be removed in the process.   
+* Getting the best images really boils down to the **art of selection**.  You'll mostly get good results the first go, but playing around with the render_factor a bit may make a difference.  Thus, I'd consider this tool at this point fit for the "AI artist" but not something I'd deploy as a general purpose tool for all consumers.  It's just not there yet. 
 * The model *loves* blue clothing.  Not quite sure what the answer is yet, but I'll be on the lookout for a solution!
 
 ### Want More?
 
-I'll be posting more results [here on Twitter](https://twitter.com/citnaj): https://twitter.com/citnaj
+I'll be posting more results on Twitter. [<img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
 
-### UPDATE 11/6/2018
-Wow this project blew up in popularity way more than I expected, in just a few days.  As you might have gathered from the state of the project - I don't know what the hell I'm doing with managing a large GitHub project with lots of people.  Never expected that I'd need to.  So I'll be trying to get things caught up over the next few days with things like documentation and whatnot.  Looks like even a Colab notebook!  The whole point is to make this useful, after all, right?
+---
+
+### UPDATE 11/15/2018
+I just put up a bunch of significant improvements!  I'll just repeat what I put in Twitter, here:
+
+So first, this image should really help visualize what is going on under the hood. Notice the smallified square image in the center.
+
+![BeforeAfterChief](result_images/BeforeAfterChief.jpg)
+
+
+#### Squarification 
+That small square center image is what the deep learning generator actually generates now.  Before I was just shrinking the images keeping the same aspect ratio.  It turns out, the model does better with squares- even if they're distorted in the process!
+
+Note that I tried other things like keeping the core image's aspect ratio the same and doing various types of padding to make a square (reflect, symmetric, 0, etc).  None of this worked as well.  Two reasons why I think this works.  
+
+* One- model was trained on squares;
+* Two- at smaller resolutions I think this is particularly significant- you're giving the model more real image to work with if you just stretch it as opposed to padding.  And padding wasn't something the model trained on anyway.
+
+#### Chrominance Optimization
+It turns out that the human eye doesn't perceive color (chrominance) with nearly as much sensitivity as it does intensity (luminance).  Hence, we can render the color part at much lower resolution compared to the desired target res.
+
+Before, I was having the model render the image at the same size as the end result image that you saw. So you maxed out around 550px (maybe) because the GPU couldn't handle anymore.  Now?  Colors can be rendered at say a tiny 272x272 (as the image above), then the color part of the model output is simply resized and stretched to map over the much higher resolution original images's luminance portion (we already have that!). So the end result looks fantastic, because your eyes can't tell the difference with the color anyway!
+
+#### Graceful Rendering Degradation
+With the above, we're now able to generate much more consistently good looking images, even at different color gpu rendering sizes.  Basically, you do generally get a better image if you have the model take up more memory with a bigger render.  BUT if you reduce that memory footprint even in half with having the model render a smaller image, the difference in image quality of the end result is often pretty negligible.  This effectively means the colorization is usable on a wide variety of machines now! 
+
+i.e. You don't need a GeForce 1080TI to do it anymore.  You can get by with much less.
+
+#### Consistent Rendering Quality 
+Finally- With the above, I was finally able to narrow down a scheme to make it so that the hunt to find the best version of what the model can render is a lot less tedious.  Basically, it amounts to providing a render_factor (int) by the user and multiplying it by a base size multiplier of 16.  This, combined with the square rendering, plays well together.  It means that you get predictable behavior of rendering as you increase and decrease render_factor, without too many surprise glitches.
+
+Increase render_factor: Get more details right.  Decrease:  Still looks good but might miss some details.  Simple!  So you're no longer going to deal with a clumsy sz factor.  Bonus:  The memory usage is consistent and predictable so you just have to figure out the render_factor that works for your gpu once and forget about it.  I'll probably try to make that render_factor determination automatic eventually but this should be a big improvement in the meantime.
+
+#### P.S 
+
+You're not losing any image anymore with padding issues.  That's solved as a biproduct.  
+
+#### Also Also
+I added a new generic filter interface that replaces the visualizer dealing with models directly.  The visualizer loops through these filters that you provide as a list.  They don't have to be backed by deep learning models- they can be any image modification you want!
