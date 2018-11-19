@@ -28,12 +28,11 @@ pandas>=0.20.3
 pexpect>=4.2.1
 pickleshare>=0.7.4
 Pillow==4.1.1
-prompt-toolkit>=1.0.15
+prompt-toolkit==2.0.0
 Pygments>=2.2.0
 pyparsing>=2.2.0
 pytest>=3.5.0
 python-dateutil>=2.6.1
-pytorch>=0.4.1
 pytz>=2017.2
 PyYAML>=3.12
 pyzmq>=16.0.2
