@@ -111,13 +111,13 @@ Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *on
 The easiest way to get started is to simply try out colorization here on Colab: https://colab.research.google.com/github/jantic/DeOldify/blob/master/DeOldify_colab.ipynb.  This was contributed by Matt Robinson, and it's simply awesome.
 
 
-#### Your Own Machine- Hardware and Operating System Requirements
+#### Hardware and Operating System Requirements
 
 * **(Training Only) BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
 * **(Colorization Alone) A decent graphics card**. You'll benefit from having more memory in a graphics card in terms of the quality of the output achievable by.  Now what the term "decent" means exactly...I'm going to say 6GB +.  I haven't tried it but in my head the math works....  
 * **Linux (or maybe Windows 10)**  I'm using Ubuntu 16.04, but nothing about this precludes Windows 10 support as far as I know.  I just haven't tested it and am not going to make it a priority for now.  
 
-#### Your Own Machine- Easy Install
+#### Easy Install
 
 You should now be able to do a simple install with Anaconda. Here are the steps:
 
@@ -135,7 +135,7 @@ Then from there you can start running the notebooks in Jupyter Lab, via the url 
 
 **Disclaimer**: This conda install process is new- I did test it locally but the classic developer's excuse is "well it works on my machine!" I'm keeping that in mind- there's a good chance it doesn't necessarily work on others's machines!  I probably, most definitely did something wrong here.  Definitely, in fact.  Please let me know via opening an issue. Pobody's nerfect.
 
-#### Your Own Machine- More Details for Those So Inclined
+#### More Details for Those So Inclined
 
 This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely [update 11/18/2018: maybe] on the agenda.)  So prereqs, in summary:
 * ***Old* Fast.AI library (version 0.7)** [**UPDATE 11/18/2018**] A forked version is now bundled with the project, for ease of deployment and independence from whatever happens to the old version from here on out.
