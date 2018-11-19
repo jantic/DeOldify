@@ -122,16 +122,18 @@ The easiest way to get started is to simply try out colorization here on Colab: 
 You should now be able to do a simple install with Anaconda. Here are the steps:
 
 Open the command line and navigate to the root folder you wish to install.  Then type the following commands 
-
 ```console
 git clone https://github.com/jantic/DeOldify.git DeOldify
 cd DeOldify
 conda env create -f environment.yml
+```
+Then start running with these commands:
+```console
 source activate deoldify
 jupyter lab
 ```
 
-Then from there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
+From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
 
 **Disclaimer**: This conda install process is new- I did test it locally but the classic developer's excuse is "well it works on my machine!" I'm keeping that in mind- there's a good chance it doesn't necessarily work on others's machines!  I probably, most definitely did something wrong here.  Definitely, in fact.  Please let me know via opening an issue. Pobody's nerfect.
 
