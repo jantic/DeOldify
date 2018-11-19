@@ -1,4 +1,3 @@
-%%writefile setup.py
 
 # coding: utf-8
 
@@ -21,8 +20,9 @@ setup(
      ['bcolz', 'bleach', 'certifi', 'cycler', 'decorator', 'entrypoints', 'feather-format', 'graphviz', 'html5lib',
       'ipykernel', 'ipython', 'ipython-genutils', 'ipywidgets', 'isoweek', 'jedi', 'Jinja2', 'jsonschema', 'jupyter',
       'MarkupSafe', 'matplotlib', 'numpy', 'opencv-python', 'pandas',
-      'pandas_summary', 'pickleshare', 'plotnine', 'Pygments', 'pyparsing', 'python-dateutil', 'pytz', 'PyYAML', 'pyzmq', 'scipy',
-      'seaborn', 'simplegeneric', 'sklearn_pandas', 'testpath', 'tornado', 'tqdm',
+      'pandas_summary', 'pickleshare', 'Pillow', 'plotnine',
+      'pytorch>=0.4.1', 'Pygments', 'pyparsing', 'python-dateutil', 'pytz', 'PyYAML', 'pyzmq', 'scipy',
+      'seaborn', 'simplegeneric', 'sklearn_pandas', 'testpath', 'torchtext', 'torchvision', 'tornado', 'tqdm',
       'traitlets', 'wcwidth', 'webencodings', 'widgetsnbextension'],
     keywords = ['deeplearning', 'pytorch', 'machinelearning'],
     classifiers = ['Development Status :: 3 - Alpha',
@@ -30,3 +30,4 @@ setup(
                    'Programming Language :: Python :: 3.6',
                    'Topic :: Scientific/Engineering :: Artificial Intelligence']
 )
+
