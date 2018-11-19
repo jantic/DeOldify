@@ -1,0 +1,5 @@
+*.png
+*.tar
+checkpoint*
+log*
+wgts/
