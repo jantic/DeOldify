@@ -21,7 +21,7 @@ setup(
       'ipykernel', 'ipython', 'ipython-genutils', 'ipywidgets', 'isoweek', 'jedi', 'Jinja2', 'jsonschema', 'jupyter',
       'MarkupSafe', 'matplotlib', 'numpy', 'opencv-python', 'pandas',
       'pandas_summary', 'pickleshare', 'Pillow', 'plotnine',
-      'pytorch>=0.4.1', 'Pygments', 'pyparsing', 'python-dateutil', 'pytz', 'PyYAML', 'pyzmq', 'scipy',
+      'pytorch', 'Pygments', 'pyparsing', 'python-dateutil', 'pytz', 'PyYAML', 'pyzmq', 'scipy',
       'seaborn', 'simplegeneric', 'sklearn_pandas', 'testpath', 'torchtext', 'torchvision', 'tornado', 'tqdm',
       'traitlets', 'wcwidth', 'webencodings', 'widgetsnbextension'],
     keywords = ['deeplearning', 'pytorch', 'machinelearning'],
