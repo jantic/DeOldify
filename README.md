@@ -110,16 +110,40 @@ Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *on
 ### Getting Started Yourself
 The easiest way to get started is to simply try out colorization here on Colab: https://colab.research.google.com/github/jantic/DeOldify/blob/master/DeOldify_colab.ipynb.  This was contributed by Matt Robinson, and it's simply awesome.
 
-#### On Your Own Machine
-This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely on the agenda.)  So prereqs, in summary:
-* ***Old* Fast.AI library (version 0.7)** [**UPDATE 11/7/2018**] Easiest thing to do in my mind is just to take the fastai/fastai folder and drop it in the root of this project, right next to fasterai's folder. Just today, I found this thread on installing fast.ai 0.7-  This is probably your best resource on this subject!  https://forums.fast.ai/t/fastai-v0-7-install-issues-thread/24652 .  Do this first- this will take you most of the way, including dependencies.
+
+#### Your Own Machine- Hardware and Operating System Requirements
+
+* **(Training Only) BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
+* **(Colorization Alone) A decent graphics card**. You'll benefit from having more memory in a graphics card in terms of the quality of the output achievable by.  Now what the term "decent" means exactly...I'm going to say 6GB +.  I haven't tried it but in my head the math works....  
+* **Linux (or maybe Windows 10)**  I'm using Ubuntu 16.04, but nothing about this precludes Windows 10 support as far as I know.  I just haven't tested it and am not going to make it a priority for now.  
+
+#### Your Own Machine- Easy Install
+
+You should now be able to do a simple install with Anaconda. Here are the steps:
+
+Open the command line and navigate to the root folder you wish to install.  Then type the following commands 
+
+```console
+git clone https://github.com/jantic/DeOldify.git DeOldify
+cd DeOldify
+conda env create -f environment.yml
+source activate deoldify
+jupyter lab
+```
+
+Then from there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
+
+**Disclaimer**: This conda install process is new- I did test it locally but the classic developer's excuse is "well it works on my machine!" I'm keeping that in mind- there's a good chance it doesn't necessarily work on others's machines!  I probably, most definitely did something wrong here.  Definitely, in fact.  Please let me know via opening an issue. Pobody's nerfect.
+
+#### Your Own Machine- More Details for Those So Inclined
+
+This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely [update 11/18/2018: maybe] on the agenda.)  So prereqs, in summary:
+* ***Old* Fast.AI library (version 0.7)** [**UPDATE 11/18/2018**] A forked version is now bundled with the project, for ease of deployment and independence from whatever happens to the old version from here on out.
+* **Python 3.6**
 * **Pytorch 0.4.1** (needs spectral_norm, so  latest stable release is needed). https://pytorch.org/get-started/locally/
 * **Jupyter Lab** `conda install -c conda-forge jupyterlab`
 * **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  And I've conveniently provided hooks/callbacks to automatically write all kinds of stuff to tensorboard for you already!  The notebooks have examples of these being instantiated (or commented out since I didn't really need the ones doing histograms of the model weights).  Notably, progress images will be written to Tensorboard every 200 iterations by default, so you get a constant and convenient look at what the model is doing.  `conda install -c anaconda tensorflow-gpu` 
 * **ImageNet** – Only if training of course. It proved to be a great dataset.  http://www.image-net.org/download-images
-* **(Training Only) BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
-* **(Colorization Alone) A decent graphics card**. You'll benefit from having more memory in a graphics card in terms of the quality of the output achievable by .  
-* **Linux** (I'm using Ubuntu 16.04) is assumed, but nothing from the above precludes Windows 10 support as far as I know.  I just haven't tested it and am not going to make it a priority for now.
 
 ### Pretrained Weights 
 To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). Then open the [ColorizationVisualization.ipynb](ColorizationVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
