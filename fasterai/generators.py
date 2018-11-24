@@ -4,6 +4,7 @@ from fastai.transforms import scale_min
 from .modules import ConvBlock, UnetBlock, UpSampleBlock, SaveFeatures
 from abc import ABC, abstractmethod
 from torchvision import transforms
+from torch.nn.utils.spectral_norm import spectral_norm
 
 class GeneratorModule(ABC, nn.Module):
     def __init__(self):
@@ -29,30 +30,27 @@ class GeneratorModule(ABC, nn.Module):
         return next(self.parameters()).device
 
 
-class Unet34(GeneratorModule): 
-    @staticmethod
-    def _get_pretrained_resnet_base(layers_cut:int=0):
-        f = resnet34
-        cut,lr_cut = model_meta[f]
-        cut-=layers_cut
-        layers = cut_model(f(True), cut)
-        return nn.Sequential(*layers), lr_cut
-
+class AbstractUnet(GeneratorModule): 
     def __init__(self, nf_factor:int=1, scale:int=1):
         super().__init__()
         assert (math.log(scale,2)).is_integer()
-        leakyReLu=False
-        self_attention=True
-        bn=True
-        sn=True
-        self.rn, self.lr_cut = Unet34._get_pretrained_resnet_base()
+        self.rn, self.lr_cut = self._get_pretrained_resnet_base()
+        ups = self._get_decoding_layers(nf_factor=nf_factor, scale=scale)
         self.relu = nn.ReLU()
-        self.up1 = UnetBlock(512,256,512*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn)
-        self.up2 = UnetBlock(512*nf_factor,128,512*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn)
-        self.up3 = UnetBlock(512*nf_factor,64,512*nf_factor, sn=sn, self_attention=self_attention, leakyReLu=leakyReLu, bn=bn)
-        self.up4 = UnetBlock(512*nf_factor,64,256*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn)
-        self.up5 = UpSampleBlock(256*nf_factor, 32*nf_factor, 2*scale, sn=sn, leakyReLu=leakyReLu, bn=bn) 
-        self.out= nn.Sequential(ConvBlock(32*nf_factor, 3, ks=3, actn=False, bn=False, sn=sn), nn.Tanh())
+        self.up1 = ups[0]
+        self.up2 = ups[1]
+        self.up3 = ups[2]
+        self.up4 = ups[3]
+        self.up5 = ups[4]
+        self.out= nn.Sequential(ConvBlock(32*nf_factor, 3, ks=3, actn=False, bn=False, sn=True), nn.Tanh())
+
+    @abstractmethod
+    def _get_pretrained_resnet_base(self, layers_cut:int=0):
+        pass
+
+    @abstractmethod
+    def _get_decoding_layers(self, nf_factor:int, scale:int):
+        pass
 
     #Gets around irritating inconsistent halving coming from resnet
     def _pad(self, x:torch.Tensor, target:torch.Tensor, total_padh:int, total_padw:int)-> torch.Tensor:
@@ -128,4 +126,53 @@ class Unet34(GeneratorModule):
         for sf in self.sfs: 
             sf.remove()
 
- 
+
+class Unet34(AbstractUnet): 
+    def __init__(self, nf_factor:int=1, scale:int=1):
+        super().__init__(nf_factor=nf_factor, scale=scale)
+
+    def _get_pretrained_resnet_base(self, layers_cut:int=0):
+        f = resnet34
+        cut,lr_cut = model_meta[f]
+        cut-=layers_cut
+        layers = cut_model(f(True), cut)
+        return nn.Sequential(*layers), lr_cut
+
+    def _get_decoding_layers(self, nf_factor:int, scale:int):
+        self_attention=True
+        bn=True
+        sn=True
+        leakyReLu=False
+        layers = []
+        layers.append(UnetBlock(512,256,512*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UnetBlock(512*nf_factor,128,512*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UnetBlock(512*nf_factor,64,512*nf_factor, sn=sn, self_attention=self_attention, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UnetBlock(512*nf_factor,64,256*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UpSampleBlock(256*nf_factor, 32*nf_factor, 2*scale, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        return layers 
+
+
+class Unet101(AbstractUnet): 
+    def __init__(self, nf_factor:int=1, scale:int=1):
+        super().__init__(nf_factor=nf_factor, scale=scale)
+
+    def _get_pretrained_resnet_base(self, layers_cut:int=0):
+        f = resnet101
+        cut,lr_cut = model_meta[f]
+        cut-=layers_cut
+        layers = cut_model(f(True), cut)
+        return nn.Sequential(*layers), lr_cut
+
+    def _get_decoding_layers(self, nf_factor:int, scale:int):
+        self_attention=True
+        bn=True
+        sn=True
+        leakyReLu=False
+        layers = []
+        layers.append(UnetBlock(2048,1024,512*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UnetBlock(512*nf_factor,512,512*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UnetBlock(512*nf_factor,256,512*nf_factor, sn=sn, self_attention=self_attention, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UnetBlock(512*nf_factor,64,256*nf_factor, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        layers.append(UpSampleBlock(256*nf_factor, 32*nf_factor, 2*scale, sn=sn, leakyReLu=leakyReLu, bn=bn))
+        return layers 
+

@@ -1,6 +1,6 @@
 from numpy import ndarray
 from abc import ABC, abstractmethod
-from .generators import Unet34, GeneratorModule
+from .generators import Unet34, Unet101, GeneratorModule
 from .transforms import BlackAndWhiteTransform
 from fastai.torch_imports import *
 from fastai.core import *
@@ -23,7 +23,7 @@ class Filter(ABC):
         self.denorm = Denormalize(*inception_stats)
     
     @abstractmethod
-    def filter(self, orig_image:ndarray, render_factor:int)->ndarray:
+    def filter(self, orig_image:ndarray, filtered_image:ndarray, render_factor:int)->ndarray:
         pass
 
     def _init_model(self, model:nn.Module, weights_path:Path):
@@ -58,9 +58,10 @@ class Filter(ABC):
             image = image[None]
         return self.denorm(np.rollaxis(image,1,4))
 
-    def _model_process(self, model:GeneratorModule, orig:ndarray, sz:int):
+    def _model_process(self, model:GeneratorModule, orig:ndarray, sz:int, gpu:int):
         orig = self._get_model_ready_image_ndarray(orig, sz)
         orig = VV_(orig[None]) 
+        orig = orig.to(device=gpu)
         result = model(orig)
         result = result.detach().cpu().numpy()
         result = self._denorm(result)
@@ -75,17 +76,27 @@ class Filter(ABC):
         return cv2.resize(result, sz, interpolation=cv2.INTER_AREA)  
 
 
-class Colorizer(Filter):
-    def __init__(self, gpu:int, weights_path:Path):
+
+class AbstractColorizer(Filter):
+    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
         super().__init__(tfms=[BlackAndWhiteTransform()])
-        self.model = Unet34(nf_factor=2).cuda(gpu)
+        self.model = self._get_model(nf_factor=nf_factor, gpu=gpu)
+        self.gpu = gpu
         self._init_model(self.model, weights_path)
         self.render_base=16
+        self.map_to_orig=map_to_orig
+
+    @abstractmethod
+    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
+        pass
     
-    def filter(self, orig_image:ndarray, render_factor:int=36)->ndarray:
+    def filter(self, orig_image:ndarray, filtered_image:ndarray, render_factor:int=36)->ndarray:
         render_sz = render_factor * self.render_base
-        model_image = self._model_process(self.model, orig=orig_image, sz=render_sz)
-        return self._post_process(model_image, orig_image)
+        model_image = self._model_process(self.model, orig=filtered_image, sz=render_sz, gpu=self.gpu)
+        if self.map_to_orig:
+            return self._post_process(model_image, orig_image)
+        else:
+            return self._post_process(model_image, filtered_image)
 
 
     #This takes advantage of the fact that human eyes are much less sensitive to 
@@ -105,16 +116,36 @@ class Colorizer(Filter):
         hires[:,:,1:3] = color_yuv[:,:,1:3]
         return cv2.cvtColor(hires, cv2.COLOR_YUV2BGR)   
 
+class Colorizer34(AbstractColorizer):
+    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
+        super().__init__(gpu=gpu, weights_path=weights_path, nf_factor=nf_factor, map_to_orig=map_to_orig)
+
+    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
+        return Unet34(nf_factor=nf_factor).cuda(gpu)
+
+
+class Colorizer101(AbstractColorizer):
+    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
+        super().__init__(gpu=gpu, weights_path=weights_path, nf_factor=nf_factor, map_to_orig=map_to_orig)
+
+    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
+        return Unet101(nf_factor=nf_factor).cuda(gpu)
+
+
 #TODO:  May not want to do square rendering here like in colorization- it definitely loses 
 #fidelity visibly (but not too terribly).  Will revisit.
 class DeFader(Filter): 
-    def __init__(self, gpu:int, weights_path:Path):
-        super().__init__(tfms=[])
-        self.model = Unet34(nf_factor=2).cuda(gpu)
+    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2):
+        super().__init__(tfms=[BlackAndWhiteTransform()])
+        self.model = Unet34(nf_factor=nf_factor).cuda(gpu)
         self._init_model(self.model, weights_path)
-        self.render_base=16    
+        self.render_base=16
+        self.gpu = gpu
 
-    def filter(self, orig_image:ndarray, render_factor:int=36)->ndarray:
+    def filter(self, orig_image:ndarray, filtered_image:ndarray, render_factor:int=36)->ndarray:
         render_sz = render_factor * self.render_base
-        model_image = self._model_process(self.model, orig=orig_image, sz=render_sz)
-        return self._unsquare(model_image, orig_image)
+        model_image = self._model_process(self.model, orig=filtered_image, sz=render_sz, gpu=self.gpu)
+        return self._post_process(model_image, filtered_image)
+
+    def _post_process(self, result:ndarray, orig:ndarray):
+        return self._unsquare(result, orig)

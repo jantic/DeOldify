@@ -11,7 +11,7 @@ from fasterai.transforms import BlackAndWhiteTransform
 from .training import GenResult, CriticResult, GANTrainer
 from .images import ModelImageSet, EasyTensorImage
 from .generators import GeneratorModule
-from .filters import Filter, Colorizer
+from .filters import Filter
 from IPython.display import display
 from tensorboardX import SummaryWriter
 from scipy import misc
@@ -46,14 +46,14 @@ class ModelImageVisualizer():
         misc.imsave(result_path, np.clip(result,0,1))
 
     def _get_transformed_image_ndarray(self, path:Path, render_factor:int=None):
-        orig = open_image(str(path))
-        result = orig
+        orig_image = open_image(str(path))
+        filtered_image = orig_image
         render_factor = self.render_factor if render_factor is None else render_factor
 
         for filt in self.filters:
-            result = filt.filter(result, render_factor=render_factor)
+            filtered_image = filt.filter(orig_image, filtered_image, render_factor=render_factor)
 
-        return result
+        return filtered_image
 
     def _plot_image_from_ndarray(self, image:ndarray, axes:Axes=None, figsize=(20,20)):
         if axes is None: 
