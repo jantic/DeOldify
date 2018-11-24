@@ -1,4 +1,6 @@
 import os, sys, time
+import random
+import torch
 import numpy as np
 import matplotlib
 matplotlib.use('agg')
