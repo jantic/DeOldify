@@ -239,7 +239,7 @@ Increase render_factor: Get more details right.  Decrease:  Still looks good but
 
 #### P.S 
 
-You're not losing any image anymore with padding issues.  That's solved as a biproduct.  
+You're not losing any image anymore with padding issues.  That's solved as a byproduct.  
 
 #### Also Also
 I added a new generic filter interface that replaces the visualizer dealing with models directly.  The visualizer loops through these filters that you provide as a list.  They don't have to be backed by deep learning models- they can be any image modification you want!
