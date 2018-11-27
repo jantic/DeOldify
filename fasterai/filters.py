@@ -1,6 +1,6 @@
 from numpy import ndarray
 from abc import ABC, abstractmethod
-from .generators import Unet34, Unet101, GeneratorModule
+from .generators import Unet34, Unet101, Unet152, GeneratorModule
 from .transforms import BlackAndWhiteTransform
 from fastai.torch_imports import *
 from fastai.core import *
@@ -130,6 +130,14 @@ class Colorizer101(AbstractColorizer):
 
     def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
         return Unet101(nf_factor=nf_factor).cuda(gpu)
+
+
+class Colorizer152(AbstractColorizer):
+    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
+        super().__init__(gpu=gpu, weights_path=weights_path, nf_factor=nf_factor, map_to_orig=map_to_orig)
+
+    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
+        return Unet152(nf_factor=nf_factor).cuda(gpu)
 
 
 #TODO:  May not want to do square rendering here like in colorization- it definitely loses 
