@@ -1,0 +1,37 @@
+# See: https://conda.io/docs/user-guide/tasks/use-conda-with-travis-ci.html
+group: travis_latest
+dist: xenial    # required for Python >= 3.7 (travis-ci/travis-ci#9069)
+sudo: required  # required for Python >= 3.7 (travis-ci/travis-ci#9069)
+language: python
+cache: pip
+python:
+  # We don't actually use the Travis Python, but this keeps things organized.
+  - 3.6
+  - 3.7
+  # - nightly
+matrix:
+  allow_failures:
+    - python: nightly
+install:
+  - sudo apt-get update
+  - wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+  - conda env create -f environment.yml python=$TRAVIS_PYTHON_VERSION flake8
+  - source activate deoldify
+  # - jupyter lab
+before_script:
+  # stop the build if there are Python syntax errors or undefined names
+  - flake8 . --count --select=E901,E999,F821,F822,F823 --show-source --statistics
+  # exit-zero treats all errors as warnings.  The GitHub editor is 127 chars wide
+  - flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+script:
+  - true  # add other tests here
+notifications:
+  on_success: change
+  on_failure: change  # `always` will be the setting once code changes slow down
