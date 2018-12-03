@@ -1,7 +1,6 @@
 # See: https://conda.io/docs/user-guide/tasks/use-conda-with-travis-ci.html
 group: travis_latest
 dist: xenial    # required for Python >= 3.7 (travis-ci/travis-ci#9069)
-sudo: required  # required for Python >= 3.7 (travis-ci/travis-ci#9069)
 language: python
 cache: pip
 python:
