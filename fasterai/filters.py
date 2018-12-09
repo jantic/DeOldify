@@ -121,7 +121,10 @@ class Colorizer34(AbstractColorizer):
         super().__init__(gpu=gpu, weights_path=weights_path, nf_factor=nf_factor, map_to_orig=map_to_orig)
 
     def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
-        return Unet34(nf_factor=nf_factor).cuda(gpu)
+        if gpu:
+            return Unet34(nf_factor=nf_factor).cuda(gpu)
+        else:
+            return Unet34(nf_factor=nf_factor).cpu()
 
 
 class Colorizer101(AbstractColorizer):
