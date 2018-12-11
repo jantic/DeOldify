@@ -148,7 +148,7 @@ This project is built around the wonderful Fast.AI library.  Unfortunately, it's
 * **ImageNet** – Only if training of course. It proved to be a great dataset.  http://www.image-net.org/download-images
 
 ### Pretrained Weights 
-To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). Then open the [ColorizationVisualization.ipynb](ColorizationVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
+To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). Then open the [ColorizeVisualization.ipynb](ColorizeVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
 ```python
 colorizer_path = IMAGENET.parent/('colorize_gen_192.h5')
 ```
