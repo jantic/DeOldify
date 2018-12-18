@@ -1,159 +1,104 @@
 from numpy import ndarray
 from abc import ABC, abstractmethod
-from .generators import Unet34, Unet101, Unet152, GeneratorModule
-from .transforms import BlackAndWhiteTransform
-from fastai.torch_imports import *
+from .critics import colorize_crit_learner
 from fastai.core import *
-from fastai.transforms import Transform, scale_min, tfms_from_stats, inception_stats
-from fastai.transforms import CropType, NoCrop, Denormalize, Scale, scale_to
+from fastai.vision import *
+from fastai.vision.image import *
+from fastai.vision.data import *
+from fastai import *
 import math
 from scipy import misc
+#from torchvision.transforms.functional import *
+import cv2
+from PIL import Image as PilImage
 
-class Padding():
-    def __init__(self, top:int, bottom:int, left:int, right:int):
-        self.top = top
-        self.bottom = bottom
-        self.left = left
-        self.right = right
-  
-class Filter(ABC):
-    def __init__(self, tfms:[Transform]):
-        super().__init__()
-        self.tfms=tfms
-        self.denorm = Denormalize(*inception_stats)
-    
+class IFilter(ABC):
     @abstractmethod
-    def filter(self, orig_image:ndarray, filtered_image:ndarray, render_factor:int)->ndarray:
-        pass
+    def filter(self, orig_image:PilImage, filtered_image:PilImage, render_factor:int)->PilImage:
+        pass   
+  
+class BaseFilter(IFilter):
+    def __init__(self, learn:Learner):
+        super().__init__()
+        self.learn=learn
+        self.norm, self.denorm = normalize_funcs(*imagenet_stats)
 
-    def _init_model(self, model:nn.Module, weights_path:Path):
-        load_model(model, weights_path)
-        model.eval()
-        torch.no_grad() 
+    def _transform(self, image:PilImage)->PilImage:
+        return image
 
-    def _transform(self, orig:ndarray, sz:int):
-        for tfm in self.tfms:
-            orig,_=tfm(orig, False)
-        _,val_tfms = tfms_from_stats(inception_stats, sz, crop_type=CropType.NO, aug_tfms=[])
-        val_tfms.tfms = [tfm for tfm in val_tfms.tfms if not (isinstance(tfm, NoCrop) or isinstance(tfm, Scale))]
-        orig = val_tfms(orig)
-        return orig
-
-    def _scale_to_square(self, orig:ndarray, targ:int, interpolation=cv2.INTER_AREA):
-        r,c,*_ = orig.shape
-        ratio = targ/max(r,c)
+    def _scale_to_square(self, orig:PilImage, targ:int)->PilImage:
         #a simple stretch to fit a square really makes a big difference in rendering quality/consistency.
         #I've tried padding to the square as well (reflect, symetric, constant, etc).  Not as good!
-        sz = (targ, targ)
-        return cv2.resize(orig, sz, interpolation=interpolation)
+        targ_sz = (targ, targ)
+        return orig.resize(targ_sz, resample=PIL.Image.BILINEAR).convert('RGB')
 
-    def _get_model_ready_image_ndarray(self, orig:ndarray, sz:int):
+    def _get_model_ready_image(self, orig:PilImage, sz:int)->PilImage:
         result = self._scale_to_square(orig, sz)
-        sz=result.shape[0]
-        result = self._transform(result, sz)
+        result = self._transform(result)
         return result
 
-    def _denorm(self, image: ndarray):
-        if len(image.shape)==3: 
-            image = image[None]
-        return self.denorm(np.rollaxis(image,1,4))
+    def _model_process(self, orig:PilImage, sz:int)->PilImage:
+        model_image = self._get_model_ready_image(orig, sz)
+        x =  pil2tensor(model_image,np.float32)
+        x.div_(255)
+        x,y = self.norm((x,x), do_x=True)
+        result = self.learn.pred_batch(ds_type=DatasetType.Valid, 
+            batch=(x[None].cuda(),y[None]), reconstruct=False)
+        result = result[0]
+        result = self.denorm(result, do_x=True)
+        result = image2np(result*255).astype(np.uint8)
+        return PilImage.fromarray(result)
 
-    def _model_process(self, model:GeneratorModule, orig:ndarray, sz:int, gpu:int):
-        orig = self._get_model_ready_image_ndarray(orig, sz)
-        orig = VV_(orig[None]) 
-        orig = orig.to(device=gpu)
-        result = model(orig)
-        result = result.detach().cpu().numpy()
-        result = self._denorm(result)
-        return result[0]
-
-    def _convert_to_pil(self, im_array:ndarray):
-        im_array = np.clip(im_array,0,1)
-        return misc.toimage(im_array)
-
-    def _unsquare(self, result:ndarray, orig:ndarray):
-        sz = (orig.shape[1], orig.shape[0])
-        return cv2.resize(result, sz, interpolation=cv2.INTER_AREA)  
+    def _unsquare(self, image:PilImage, orig:PilImage)->PilImage:
+        targ_sz = orig.size
+        image = image.resize(targ_sz, resample=PIL.Image.BILINEAR).convert('RGB')
+        return image
 
 
-
-class AbstractColorizer(Filter):
-    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
-        super().__init__(tfms=[BlackAndWhiteTransform()])
-        self.model = self._get_model(nf_factor=nf_factor, gpu=gpu)
-        self.gpu = gpu
-        self._init_model(self.model, weights_path)
+class ColorizerFilter(BaseFilter):
+    def __init__(self, learn:Learner, map_to_orig:bool=True):
+        super().__init__(learn=learn)
         self.render_base=16
         self.map_to_orig=map_to_orig
 
-    @abstractmethod
-    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
-        pass
-    
-    def filter(self, orig_image:ndarray, filtered_image:ndarray, render_factor:int=36)->ndarray:
+    def filter(self, orig_image:PilImage, filtered_image:PilImage, render_factor:int)->PilImage:
         render_sz = render_factor * self.render_base
-        model_image = self._model_process(self.model, orig=filtered_image, sz=render_sz, gpu=self.gpu)
+        model_image = self._model_process(orig=filtered_image, sz=render_sz)
         if self.map_to_orig:
             return self._post_process(model_image, orig_image)
         else:
             return self._post_process(model_image, filtered_image)
 
+    def  _transform(self, image:PilImage)->PilImage:
+        return image.convert('LA').convert('RGB')
 
     #This takes advantage of the fact that human eyes are much less sensitive to 
     #imperfections in chrominance compared to luminance.  This means we can
     #save a lot on memory and processing in the model, yet get a great high
     #resolution result at the end.  This is primarily intended just for 
     #inference
-    def _post_process(self, raw_color:ndarray, orig:ndarray):
-        for tfm in self.tfms:
-            orig,_=tfm(orig, False)
-
+    def _post_process(self, raw_color:PilImage, orig:PilImage)->PilImage:
         raw_color = self._unsquare(raw_color, orig)
-        color_yuv = cv2.cvtColor(raw_color, cv2.COLOR_BGR2YUV)
+        color_np = np.asarray(raw_color)
+        orig_np = np.asarray(orig)
+        color_yuv = cv2.cvtColor(color_np, cv2.COLOR_BGR2YUV)
         #do a black and white transform first to get better luminance values
-        orig_yuv = cv2.cvtColor(orig, cv2.COLOR_BGR2YUV)
+        orig_yuv = cv2.cvtColor(orig_np, cv2.COLOR_BGR2YUV)
         hires = np.copy(orig_yuv)
         hires[:,:,1:3] = color_yuv[:,:,1:3]
-        return cv2.cvtColor(hires, cv2.COLOR_YUV2BGR)   
+        final = cv2.cvtColor(hires, cv2.COLOR_YUV2BGR)  
+        final = PilImage.fromarray(final) 
+        return final
 
-class Colorizer34(AbstractColorizer):
-    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
-        super().__init__(gpu=gpu, weights_path=weights_path, nf_factor=nf_factor, map_to_orig=map_to_orig)
+class MasterFilter(BaseFilter):
+    def __init__(self, filters:[IFilter], render_factor:int):
+        self.filters=filters
+        self.render_factor=render_factor
 
-    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
-        return Unet34(nf_factor=nf_factor).cuda(gpu)
+    def filter(self, orig_image:PilImage, filtered_image:PilImage, render_factor:int=None)->PilImage:
+        render_factor = self.render_factor if render_factor is None else render_factor
 
-
-class Colorizer101(AbstractColorizer):
-    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
-        super().__init__(gpu=gpu, weights_path=weights_path, nf_factor=nf_factor, map_to_orig=map_to_orig)
-
-    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
-        return Unet101(nf_factor=nf_factor).cuda(gpu)
-
-
-class Colorizer152(AbstractColorizer):
-    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2, map_to_orig:bool=True):
-        super().__init__(gpu=gpu, weights_path=weights_path, nf_factor=nf_factor, map_to_orig=map_to_orig)
-
-    def _get_model(self, nf_factor:int, gpu:int)->GeneratorModule:
-        return Unet152(nf_factor=nf_factor).cuda(gpu)
-
-
-#TODO:  May not want to do square rendering here like in colorization- it definitely loses 
-#fidelity visibly (but not too terribly).  Will revisit.
-class DeFader(Filter): 
-    def __init__(self, gpu:int, weights_path:Path, nf_factor:int=2):
-        super().__init__(tfms=[BlackAndWhiteTransform()])
-        self.model = Unet34(nf_factor=nf_factor).cuda(gpu)
-        self._init_model(self.model, weights_path)
-        self.render_base=16
-        self.gpu = gpu
-
-    def filter(self, orig_image:ndarray, filtered_image:ndarray, render_factor:int=36)->ndarray:
-        render_sz = render_factor * self.render_base
-        model_image = self._model_process(self.model, orig=filtered_image, sz=render_sz, gpu=self.gpu)
-        return self._post_process(model_image, filtered_image)
-
-    def _post_process(self, result:ndarray, orig:ndarray):
-        return self._unsquare(result, orig)
+        for filter in self.filters:
+            filtered_image=filter.filter(orig_image, filtered_image, render_factor)
+        
+        return filtered_image

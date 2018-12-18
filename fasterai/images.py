@@ -1,53 +1,31 @@
 import numpy as np
-from fastai.torch_imports import *
 from fastai.core import *
-from fastai.dataset import FilesDataset
+from fastai.vision import *
 from pathlib import Path
 from itertools import repeat
-from PIL import Image
+from PIL import Image as PilImage
 from numpy import ndarray
 from datetime import datetime
+from fastai.vision.image import *
 
-class EasyTensorImage():
-    def __init__(self, source_tensor:torch.Tensor, ds:FilesDataset):
-        self.array = self._convert_to_denormed_ndarray(source_tensor, ds=ds)   
-        self.tensor = self._convert_to_denormed_tensor(self.array)
-    
-    def _convert_to_denormed_ndarray(self, raw_tensor:torch.Tensor, ds:FilesDataset):
-        raw_array = raw_tensor.clone().data.cpu().numpy()
-        if raw_array.shape[1] != 3:
-            array = np.zeros((3, 1, 1))
-            return array
-        else:
-            return ds.denorm(raw_array)[0]
-
-    def _convert_to_denormed_tensor(self, denormed_array: ndarray):
-        return V(np.moveaxis(denormed_array,2,0))
 
 class ModelImageSet():
     @staticmethod
-    def get_list_from_model(ds:FilesDataset, model:nn.Module, idxs:[int]):
+    def get_list_from_model(learn: Learner, ds_type: DatasetType, batch:Tuple)->[]:
         image_sets = []
-        training = model.training
-        model.eval()
+        x,y = batch[0],batch[1]
+        #x,y = learn.data.one_batch(ds_type, detach=False, denorm=False)
+        preds = learn.pred_batch(ds_type=ds_type, batch=(x,y), reconstruct=True)
         
-        for idx in idxs:
-            x,y=ds[idx]
-            orig_tensor = VV(x[None]) 
-            real_tensor = V(y[None])
-            gen_tensor = model(orig_tensor)
-            gen_easy = EasyTensorImage(gen_tensor, ds)
-            orig_easy = EasyTensorImage(orig_tensor, ds)
-            real_easy = EasyTensorImage(real_tensor, ds)
-            image_set = ModelImageSet(orig_easy,real_easy,gen_easy)
+        for orig,real,gen_image in zip(x,y,preds):
+            orig_image = Image(orig)
+            real_image = Image(real)
+            image_set = ModelImageSet(orig_image, real_image, gen_image)
             image_sets.append(image_set)
-
-        if training:
-            model.train()
 
         return image_sets  
 
-    def __init__(self, orig:EasyTensorImage, real:EasyTensorImage, gen:EasyTensorImage):
+    def __init__(self, orig:Image, real:Image, gen:Image):
         self.orig=orig
         self.real=real
         self.gen=gen

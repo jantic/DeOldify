@@ -483,3 +483,5 @@ superres_crit_pretrain.h5
 superres_gen_pretrain.h5
 test_images/Andy.jpg
 *.prof
+fastai
+*.pth

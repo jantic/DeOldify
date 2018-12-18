@@ -1,40 +1,45 @@
-
-from fastai.torch_imports import *
+from fastai import *
 from fastai.core import *
-from fastai.conv_learner import children
-from .modules import SaveFeatures
+from fastai.torch_core import *
+from fastai.callbacks  import hook_outputs
 import torchvision.models as models
 
-class FeatureLoss(nn.Module):
-    def __init__(self, block_wgts:[float]=[0.2,0.7,0.1], multiplier:float=1.0):
-        super().__init__()
-        m_vgg = vgg16(True)  
-        blocks = [i-1 for i,o in enumerate(children(m_vgg)) if isinstance(o,nn.MaxPool2d)]
-        blocks, [m_vgg[i] for i in blocks]
-        layer_ids = blocks[:3]
-        
-        vgg_layers = children(m_vgg)[:23]
-        m_vgg = nn.Sequential(*vgg_layers).cuda().eval()
-        set_trainable(m_vgg, False)
-        
-        self.m,self.wgts = m_vgg,block_wgts
-        self.sfs = [SaveFeatures(m_vgg[i]) for i in layer_ids]
-        self.multiplier = multiplier
 
-    def forward(self, input, target, sum_layers:bool=True):
-        self.m(VV(target.data))
-        res = [F.l1_loss(input,target)/100]
-        targ_feat = [V(o.features.data.clone()) for o in self.sfs]
-        self.m(input)
-        res += [F.l1_loss(self._flatten(inp.features),self._flatten(targ))*wgt
-               for inp,targ,wgt in zip(self.sfs, targ_feat, self.wgts)]
-        if sum_layers: res = sum(res)
-        return res*self.multiplier
+class FeatureLoss(nn.Module):
+    def __init__(self, layer_wgts=[5,15,2]):
+        super().__init__()
+        self.base_loss = F.l1_loss
+        self.m_feat = models.vgg16_bn(True).features.cuda().eval()
+        requires_grad(self.m_feat, False)
+        blocks = [i-1 for i,o in enumerate(children(self.m_feat)) if isinstance(o,nn.MaxPool2d)]
+        layer_ids = blocks[2:5]
+        self.loss_features = [self.m_feat[i] for i in layer_ids]
+        self.hooks = hook_outputs(self.loss_features, detach=False)
+        self.wgts = layer_wgts
+        self.metric_names = ['pixel',] + [f'feat_{i}' for i in range(len(layer_ids))
+              ] + [f'gram_{i}' for i in range(len(layer_ids))]
+
+    def _gram_matrix(self, x:torch.Tensor):
+        n,c,h,w = x.size()
+        x = x.view(n, c, -1)
+        return (x @ x.transpose(1,2))/(c*h*w)
+
+    def make_features(self, x:torch.Tensor, clone=False):
+        self.m_feat(x)
+        return [(o.clone() if clone else o) for o in self.hooks.stored]
     
-    def _flatten(self, x:torch.Tensor): 
-        return x.view(x.size(0), -1)
+    def forward(self, input:torch.Tensor, target:torch.Tensor):
+        out_feat = self.make_features(target, clone=True)
+        in_feat = self.make_features(input)
+        self.feat_losses = [self.base_loss(input,target)]
+        self.feat_losses += [self.base_loss(f_in, f_out)*w
+                             for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
+        self.feat_losses += [self.base_loss(self._gram_matrix(f_in), self._gram_matrix(f_out))*w**2 * 5e3
+                             for f_in, f_out, w in zip(in_feat, out_feat, self.wgts)]
+        self.metrics = dict(zip(self.metric_names, self.feat_losses))
+        return sum(self.feat_losses)
     
-    def close(self):
-        for o in self.sfs: o.remove()
+    def __del__(self): 
+        self.hooks.remove()
 
 
