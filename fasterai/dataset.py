@@ -13,7 +13,7 @@ def get_colorize_data(sz:int, bs:int, crappy_path:Path, good_path:Path, random_s
 
     data = (src.label_from_func(lambda x: good_path/x.relative_to(crappy_path))
         #TODO:  Revisit transforms used here....
-        .transform(get_transforms(), size=sz, tfm_y=True)
+        .transform(get_transforms(max_zoom=1.2, max_lighting=0.5, max_warp=0.25), size=sz, tfm_y=True)
         .databunch(bs=bs, num_workers=num_workers)
         .normalize(imagenet_stats, do_y=True))
 

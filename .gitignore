@@ -485,3 +485,6 @@ test_images/Andy.jpg
 *.prof
 fastai
 *.pth
+.ipynb_checkpoints/SuperResTraining-checkpoint.ipynb
+.ipynb_checkpoints/ColorizeTrainingNew2-checkpoint.ipynb
+.ipynb_checkpoints/ColorizeTrainingNew-checkpoint.ipynb

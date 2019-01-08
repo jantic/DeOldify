@@ -135,7 +135,10 @@ class GANTensorboardWriter(LearnerCallback):
         self.weight_vis = ModelHistogramVisualizer()
         self.data = None
 
-    def on_batch_end(self, iteration, last_loss, **kwargs):
+    def on_batch_end(self, iteration, metrics, **kwargs):
+        if iteration==0:
+            return
+
         trainer = self.learn.gan_trainer
         generator = trainer.generator
         critic = trainer.critic
@@ -154,7 +157,7 @@ class GANTensorboardWriter(LearnerCallback):
                 self.tbwriter.add_scalar('/loss/trn_loss', trn_loss, iteration)
 
             if len(recorder.val_losses) > 0:
-                val_loss = to_np((recorder.val_losses[-1:])[0])
+                val_loss = (recorder.val_losses[-1:])[0]
                 self.tbwriter.add_scalar('/loss/val_loss', val_loss, iteration) 
 
             #TODO:  Figure out how to do metrics here and gan vs critic loss
@@ -170,6 +173,7 @@ class GANTensorboardWriter(LearnerCallback):
         if iteration % self.weight_iters == 0:
             self.weight_vis.write_tensorboard_histograms(model=generator, iter_count=iteration, tbwriter=self.tbwriter)
             self.weight_vis.write_tensorboard_histograms(model=critic, iter_count=iteration, tbwriter=self.tbwriter)
+              
 
 
 class ImageGenTensorboardWriter(LearnerCallback):
@@ -188,7 +192,10 @@ class ImageGenTensorboardWriter(LearnerCallback):
         self.img_gen_vis = ImageGenVisualizer()
         self.data = None
 
-    def on_batch_end(self, iteration, last_loss, **kwargs):
+    def on_batch_end(self, iteration, last_loss, metrics, **kwargs):
+        if iteration==0:
+            return
+
         #one_batch is extremely slow.  this is an optimization
         update_batches = self.data is not self.learn.data
 
@@ -197,10 +204,9 @@ class ImageGenTensorboardWriter(LearnerCallback):
             self.trn_batch = self.learn.data.one_batch(DatasetType.Train, detach=False, denorm=False)
             self.val_batch = self.learn.data.one_batch(DatasetType.Valid, detach=False, denorm=False)
 
-
-        if iteration % self.stats_iters == 0:
-            self.tbwriter.add_scalar('/loss/trn_loss', str(self.losses[-1:]), iteration)
-            self.tbwriter.add_scalar('/loss/val_loss', str(self.val_losses[-1:]), iteration) 
+        if iteration % self.stats_iters == 0: 
+            trn_loss = to_np(last_loss)
+            self.tbwriter.add_scalar('/loss/trn_loss', trn_loss, iteration)
 
         if iteration % self.visual_iters == 0:
             self.img_gen_vis.output_image_gen_visuals(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, 
@@ -208,3 +214,8 @@ class ImageGenTensorboardWriter(LearnerCallback):
 
         if iteration % self.weight_iters == 0:
             self.weight_vis.write_tensorboard_histograms(model=self.learn.model, iter_count=iteration, tbwriter=self.tbwriter)
+
+    def on_epoch_end(self, iteration, metrics, last_metrics, **kwargs):  
+        #TODO: Not a fan of this indexing but...what to do?
+        val_loss = last_metrics[0]
+        self.tbwriter.add_scalar('/loss/val_loss', val_loss, iteration)   
