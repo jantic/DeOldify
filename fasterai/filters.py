@@ -43,11 +43,11 @@ class BaseFilter(IFilter):
         x.div_(255)
         x,y = self.norm((x,x), do_x=True)
         result = self.learn.pred_batch(ds_type=DatasetType.Valid, 
-            batch=(x[None].cuda(),y[None]), reconstruct=False)
-        result = result[0]
-        result = self.denorm(result, do_x=True)
-        result = image2np(result*255).astype(np.uint8)
-        return PilImage.fromarray(result)
+            batch=(x[None].cuda(),y[None]), reconstruct=True)
+        out = result[0]
+        out = self.denorm(out.px, do_x=False)
+        out = image2np(out*255).astype(np.uint8)
+        return PilImage.fromarray(out)
 
     def _unsquare(self, image:PilImage, orig:PilImage)->PilImage:
         targ_sz = orig.size
