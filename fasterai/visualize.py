@@ -7,7 +7,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from fastai.dataset import FilesDataset, ImageData, ModelData, open_image
 from fastai.transforms import Transform, scale_min, tfms_from_stats, inception_stats
 from fastai.transforms import CropType, NoCrop, Denormalize, Scale
-from fasterai.transforms import BlackAndWhiteTransform
+from .transforms import BlackAndWhiteTransform
 from .training import GenResult, CriticResult, GANTrainer
 from .images import ModelImageSet, EasyTensorImage
 from .generators import GeneratorModule
