@@ -27,8 +27,11 @@ class ModelHistogramVisualizer():
         return 
 
     def write_tensorboard_histograms(self, model:nn.Module, iter_count:int, tbwriter:SummaryWriter, name:str='model'):
-        for param_name, param in model.named_parameters():
-            tbwriter.add_histogram(name + '/weights/' + param_name, param, iter_count)
+        try:
+            for param_name, param in model.named_parameters():
+                tbwriter.add_histogram(name + '/weights/' + param_name, param, iter_count)
+        except Exception as e:
+            print(("Failed to update histogram for model:  {0}").format(e))
 
 
 class ModelStatsVisualizer(): 
@@ -36,39 +39,42 @@ class ModelStatsVisualizer():
         return 
 
     def write_tensorboard_stats(self, model:nn.Module, iter_count:int, tbwriter:SummaryWriter, name:str='model'):
-        gradients = [x.grad  for x in model.parameters() if x.grad is not None]
-        gradient_nps = [to_np(x.data) for x in gradients]
- 
-        if len(gradients) == 0:
-            return 
+        try:
+            gradients = [x.grad  for x in model.parameters() if x.grad is not None]
+            gradient_nps = [to_np(x.data) for x in gradients]
+    
+            if len(gradients) == 0:
+                return 
 
-        avg_norm = sum(x.data.norm() for x in gradients)/len(gradients)
-        tbwriter.add_scalar(name + '/gradients/avg_norm', avg_norm, iter_count)
+            avg_norm = sum(x.data.norm() for x in gradients)/len(gradients)
+            tbwriter.add_scalar(name + '/gradients/avg_norm', avg_norm, iter_count)
 
-        median_norm = statistics.median(x.data.norm() for x in gradients)
-        tbwriter.add_scalar(name + '/gradients/median_norm', median_norm, iter_count)
+            median_norm = statistics.median(x.data.norm() for x in gradients)
+            tbwriter.add_scalar(name + '/gradients/median_norm', median_norm, iter_count)
 
-        max_norm = max(x.data.norm() for x in gradients)
-        tbwriter.add_scalar(name + '/gradients/max_norm', max_norm, iter_count)
+            max_norm = max(x.data.norm() for x in gradients)
+            tbwriter.add_scalar(name + '/gradients/max_norm', max_norm, iter_count)
 
-        min_norm = min(x.data.norm() for x in gradients)
-        tbwriter.add_scalar(name + '/gradients/min_norm', min_norm, iter_count)
+            min_norm = min(x.data.norm() for x in gradients)
+            tbwriter.add_scalar(name + '/gradients/min_norm', min_norm, iter_count)
 
-        num_zeros = sum((np.asarray(x)==0.0).sum() for x in  gradient_nps)
-        tbwriter.add_scalar(name + '/gradients/num_zeros', num_zeros, iter_count)
+            num_zeros = sum((np.asarray(x)==0.0).sum() for x in  gradient_nps)
+            tbwriter.add_scalar(name + '/gradients/num_zeros', num_zeros, iter_count)
 
 
-        avg_gradient= sum(x.data.mean() for x in gradients)/len(gradients)
-        tbwriter.add_scalar(name + '/gradients/avg_gradient', avg_gradient, iter_count)
+            avg_gradient= sum(x.data.mean() for x in gradients)/len(gradients)
+            tbwriter.add_scalar(name + '/gradients/avg_gradient', avg_gradient, iter_count)
 
-        median_gradient = statistics.median(x.data.median() for x in gradients)
-        tbwriter.add_scalar(name + '/gradients/median_gradient', median_gradient, iter_count)
+            median_gradient = statistics.median(x.data.median() for x in gradients)
+            tbwriter.add_scalar(name + '/gradients/median_gradient', median_gradient, iter_count)
 
-        max_gradient = max(x.data.max() for x in gradients) 
-        tbwriter.add_scalar(name + '/gradients/max_gradient', max_gradient, iter_count)
+            max_gradient = max(x.data.max() for x in gradients) 
+            tbwriter.add_scalar(name + '/gradients/max_gradient', max_gradient, iter_count)
 
-        min_gradient = min(x.data.min() for x in gradients) 
-        tbwriter.add_scalar(name + '/gradients/min_gradient', min_gradient, iter_count)
+            min_gradient = min(x.data.min() for x in gradients) 
+            tbwriter.add_scalar(name + '/gradients/min_gradient', min_gradient, iter_count)
+        except Exception as e:
+            print(("Failed to update tensorboard stats for model:  {0}").format(e))
 
 class ImageGenVisualizer():
     def output_image_gen_visuals(self, learn:Learner, trn_batch:Tuple, val_batch:Tuple, iter_count:int, tbwriter:SummaryWriter):
@@ -80,20 +86,23 @@ class ImageGenVisualizer():
         self._write_tensorboard_images(image_sets=image_sets, iter_count=iter_count, tbwriter=tbwriter, ds_type=ds_type)
     
     def _write_tensorboard_images(self, image_sets:[ModelImageSet], iter_count:int, tbwriter:SummaryWriter, ds_type: DatasetType):
-        orig_images = []
-        gen_images = []
-        real_images = []
+        try:
+            orig_images = []
+            gen_images = []
+            real_images = []
 
-        for image_set in image_sets:
-            orig_images.append(image_set.orig.px)
-            gen_images.append(image_set.gen.px)
-            real_images.append(image_set.real.px)
+            for image_set in image_sets:
+                orig_images.append(image_set.orig.px)
+                gen_images.append(image_set.gen.px)
+                real_images.append(image_set.real.px)
 
-        prefix = str(ds_type)
+            prefix = str(ds_type)
 
-        tbwriter.add_image(prefix + ' orig images', vutils.make_grid(orig_images, normalize=True), iter_count)
-        tbwriter.add_image(prefix + ' gen images', vutils.make_grid(gen_images, normalize=True), iter_count)
-        tbwriter.add_image(prefix + ' real images', vutils.make_grid(real_images, normalize=True), iter_count)
+            tbwriter.add_image(prefix + ' orig images', vutils.make_grid(orig_images, normalize=True), iter_count)
+            tbwriter.add_image(prefix + ' gen images', vutils.make_grid(gen_images, normalize=True), iter_count)
+            tbwriter.add_image(prefix + ' real images', vutils.make_grid(real_images, normalize=True), iter_count)
+        except Exception as e:
+            print(("Failed to update tensorboard images for model:  {0}").format(e))
 
 
 #--------Below are what you actually want ot use, in practice----------------#
@@ -110,22 +119,18 @@ class LearnerTensorboardWriter(LearnerCallback):
         self.loss_iters = loss_iters
         self.weight_iters = weight_iters
         self.stats_iters = stats_iters
-        self.iter_count = 0
         self.weight_vis = ModelHistogramVisualizer()
         self.model_vis = ModelStatsVisualizer() 
         self.data = None
-        #Keeping track of iterations in callback, because callback can be used for multiple epocs and multiple fit calls.
-        #This ensures that graphs show continuous iterations rather than resetting to 0 (which makes them much harder to read!)
-        self.iteration = -1
 
     def _update_batches_if_needed(self):
-        #one_batch is extremely slow.  this is an optimization
+        #one_batch function is extremely slow.  this is an optimization
         update_batches = self.data is not self.learn.data
 
         if update_batches:
             self.data = self.learn.data
-            self.trn_batch = self.learn.data.one_batch(DatasetType.Train, detach=False, denorm=False)
-            self.val_batch = self.learn.data.one_batch(DatasetType.Valid, detach=False, denorm=False)
+            self.trn_batch = self.learn.data.one_batch(DatasetType.Train, detach=True, denorm=False, cpu=False)
+            self.val_batch = self.learn.data.one_batch(DatasetType.Valid, detach=True, denorm=False, cpu=False)
 
     def _write_model_stats(self, iteration):
         self.model_vis.write_tensorboard_stats(model=self.learn.model, iter_count=iteration, tbwriter=self.tbwriter) 
@@ -153,10 +158,7 @@ class LearnerTensorboardWriter(LearnerCallback):
             if value is None: continue
             self.tbwriter.add_scalar('/metrics/' + name, to_np(value), iteration) 
 
-    def on_batch_end(self, last_loss, metrics, **kwargs):
-        self.iteration +=1
-        iteration = self.iteration
-
+    def on_batch_end(self, last_loss, metrics, iteration, **kwargs):
         if iteration==0:
             return
 
@@ -171,8 +173,7 @@ class LearnerTensorboardWriter(LearnerCallback):
         if iteration % self.stats_iters == 0:
             self._write_model_stats(iteration)
 
-    def on_epoch_end(self, metrics, last_metrics, **kwargs):
-        iteration = self.iteration  
+    def on_epoch_end(self, metrics, last_metrics, iteration, **kwargs):
         self._write_val_loss(iteration, last_metrics)
         self._write_metrics(iteration)
 
@@ -232,10 +233,8 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
                                                 iter_count=iteration, tbwriter=self.tbwriter)
         trainer.switch(gen_mode=gen_mode)
 
-    def on_batch_end(self, metrics, **kwargs):
-        super().on_batch_end(metrics=metrics, **kwargs)
-
-        iteration = self.iteration
+    def on_batch_end(self, metrics, iteration, **kwargs):
+        super().on_batch_end(metrics=metrics, iteration=iteration, **kwargs)
 
         if iteration==0:
             return
@@ -257,10 +256,8 @@ class ImageGenTensorboardWriter(LearnerTensorboardWriter):
         self.img_gen_vis.output_image_gen_visuals(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch, 
             iter_count=iteration, tbwriter=self.tbwriter)
 
-    def on_batch_end(self, metrics, **kwargs):
-        super().on_batch_end(metrics=metrics, **kwargs)
-
-        iteration = self.iteration
+    def on_batch_end(self, metrics, iteration, **kwargs):
+        super().on_batch_end(metrics=metrics, iteration=iteration, **kwargs)
 
         if iteration==0:
             return
