@@ -30,7 +30,7 @@ class BaseFilter(IFilter):
         #a simple stretch to fit a square really makes a big difference in rendering quality/consistency.
         #I've tried padding to the square as well (reflect, symetric, constant, etc).  Not as good!
         targ_sz = (targ, targ)
-        return orig.resize(targ_sz, resample=PIL.Image.BILINEAR).convert('RGB')
+        return orig.resize(targ_sz, resample=PIL.Image.BILINEAR)
 
     def _get_model_ready_image(self, orig:PilImage, sz:int)->PilImage:
         result = self._scale_to_square(orig, sz)
@@ -51,7 +51,7 @@ class BaseFilter(IFilter):
 
     def _unsquare(self, image:PilImage, orig:PilImage)->PilImage:
         targ_sz = orig.size
-        image = image.resize(targ_sz, resample=PIL.Image.BILINEAR).convert('RGB')
+        image = image.resize(targ_sz, resample=PIL.Image.BILINEAR)
         return image
 
 
@@ -64,6 +64,7 @@ class ColorizerFilter(BaseFilter):
     def filter(self, orig_image:PilImage, filtered_image:PilImage, render_factor:int)->PilImage:
         render_sz = render_factor * self.render_base
         model_image = self._model_process(orig=filtered_image, sz=render_sz)
+
         if self.map_to_orig:
             return self._post_process(model_image, orig_image)
         else:
