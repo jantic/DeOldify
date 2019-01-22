@@ -192,6 +192,14 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
         self.model_vis.write_tensorboard_stats(model=generator, iteration=iteration, tbwriter=self.tbwriter, name='gen_model_stats')
         self.model_vis.write_tensorboard_stats(model=critic, iteration=iteration, tbwriter=self.tbwriter, name='crit_model_stats')
 
+    def _write_training_loss(self, iteration, last_loss):	
+        trainer = self.learn.gan_trainer	
+        recorder = trainer.recorder	
+
+        if len(recorder.losses) > 0:      	
+            trn_loss = to_np((recorder.losses[-1:])[0])	
+            self.tbwriter.add_scalar(self.metrics_root + 'train_loss', trn_loss, iteration)
+
     def _write_images(self, iteration):
         trainer = self.learn.gan_trainer
         recorder = trainer.recorder
