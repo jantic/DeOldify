@@ -1,15 +1,42 @@
 import fastai
-from fastai import *
-from fastai.vision import *
-from fastai.callbacks import *
-from fastai.vision.gan import *
+from fastai.basic_train import Learner
+from fastai.basic_data import DatasetType, DataBunch
+from fastai.vision import Image
+from fastai.callbacks import LearnerCallback
 from fastai.core import *
+from fastai.torch_core import *
 from threading import Thread
+import time
 from time import sleep
 from queue import Queue
 import statistics
 import torchvision.utils as vutils
+from abc import ABC, abstractmethod
 from tensorboardX import SummaryWriter
+
+class AsyncTBWriter(ABC):
+    def __init__(self):
+        super().__init__()
+        self.exit = False
+        self.queue = Queue()
+        self.thread = Thread(target=self._queue_processor)
+        self.thread.start()
+
+    def _queue_processor(self):
+        while not self.exit:
+            while not self.queue.empty():
+                request = self.queue.get()
+                self._write_async(request)
+            sleep(0.1)
+
+    @abstractmethod
+    def _write_async(self, request):
+        pass
+
+    def __del__(self):
+        self.exit = True
+        self.thread.join()
+
 
 class ModelImageSet():
     @staticmethod
@@ -32,7 +59,7 @@ class ModelImageSet():
         self.gen = gen
 
 #TODO:  There aren't any callbacks using this yet.  Not sure if we want this included (not sure if it's useful, honestly)
-class ModelGraphVisualizer():
+class ModelGraphTBWriter():
     def __init__(self):
         return
 
@@ -40,28 +67,20 @@ class ModelGraphVisualizer():
         x,y = md.one_batch(ds_type=DatasetType.Valid, detach=False, denorm=False)
         tbwriter.add_graph(model=model, input_to_model=x)
 
-class HistogramRequest():
+class HistogramTBRequest():
     def __init__(self, model:nn.Module, iteration:int, tbwriter:SummaryWriter, name:str):
         self.params = [(name, values.clone().detach()) for (name, values) in model.named_parameters()]
         self.iteration = iteration
         self.tbwriter = tbwriter
         self.name = name
 
-class ModelHistogramVisualizer():
+#If this isn't done async then this is sloooooow
+class HistogramTBWriter(AsyncTBWriter):
     def __init__(self):
-        self.exit = False
-        self.queue = Queue()
-        self.thread = Thread(target=self._queue_processor)
-        self.thread.start()
+        super().__init__()
 
-    def _queue_processor(self):
-        while not self.exit:
-            while not self.queue.empty():
-                request = self.queue.get()
-                self._write_async(request)
-            sleep(0.1)
-
-    def _write_async(self, request:HistogramRequest):
+    # override
+    def _write_async(self, request:HistogramTBRequest):
         try:
             params = request.params
             iteration = request.iteration
@@ -74,18 +93,12 @@ class ModelHistogramVisualizer():
         except Exception as e:
             print(("Failed to write model histograms to Tensorboard:  {0}").format(e))
 
-    #If this isn't done async then this is sloooooow
     def write_tensorboard_histograms(self, model:nn.Module, iteration:int, tbwriter:SummaryWriter, name:str='model'):
-        request = HistogramRequest(model, iteration, tbwriter, name)
+        request = HistogramTBRequest(model, iteration, tbwriter, name)
         self.queue.put(request)
 
-    def __del__(self):
-        self.exit = True
-        self.thread.join()
-
-    
-
-class ModelStatsVisualizer():
+#This is pretty speedy- Don't think we need async writes here
+class ModelStatsTBWriter():
     def __init__(self):
         self.gradients_root = '/gradients/'
 
@@ -132,52 +145,67 @@ class ModelStatsVisualizer():
             tag=name + self.gradients_root + 'min_gradient', scalar_value=min_gradient, global_step=iteration)
 
 
-class ImageGenVisualizer():
-    def output_image_gen_visuals(self, learn:Learner, trn_batch:Tuple, val_batch:Tuple, iteration:int, tbwriter:SummaryWriter):
-        self._output_visuals(learn=learn, batch=val_batch, iteration=iteration,
+class ImageTBRequest():
+    def __init__(self, learn:Learner, batch:Tuple, iteration:int, tbwriter:SummaryWriter, ds_type:DatasetType):
+        self.image_sets = ModelImageSet.get_list_from_model(learn=learn, batch=batch, ds_type=ds_type)
+        self.iteration = iteration
+        self.tbwriter = tbwriter
+        self.ds_type = ds_type
+
+#If this isn't done async then this is noticeably slower
+class ImageTBWriter(AsyncTBWriter):
+    def __init__(self):
+        super().__init__()
+
+    # override
+    def _write_async(self, request:ImageTBRequest):
+        try:
+            orig_images = []
+            gen_images = []
+            real_images = []
+
+            for image_set in request.image_sets:
+                orig_images.append(image_set.orig.px)
+                gen_images.append(image_set.gen.px)
+                real_images.append(image_set.real.px)
+
+            prefix = request.ds_type.name
+            tbwriter = request.tbwriter
+            iteration = request.iteration
+
+            tbwriter.add_image(
+                tag=prefix + ' orig images', img_tensor=vutils.make_grid(orig_images, normalize=True), global_step=iteration)
+            tbwriter.add_image(
+                tag=prefix + ' gen images', img_tensor=vutils.make_grid(gen_images, normalize=True), global_step=iteration)
+            tbwriter.add_image(
+                tag=prefix + ' real images', img_tensor=vutils.make_grid(real_images, normalize=True), global_step=iteration)
+        except Exception as e:
+            print(("Failed to write images to Tensorboard:  {0}").format(e))
+
+    def write_images(self, learn:Learner, trn_batch:Tuple, val_batch:Tuple, iteration:int, tbwriter:SummaryWriter):
+        self._write_images_for_dstype(learn=learn, batch=val_batch, iteration=iteration,
                              tbwriter=tbwriter, ds_type=DatasetType.Valid)
-        self._output_visuals(learn=learn, batch=trn_batch, iteration=iteration,
+        self._write_images_for_dstype(learn=learn, batch=trn_batch, iteration=iteration,
                              tbwriter=tbwriter, ds_type=DatasetType.Train)
 
-    def _output_visuals(self, learn:Learner, batch:Tuple, iteration:int, tbwriter:SummaryWriter, ds_type:DatasetType):
-        image_sets = ModelImageSet.get_list_from_model(learn=learn, batch=batch, ds_type=ds_type)
-        self._write_tensorboard_images(
-            image_sets=image_sets, iteration=iteration, tbwriter=tbwriter, ds_type=ds_type)
-
-    def _write_tensorboard_images(self, image_sets:[ModelImageSet], iteration:int, tbwriter:SummaryWriter, ds_type:DatasetType):
-        orig_images = []
-        gen_images = []
-        real_images = []
-
-        for image_set in image_sets:
-            orig_images.append(image_set.orig.px)
-            gen_images.append(image_set.gen.px)
-            real_images.append(image_set.real.px)
-
-        prefix = ds_type.name
-
-        tbwriter.add_image(
-            tag=prefix + ' orig images', img_tensor=vutils.make_grid(orig_images, normalize=True), global_step=iteration)
-        tbwriter.add_image(
-            tag=prefix + ' gen images', img_tensor=vutils.make_grid(gen_images, normalize=True), global_step=iteration)
-        tbwriter.add_image(
-            tag=prefix + ' real images', img_tensor=vutils.make_grid(real_images, normalize=True), global_step=iteration)
+    def _write_images_for_dstype(self, learn:Learner, batch:Tuple, iteration:int, tbwriter:SummaryWriter, ds_type:DatasetType):
+        request = ImageTBRequest(learn=learn, batch=batch, iteration=iteration, tbwriter=tbwriter, ds_type=ds_type)
+        self.queue.put(request)
 
 
-#--------Below are what you actually want to use, in practice----------------#
-
+#--------CALLBACKS----------------#
 class LearnerTensorboardWriter(LearnerCallback):
-    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, weight_iters:int=1000, stats_iters:int=1000):
+    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=1000, stats_iters:int=1000):
         super().__init__(learn=learn)
         self.base_dir = base_dir
         self.name = name
         log_dir = base_dir/name
         self.tbwriter = SummaryWriter(log_dir=str(log_dir))
         self.loss_iters = loss_iters
-        self.weight_iters = weight_iters
+        self.hist_iters = hist_iters
         self.stats_iters = stats_iters
-        self.weight_vis = ModelHistogramVisualizer()
-        self.model_vis = ModelStatsVisualizer()
+        self.hist_writer = HistogramTBWriter()
+        self.stats_writer = ModelStatsTBWriter()
         self.data = None
         self.metrics_root = '/metrics/'
 
@@ -193,7 +221,7 @@ class LearnerTensorboardWriter(LearnerCallback):
                 ds_type=DatasetType.Valid, detach=True, denorm=False, cpu=False)
 
     def _write_model_stats(self, iteration:int):
-        self.model_vis.write_tensorboard_stats(
+        self.stats_writer.write_tensorboard_stats(
             model=self.learn.model, iteration=iteration, tbwriter=self.tbwriter)
 
     def _write_training_loss(self, iteration:int, last_loss:Tensor):
@@ -202,7 +230,7 @@ class LearnerTensorboardWriter(LearnerCallback):
         self.tbwriter.add_scalar(tag=tag, scalar_value=scalar_value, global_step=iteration)
 
     def _write_weight_histograms(self, iteration:int):
-        self.weight_vis.write_tensorboard_histograms(
+        self.hist_writer.write_tensorboard_histograms(
             model=self.learn.model, iteration=iteration, tbwriter=self.tbwriter)
 
     #TODO:  Relying on a specific hardcoded start_idx here isn't great.  Is there a better solution?
@@ -222,7 +250,7 @@ class LearnerTensorboardWriter(LearnerCallback):
         if iteration % self.loss_iters == 0:
             self._write_training_loss(iteration=iteration, last_loss=last_loss)
 
-        if iteration % self.weight_iters == 0:
+        if iteration % self.hist_iters == 0:
             self._write_weight_histograms(iteration=iteration)
 
     # Doing stuff here that requires gradient info, because they get zeroed out afterwards in training loop
@@ -238,12 +266,12 @@ class LearnerTensorboardWriter(LearnerCallback):
 
 # TODO:  We're overriding almost everything here.  Seems like a good idea to question that ("is a" vs "has a")
 class GANTensorboardWriter(LearnerTensorboardWriter):
-    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, weight_iters:int=1000,
+    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=1000,
                  stats_iters:int=1000, visual_iters:int=100):
         super().__init__(learn=learn, base_dir=base_dir, name=name, loss_iters=loss_iters,
-                         weight_iters=weight_iters, stats_iters=stats_iters)
+                         hist_iters=hist_iters, stats_iters=stats_iters)
         self.visual_iters = visual_iters
-        self.img_gen_vis = ImageGenVisualizer()
+        self.img_gen_vis = ImageTBWriter()
         self.gen_stats_updated = True
         self.crit_stats_updated = True
 
@@ -252,9 +280,9 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
         trainer = self.learn.gan_trainer
         generator = trainer.generator
         critic = trainer.critic
-        self.weight_vis.write_tensorboard_histograms(
+        self.hist_writer.write_tensorboard_histograms(
             model=generator, iteration=iteration, tbwriter=self.tbwriter, name='generator')
-        self.weight_vis.write_tensorboard_histograms(
+        self.hist_writer.write_tensorboard_histograms(
             model=critic, iteration=iteration, tbwriter=self.tbwriter, name='critic')
 
     # override
@@ -267,12 +295,12 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
         gen_mode = trainer.gen_mode
 
         if gen_mode and not self.gen_stats_updated:
-            self.model_vis.write_tensorboard_stats(
+            self.stats_writer.write_tensorboard_stats(
                 model=generator, iteration=iteration, tbwriter=self.tbwriter, name='gen_model_stats')
             self.gen_stats_updated = True
 
         if not gen_mode and not self.crit_stats_updated:
-            self.model_vis.write_tensorboard_stats(
+            self.stats_writer.write_tensorboard_stats(
                 model=critic, iteration=iteration, tbwriter=self.tbwriter, name='crit_model_stats')
             self.crit_stats_updated = True
 
@@ -293,7 +321,7 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
 
         try:
             trainer.switch(gen_mode=True)
-            self.img_gen_vis.output_image_gen_visuals(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch,
+            self.img_gen_vis.write_images(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch,
                                                     iteration=iteration, tbwriter=self.tbwriter)
         finally:                                      
             trainer.switch(gen_mode=gen_mode)
@@ -321,21 +349,20 @@ class GANTensorboardWriter(LearnerTensorboardWriter):
 
 
 class ImageGenTensorboardWriter(LearnerTensorboardWriter):
-    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, weight_iters:int=1000,
+    def __init__(self, learn:Learner, base_dir:Path, name:str, loss_iters:int=25, hist_iters:int=1000,
                  stats_iters: int = 1000, visual_iters: int = 100):
-        super().__init__(learn=learn, base_dir=base_dir, name=name, loss_iters=loss_iters, weight_iters=weight_iters,
+        super().__init__(learn=learn, base_dir=base_dir, name=name, loss_iters=loss_iters, hist_iters=hist_iters,
                          stats_iters=stats_iters)
         self.visual_iters = visual_iters
-        self.img_gen_vis = ImageGenVisualizer()
+        self.img_gen_vis = ImageTBWriter()
 
     def _write_images(self, iteration:int):
-        self.img_gen_vis.output_image_gen_visuals(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch,
+        self.img_gen_vis.write_images(learn=self.learn, trn_batch=self.trn_batch, val_batch=self.val_batch,
                                                   iteration=iteration, tbwriter=self.tbwriter)
 
     # override
     def on_batch_end(self, iteration:int, **kwargs):
         super().on_batch_end(iteration=iteration, **kwargs)
-
         if iteration == 0: return
 
         if iteration % self.visual_iters == 0:
