@@ -33,18 +33,18 @@ class TBWriteRequest(ABC):
 class AsyncTBWriter():
     def __init__(self):
         super().__init__()
-        self.stoprequest = Event()
+        self.stop_request = Event()
         self.queue = Queue()
         self.thread = Thread(target=self._queue_processor, daemon=True)
         self.thread.start()
 
     def request_write(self, request: TBWriteRequest):
-        if self.stoprequest.isSet():
+        if self.stop_request.isSet():
             raise Exception('Close was already called!  Cannot perform this operation.')
         self.queue.put(request)
 
     def _queue_processor(self):
-        while not self.stoprequest.isSet():
+        while not self.stop_request.isSet():
             while not self.queue.empty():
                 request = self.queue.get()
                 request.write()
@@ -53,7 +53,7 @@ class AsyncTBWriter():
     #Provided this to stop thread explicitly or by context management (with statement) but thread should end on its own 
     # upon program exit, due to being a daemon.  So using this is probably unecessary.
     def close(self):
-        self.stoprequest.set()
+        self.stop_request.set()
         self.thread.join()
 
     def __enter__(self):
