@@ -14,8 +14,14 @@ def get_colorize_data(sz:int, bs:int, crappy_path:Path, good_path:Path, random_s
     data = (src.label_from_func(lambda x: good_path/x.relative_to(crappy_path))
         #TODO:  Revisit transforms used here....
         .transform(get_transforms(max_zoom=1.2, max_lighting=0.5, max_warp=0.25), size=sz, tfm_y=True)
-        .databunch(bs=bs, num_workers=num_workers)
+        .databunch(bs=bs, num_workers=num_workers, no_check=True)
         .normalize(imagenet_stats, do_y=True))
 
     data.c = 3
     return data
+
+
+
+def get_dummy_databunch()->ImageDataBunch:
+    path = Path('./dummy/')
+    return get_colorize_data(sz=1, bs=1, crappy_path=path, good_path=path, keep_pct=0.001)
