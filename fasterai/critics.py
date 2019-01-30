@@ -8,8 +8,7 @@ _conv_args = dict(leaky=0.2, norm_type=NormType.Spectral)
 def _conv(ni:int, nf:int, ks:int=3, stride:int=1, **kwargs):
     return conv_layer(ni, nf, ks=ks, stride=stride, **_conv_args, **kwargs)
 
-#TODO:  Merge with fastai core.  Just removed dense block.
-def gan_critic2(n_channels:int=3, nf:int=256, n_blocks:int=3, p:int=0.15):
+def custom_gan_critic(n_channels:int=3, nf:int=256, n_blocks:int=3, p:int=0.15):
     "Critic to train a `GAN`."
     layers = [
         _conv(n_channels, nf, ks=4, stride=2),
@@ -27,4 +26,4 @@ def gan_critic2(n_channels:int=3, nf:int=256, n_blocks:int=3, p:int=0.15):
     return nn.Sequential(*layers)
 
 def colorize_crit_learner(data:ImageDataBunch, loss_critic=AdaptiveLoss(nn.BCEWithLogitsLoss()), nf:int=256)->Learner:
-    return Learner(data, gan_critic2(nf=nf), metrics=accuracy_thresh_expand, loss_func=loss_critic, wd=1e-3)
+    return Learner(data, custom_gan_critic(nf=nf), metrics=accuracy_thresh_expand, loss_func=loss_critic, wd=1e-3)

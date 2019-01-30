@@ -3,7 +3,8 @@ from fastai.vision import *
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from .filters import IFilter
+from .filters import IFilter, MasterFilter, ColorizerFilter
+from .generators import colorize_gen_inference
 from IPython.display import display
 from tensorboardX import SummaryWriter
 from scipy import misc
@@ -51,6 +52,12 @@ class ModelImageVisualizer():
         return rows, columns
 
 
+def get_colorize_visualizer(root_folder:Path=Path('./'), weights_name:str='colorizer_gen', 
+        results_dir = 'result_images', nf_factor:float=1.25, render_factor:int=21)->ModelImageVisualizer:
+    learn = colorize_gen_inference(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
+    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
+    return vis
 
 
 

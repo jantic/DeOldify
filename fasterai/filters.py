@@ -8,9 +8,9 @@ from fastai.vision.data import *
 from fastai import *
 import math
 from scipy import misc
-#from torchvision.transforms.functional import *
 import cv2
 from PIL import Image as PilImage
+
 
 class IFilter(ABC):
     @abstractmethod
