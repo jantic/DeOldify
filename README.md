@@ -148,7 +148,7 @@ This project is built around the wonderful Fast.AI library.  Unfortunately, it's
 * **ImageNet** – Only if training of course. It proved to be a great dataset.  http://www.image-net.org/download-images
 
 ### Pretrained Weights 
-To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). Then open the [ColorizeVisualization.ipynb](ColorizeVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
+To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/3e4dqky91h824ik/colorize_gen.pth) (right click and download from this link). Then open the [ColorizeVisualization.ipynb](ColorizeVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
 ```python
 colorizer_path = IMAGENET.parent/('colorize_gen_192.h5')
 ```
@@ -189,7 +189,7 @@ I'd recommend navigating the code top down – the Jupyter notebooks are the pla
 
 The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking thing I've put in the code, but they're just my version of implementing progressive GAN training, suited to a Unet generator.  That's all that's going on there really.
 
-[Pretrained weights for the colorizer generator again are here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). The DeFade stuff is still a work in progress so I'll try to get good weights for those up in a few days.
+[Pretrained weights for the colorizer generator again are here](https://www.dropbox.com/s/3e4dqky91h824ik/colorize_gen.pth) (right click and download from this link). The DeFade stuff is still a work in progress so I'll try to get good weights for those up in a few days.
 
 Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  Note that this training regime is still a work in progress- I'm stil trying to figure out what exactly is optimal.  In other words, there's a good chance you'll find something to improve upon there.
 
