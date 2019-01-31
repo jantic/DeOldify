@@ -52,7 +52,7 @@ class ModelImageVisualizer():
         return rows, columns
 
 
-def get_colorize_visualizer(root_folder:Path=Path('./'), weights_name:str='colorizer_gen', 
+def get_colorize_visualizer(root_folder:Path=Path('./'), weights_name:str='colorize_gen', 
         results_dir = 'result_images', nf_factor:float=1.25, render_factor:int=21)->ModelImageVisualizer:
     learn = colorize_gen_inference(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
