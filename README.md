@@ -181,6 +181,8 @@ vis.plot_transformed_image("test_images/Chief.jpg", render_factor=17)
 
 For older and low quality images in particular, this seems to improve the colorization pretty reliably.  In contrast, more detailed and higher quality images tend to do better with a higher render_factor.
 
+Additionally, DeOldify is being hosted as a web app at [Colorize ML](https://www.colorize.ml/) (note: the author of DeOldify is not affiliated with the service). This option is probably preferable if you do not have experience running deep learning models.
+
 ### Additional Things to Know
 
 Model weight saves are also done automatically during the training runs by the `GANTrainer` – defaulting to saving every 1000 iterations (it's an expensive operation).  They're stored in the root training data folder you provide, and the name goes by the save_base_name you provide to the training schedule.  Weights are saved for each training size separately.
