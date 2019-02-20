@@ -1,2 +1,4 @@
 fastai>=1.0.42
 tensorboardX>=1.4
+ffmpeg-python
+youtube-dl

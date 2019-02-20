@@ -1,5 +1,8 @@
 name: deoldify
 dependencies:
 - fastai>=1.0.42
+- ffmpeg >= 4.0
 - pip:
   - tensorboardX>=1.4
+  - youtube-dl
+  - ffmpeg-python
