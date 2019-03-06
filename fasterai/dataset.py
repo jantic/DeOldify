@@ -1,7 +1,8 @@
 import fastai
 from fastai import *
 from fastai.core import *
-from fastai.vision import *
+from fastai.vision.transform import get_transforms
+from fastai.vision.data import ImageImageList, ImageDataBunch, imagenet_stats
 
 
 def get_colorize_data(sz:int, bs:int, crappy_path:Path, good_path:Path, random_seed:int=None, 

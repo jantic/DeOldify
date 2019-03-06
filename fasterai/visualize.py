@@ -60,8 +60,8 @@ def get_colorize_visualizer(root_folder:Path=Path('./'), weights_name:str='color
     return vis
 
 def get_colorize_visualizer2(root_folder:Path=Path('./'), weights_name:str='colorize_gen', 
-        results_dir = 'result_images', nf_factor:int=1, render_factor:int=21)->ModelImageVisualizer:
-    learn = colorize_gen_inference2(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor)
+        results_dir = 'result_images', nf_factor:int=1, render_factor:int=21, arch=models.resnet34)->ModelImageVisualizer:
+    learn = colorize_gen_inference2(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor, arch=arch)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis

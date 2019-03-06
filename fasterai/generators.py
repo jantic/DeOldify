@@ -37,16 +37,16 @@ def custom_unet_learner(data:DataBunch, arch:Callable, pretrained:bool=True, blu
 #-----------------------------
 
 #Weights are implicitly read from ./models/ folder 
-def colorize_gen_inference2(root_folder:Path, weights_name:str, nf_factor:int)->Learner:
+def colorize_gen_inference2(root_folder:Path, weights_name:str, nf_factor:int, arch=models.resnet34)->Learner:
       data = get_dummy_databunch()
-      learn = colorize_gen_learner2(data=data, gen_loss=F.l1_loss, nf_factor=nf_factor)
+      learn = colorize_gen_learner2(data=data, gen_loss=F.l1_loss, nf_factor=nf_factor, arch=arch)
       learn.path = root_folder
       learn.load(weights_name)
       learn.model.eval()
       return learn
 
 def colorize_gen_learner2(data:ImageDataBunch, gen_loss=FeatureLoss(), arch=models.resnet34, nf_factor:int=1)->Learner:
-    return custom_unet_learner2(data, arch, wd=1e-3, blur=True, norm_type=NormType.Spectral,
+    return custom_unet_learner2(data, arch=arch, wd=1e-3, blur=True, norm_type=NormType.Spectral,
                         self_attention=True, y_range=(-3.,3.), loss_func=gen_loss, nf_factor=nf_factor)
 
 #The code below is meant to be merged into fastaiv1 ideally
