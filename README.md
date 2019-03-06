@@ -1,14 +1,15 @@
 # DeOldify
 
-Image Colorization: [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)   |  Video Colorization: [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
+Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)  |  Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
 
 [Get more updates on Twitter <img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj)
 
 
-Simply put, the mission of this project is to colorize and restore old images and film footage.  I'll get into the details in a bit, but first let's get to the examples! 
+Simply put, the mission of this project is to colorize and restore old images and film footage.  I'll get into the details in a bit, but first let's see some pretty pictures and videos! 
 
+-----------------------
 
-#### Images
+### Example Images
 
 Maria Anderson as the Fairy Fleur de farine and Lyubov Rabtsova as her page in the ballet “Sleeping Beauty” at the Imperial Theater, St. Petersburg, Russia, 1890.
 
@@ -94,7 +95,7 @@ Seneca Native in 1908
 This is a deep learning based model.  More specifically, what I've done is combined the following approaches:
 * **Self-Attention Generative Adversarial Network** (https://arxiv.org/abs/1805.08318).  Except the generator is a **pretrained U-Net**, and I've just modified it to have the spectral normalization and self-attention.  It's a pretty straightforward translation.  
 * **Two Time-Scale Update Rule** (https://arxiv.org/abs/1706.08500).  This is also very straightforward – it's just one to one generator/critic iterations and higher critic learning rate. This is modified to incorporate a "threshold" critic loss that makes sure that the critic is "caught up" before moving on to generator training.  This is particularly useful for the GAN supertransfer learning method described next.
-* **GAN Supertransfer Learning**  There's no paper here!  And I just totally made up that catchy term.  But it's the best way I can describe it.  Basically what you do is you first train the generator in a conventional way by itself with just the feature loss.  Then you generate images from that, and training the critic on distinguishing between those outputs and real images as a basic binary clasifier.  Finally, you train the generator and critic together in a GAN setting (starting right at the target size of 192px in this case).  This training is super quick- only 1-10% of Imagenet dataset is iterated through, once!  Yet during this very short amount of GAN training the generator not only gets the full realistic colorization capabilities that we used to get through days of progressively resized GAN training, but it also doesn't accrue any of the artifacts and other ugly baggage of GANs. As far as I know this is a new technique.  And it's incredibly effective.  It seems paper-worthy but I'll leave the paper to whoever's so inclined (not I!).  This builds upon a technique developed in collaboration with Jeremy Howard and Sylvain Gugger (so fun!) for Fast.AI's Lesson 7 in version 3 of Practical Deep Learning for Coders part I.  The particular lesson notebook can be found here:  https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb   
+* **GAN Supertransfer Learning**  There's no paper here!  And I just totally made up that catchy term.  But it's the best way I can describe it.  Basically what you do is you first train the generator in a conventional way by itself with just the feature loss.  Then you generate images from that, and train the critic on distinguishing between those outputs and real images as a basic binary classifier.  Finally, you train the generator and critic together in a GAN setting (starting right at the target size of 192px in this case).  This training is super quick- only 1-10% of Imagenet dataset is iterated through, once!  Yet during this very short amount of GAN training the generator not only gets the full realistic colorization capabilities that we used to get through days of progressively resized GAN training, but it also doesn't accrue any of the artifacts and other ugly baggage of GANs. As far as I know this is a new technique.  And it's incredibly effective.  It seems paper-worthy but I'll leave the paper to whoever's so inclined (not I!).  This builds upon a technique developed in collaboration with Jeremy Howard and Sylvain Gugger (so fun!) for Fast.AI's Lesson 7 in version 3 of Practical Deep Learning for Coders part I.  The particular lesson notebook can be found here:  https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb   
 * **Generator Loss** during GAN Supertransfer Learning is two parts:  One is a basic Perceptual Loss (or Feature Loss) based on VGG16 – this just biases the generator model to replicate the input image.  The second is the loss score from the critic.  For the curious – Perceptual Loss isn't sufficient by itself to produce good results.  It tends to just encourage a bunch of brown/green/blue – you know, cheating to the test, basically, which neural networks are really good at doing!  Key thing to realize here is that GANs essentially are learning the loss function for you – which is really one big step closer to toward the ideal that we're shooting for in machine learning.  And of course you generally get much better results when you get the machine to learn something you were previously hand coding.  That's certainly the case here.
 
 Of note:  There's no longer any "Progressive Growing of GANs" type training going on here.  It's just not needed in lieu of the superior results obtained by the GAN Supertransfer Learning technique described above.
@@ -112,7 +113,7 @@ Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *on
 ### Getting Started Yourself- Easiest Approach
 The easiest way to get started is to go straight to the Colab notebooks: 
 
-Image Colorization: [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)   |  Video Colorization: [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
+Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) | Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
 
 Special thanks to Matt Robinson and Maria Benevente for their image Colab notebook contributions, and Robert Bell for the video Colab notebook work!
 
@@ -152,7 +153,7 @@ This project is built around the wonderful Fast.AI library.  Prereqs, in summary
 * **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  FastAI now comes with built in support for this- you just  need to install the prereqs: `conda install -c anaconda tensorflow-gpu` and `pip install tensorboardX`
 * **ImageNet** – Only if you're training, of course. It has proven to be a great dataset for my purposes.  http://www.image-net.org/download-images
 
-### Pretrained Weights 
+#### Pretrained Weights 
 To start right away on your own machine with your own images or videos without training the models yourself, you'll need to download the weights and drop them in the /models/ folder.
 
 [Download image weights here](https://www.dropbox.com/s/3e4dqky91h824ik/ColorizeImages_gen.pth)
