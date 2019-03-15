@@ -7,7 +7,7 @@ from fastai.vision import *
 
 #The code below is meant to be merged into fastaiv1 ideally
 
-__all__ = ['CustomDynamicUnet', 'CustomUnetBlock', 'CustomPixelShuffle_ICNR']
+__all__ = ['DynamicUnetDeep', 'DynamicUnetWide']
 
 def _get_sfs_idxs(sizes:Sizes) -> List[int]:
     "Get the indexes of the layers where the size of the activation changes."
@@ -35,7 +35,7 @@ class CustomPixelShuffle_ICNR(nn.Module):
         x = self.shuf(self.relu(self.conv(x)))
         return self.blur(self.pad(x)) if self.blur else x
 
-class CustomUnetBlock(nn.Module):
+class UnetBlockDeep(nn.Module):
     "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
     def __init__(self, up_in_c:int, x_in_c:int, hook:Hook, final_div:bool=True, blur:bool=False, leaky:float=None,
                  self_attention:bool=False, nf_factor:float=1.0,  **kwargs):
@@ -59,7 +59,7 @@ class CustomUnetBlock(nn.Module):
         return self.conv2(self.conv1(cat_x))
 
 
-class CustomDynamicUnet(SequentialEx):
+class DynamicUnetDeep(SequentialEx):
     "Create a U-Net from a given architecture."
     def __init__(self, encoder:nn.Module, n_classes:int, blur:bool=False, blur_final=True, self_attention:bool=False,
                  y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True, bottle:bool=False,
@@ -82,7 +82,7 @@ class CustomDynamicUnet(SequentialEx):
             up_in_c, x_in_c = int(x.shape[1]), int(sfs_szs[idx][1])
             do_blur = blur and (not_final or blur_final)
             sa = self_attention and (i==len(sfs_idxs)-3)
-            unet_block = CustomUnetBlock(up_in_c, x_in_c, self.sfs[i], final_div=not_final, blur=blur, self_attention=sa,
+            unet_block = UnetBlockDeep(up_in_c, x_in_c, self.sfs[i], final_div=not_final, blur=blur, self_attention=sa,
                                    norm_type=norm_type, extra_bn=extra_bn, nf_factor=nf_factor, **kwargs).eval()
             layers.append(unet_block)
             x = unet_block(x)
@@ -104,7 +104,7 @@ class CustomDynamicUnet(SequentialEx):
 
 
 #------------------------------------------------------
-class CustomUnetBlock2(nn.Module):
+class UnetBlockWide(nn.Module):
     "A quasi-UNet block, using `PixelShuffle_ICNR upsampling`."
     def __init__(self, up_in_c:int, x_in_c:int, n_out:int,  hook:Hook, final_div:bool=True, blur:bool=False, leaky:float=None,
                  self_attention:bool=False,  **kwargs):
@@ -127,7 +127,7 @@ class CustomUnetBlock2(nn.Module):
         return self.conv(cat_x)
 
 
-class CustomDynamicUnet2(SequentialEx):
+class DynamicUnetWide(SequentialEx):
     "Create a U-Net from a given architecture."
     def __init__(self, encoder:nn.Module, n_classes:int, blur:bool=False, blur_final=True, self_attention:bool=False,
                  y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True, bottle:bool=False,
@@ -155,7 +155,7 @@ class CustomDynamicUnet2(SequentialEx):
 
             n_out = nf if not_final else nf//2
 
-            unet_block = CustomUnetBlock2(up_in_c, x_in_c, n_out, self.sfs[i], final_div=not_final, blur=blur, self_attention=sa,
+            unet_block = UnetBlockWide(up_in_c, x_in_c, n_out, self.sfs[i], final_div=not_final, blur=blur, self_attention=sa,
                                    norm_type=norm_type, extra_bn=extra_bn, **kwargs).eval()
             layers.append(unet_block)
             x = unet_block(x)

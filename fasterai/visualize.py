@@ -4,11 +4,13 @@ from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from .filters import IFilter, MasterFilter, ColorizerFilter
-from .generators import colorize_gen_inference, colorize_gen_inference2
+from .generators import gen_inference_deep, gen_inference_wide
 from IPython.display import display
 from tensorboardX import SummaryWriter
 from scipy import misc
 from PIL import Image 
+import ffmpeg
+import youtube_dl
 
 
 class ModelImageVisualizer():
@@ -51,21 +53,109 @@ class ModelImageVisualizer():
         rows = rows if rows * columns == num_images else rows + 1
         return rows, columns
 
+class VideoColorizer():
+    def __init__(self, vis:ModelImageVisualizer):
+        self.vis=vis
+        workfolder = Path('./video')
+        self.source_folder = workfolder/"source"
+        self.bwframes_root = workfolder/"bwframes"
+        self.audio_root = workfolder/"audio"
+        self.colorframes_root = workfolder/"colorframes"
+        self.result_folder = workfolder/"result"
 
-def get_colorize_visualizer(root_folder:Path=Path('./'), weights_name:str='colorize_gen', 
-        results_dir = 'result_images', nf_factor:float=1.25, render_factor:int=21)->ModelImageVisualizer:
-    learn = colorize_gen_inference(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor)
+    def _purge_images(self, dir):
+        for f in os.listdir(dir):
+            if re.search('.*?\.jpg', f):
+                os.remove(os.path.join(dir, f))
+
+    def _get_fps(self, source_path: Path)->float:
+        probe = ffmpeg.probe(str(source_path))
+        stream_data = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
+        avg_frame_rate = stream_data['avg_frame_rate']
+        fps_num=avg_frame_rate.split("/")[0]
+        fps_den = avg_frame_rate.rsplit("/")[1]
+        return round(float(fps_num)/float(fps_den))
+
+    def _download_video_from_url(self, source_url, source_path:Path):
+        if source_path.exists(): source_path.unlink()
+
+        ydl_opts = {    
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',     
+            'outtmpl': str(source_path)   
+            }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([source_url])
+
+    def _extract_raw_frames(self, source_path:Path):
+        bwframes_folder = self.bwframes_root/(source_path.stem)
+        bwframe_path_template = str(bwframes_folder/'%5d.jpg')
+        bwframes_folder.mkdir(parents=True, exist_ok=True)
+        self._purge_images(bwframes_folder)
+        ffmpeg.input(str(source_path)).output(str(bwframe_path_template), format='image2', vcodec='mjpeg', qscale=0).run(capture_stdout=True)
+
+
+    def _colorize_raw_frames(self, source_path:Path):
+        colorframes_folder = self.colorframes_root/(source_path.stem)
+        colorframes_folder.mkdir(parents=True, exist_ok=True)
+        self._purge_images(colorframes_folder)
+        bwframes_folder = self.bwframes_root/(source_path.stem)
+
+        for img in progress_bar(os.listdir(str(bwframes_folder))):
+            img_path = bwframes_folder/img
+            if os.path.isfile(str(img_path)):
+                color_image = self.vis.get_transformed_image(str(img_path))
+                color_image.save(str(colorframes_folder/img))
+    
+    def _build_video(self, source_path:Path):
+        result_path = self.result_folder/source_path.name
+        colorframes_folder = self.colorframes_root/(source_path.stem)
+        colorframes_path_template = str(colorframes_folder/'%5d.jpg')
+        result_path.parent.mkdir(parents=True, exist_ok=True)
+        if result_path.exists(): result_path.unlink()
+        fps = self._get_fps(source_path)
+
+        ffmpeg.input(str(colorframes_path_template), format='image2', vcodec='mjpeg', framerate=str(fps)) \
+            .output(str(result_path), crf=17, vcodec='libx264') \
+            .run(capture_stdout=True)
+        
+        print('Video created here: ' + str(result_path))
+
+    def colorize_from_url(self, source_url, file_name:str):    
+        source_path =  self.source_folder/file_name
+        self._download_video_from_url(source_url, source_path)
+        self._colorize_from_path(source_path)
+
+    def colorize_from_file_name(self, file_name:str):
+        source_path =  self.source_folder/file_name
+        self._colorize_from_path(source_path)
+
+    def _colorize_from_path(self, source_path:Path):
+        self._extract_raw_frames(source_path)
+        self._colorize_raw_frames(source_path)
+        self._build_video(source_path)
+
+
+def get_video_colorizer2(root_folder:Path=Path('./'), weights_name:str='ColorizeVideos_gen2', 
+        results_dir = 'result_images', render_factor:int=36)->VideoColorizer:
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, arch=models.resnet101)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
+    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
+    return VideoColorizer(vis)
+
+
+def get_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeVideos_gen', 
+        results_dir = 'result_images', render_factor:int=21, nf_factor:float=1.25)->VideoColorizer:
+    learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
+    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
+    return VideoColorizer(vis)
+
+def get_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeImages_gen', 
+        results_dir = 'result_images', render_factor:int=21, arch=models.resnet34)->ModelImageVisualizer:
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, arch=arch)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis
-
-def get_colorize_visualizer2(root_folder:Path=Path('./'), weights_name:str='colorize_gen', 
-        results_dir = 'result_images', nf_factor:int=1, render_factor:int=21, arch=models.resnet34)->ModelImageVisualizer:
-    learn = colorize_gen_inference2(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor, arch=arch)
-    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
-    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
-    return vis
-
 
 
 
