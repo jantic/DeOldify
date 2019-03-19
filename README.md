@@ -110,6 +110,7 @@ Of note:  There's no longer any "Progressive Growing of GANs" type training goin
 
 The beauty of this model is that it should be generally useful for all sorts of image modification, and it should do it quite well.  What you're seeing above are the results of the colorization model, but that's just one component in a pipeline that I'm looking to develop here with the exact same approach.
 
+-----------------------
 
 ### This Project, Going Forward
 So that's the gist of this project – I'm looking to make old photos and film look reeeeaaally good with GANs, and more importantly, make the project *useful*.  In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseeable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
