@@ -94,21 +94,25 @@ Seneca Native in 1908
 
 This is a deep learning based model.  More specifically, what I've done is combined the following approaches:
 
-**Self-Attention Generative Adversarial Network** (https://arxiv.org/abs/1805.08318).  Except the generator is a **pretrained U-Net**, and I've just modified it to have the spectral normalization and self-attention.  It's a pretty straightforward translation.
+#### **Self-Attention Generative Adversarial Network** (https://arxiv.org/abs/1805.08318)  
+Except the generator is a **pretrained U-Net**, and I've just modified it to have the spectral normalization and self-attention.  It's a pretty straightforward translation.
 
-**Two Time-Scale Update Rule** (https://arxiv.org/abs/1706.08500).  This is also very straightforward – it's just one to one generator/critic iterations and higher critic learning rate. This is modified to incorporate a "threshold" critic loss that makes sure that the critic is "caught up" before moving on to generator training.  This is particularly useful for the GAN Supertransfer Learning method described next.
+#### **Two Time-Scale Update Rule** (https://arxiv.org/abs/1706.08500)
+This is also very straightforward – it's just one to one generator/critic iterations and higher critic learning rate. This is modified to incorporate a "threshold" critic loss that makes sure that the critic is "caught up" before moving on to generator training.  This is particularly useful for the "NoGAN" method described below.
 
-**NoGAN**.  There's no paper here- this is a new type of GAN training that I've developed to solve some key problems in the previous DeOldify model. The gist is that you get the benefits of GAN training with minimal time doing direct GAN training. During this very short amount of GAN training the generator not only gets the full realistic colorization capabilities that we used to get through days of progressively resized GAN training, but it also doesn't accrue any of the artifacts and other ugly baggage of GANs. As far as I know this is a new technique. And it's incredibly effective. 
+#### **NoGAN**
+There's no paper here! This is a new type of GAN training that I've developed to solve some key problems in the previous DeOldify model. The gist is that you get the benefits of GAN training while spending minimal time doing direct GAN training. During this very short amount of GAN training the generator not only gets the full realistic colorization capabilities that used to take days of progressively resized GAN training, but it also doesn't accrue any of the artifacts and other ugly baggage of GANs. As far as I know this is a new technique. And it's incredibly effective. 
 
 The steps are as follows: First train the generator in a conventional way by itself with just the feature loss. Then you generate images from that, and train the critic on distinguishing between those outputs and real images as a basic binary classifier. Finally, you train the generator and critic together in a GAN setting (starting right at the target size of 192px in this case). This training is super fast- only 1-10% of Imagenet dataset is iterated through, once! 
 
-This builds upon a technique developed in collaboration with Jeremy Howard and Sylvain Gugger for Fast.AI's Lesson 7 in version 3 of Practical Deep Learning for Coders part I. The particular lesson notebook can be found here: https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb  
+This builds upon a technique developed in collaboration with Jeremy Howard and Sylvain Gugger for Fast.AI's Lesson 7 in version 3 of Practical Deep Learning for Coders Part I. The particular lesson notebook can be found here: https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb  
 
-**Generator Loss** during GAN Supertransfer Learning is two parts:  One is a basic Perceptual Loss (or Feature Loss) based on VGG16 – this just biases the generator model to replicate the input image.  The second is the loss score from the critic.  For the curious – Perceptual Loss isn't sufficient by itself to produce good results.  It tends to just encourage a bunch of brown/green/blue – you know, cheating to the test, basically, which neural networks are really good at doing!  Key thing to realize here is that GANs essentially are learning the loss function for you – which is really one big step closer to toward the ideal that we're shooting for in machine learning.  And of course you generally get much better results when you get the machine to learn something you were previously hand coding.  That's certainly the case here.
+#### **Generator Loss**
+Loss during NoGAN learning is two parts:  One is a basic Perceptual Loss (or Feature Loss) based on VGG16 – this just biases the generator model to replicate the input image.  The second is the loss score from the critic.  For the curious – Perceptual Loss isn't sufficient by itself to produce good results.  It tends to just encourage a bunch of brown/green/blue – you know, cheating to the test, basically, which neural networks are really good at doing!  Key thing to realize here is that GANs essentially are learning the loss function for you – which is really one big step closer to toward the ideal that we're shooting for in machine learning.  And of course you generally get much better results when you get the machine to learn something you were previously hand coding.  That's certainly the case here.
 
-Of note:  There's no longer any "Progressive Growing of GANs" type training going on here.  It's just not needed in lieu of the superior results obtained by the GAN Supertransfer Learning technique described above.
+**Of note:**  There's no longer any "Progressive Growing of GANs" type training going on here.  It's just not needed in lieu of the superior results obtained by the "NoGAN" technique described above.
 
-The beauty of this model is that it should be generally useful for all sorts of image modification, and it should do it quite well.  What you're seeing above are the results of the colorization model, but that's just one component in a pipeline that I'm looking to develop here with the exact same approach.
+The beauty of this model is that it should be generally useful for all sorts of image modification, and it should do it quite well.  What you're seeing above are the results of the colorization model, but that's just one component in a pipeline that I'm developing with the exact same approach.
 
 -----------------------
 
