@@ -13,9 +13,10 @@ def gen_inference_deep(root_folder:Path, weights_name:str, arch=models.resnet34,
       learn.model.eval()
       return learn
 
-def gen_learner_deep(data:ImageDataBunch, gen_loss=FeatureLoss(), arch=models.resnet34, nf_factor:float=1.25)->Learner:
+def gen_learner_deep(data:ImageDataBunch, gen_loss=FeatureLoss(), arch=models.resnet34, 
+                     nf_factor:float=1.25, pretrained:bool=True)->Learner:
     return unet_learner_deep(data, arch, wd=1e-3, blur=True, norm_type=NormType.Spectral,
-                        self_attention=True, y_range=(-3.,3.), loss_func=gen_loss, nf_factor=nf_factor)
+                        self_attention=True, y_range=(-3.,3.), loss_func=gen_loss, nf_factor=nf_factor, pretrained=pretrained)
 
 #The code below is meant to be merged into fastaiv1 ideally
 def unet_learner_deep(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
