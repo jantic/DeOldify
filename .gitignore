@@ -18,3 +18,9 @@ fasterai/fastai
 fastai
 *.pth
 video
+test_images/James1.jpg
+test_images/James2.jpg
+test_images/James3.jpg
+test_images/James4.jpg
+test_images/James5.jpg
+test_images/James6.jpg

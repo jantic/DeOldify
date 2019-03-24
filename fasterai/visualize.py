@@ -134,25 +134,16 @@ class VideoColorizer():
         self._colorize_raw_frames(source_path)
         self._build_video(source_path)
 
-
-def get_video_colorizer2(root_folder:Path=Path('./'), weights_name:str='ColorizeVideos_gen2', 
+def get_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeVideos_gen', 
         results_dir = 'result_images', render_factor:int=36)->VideoColorizer:
     learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, arch=models.resnet101)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return VideoColorizer(vis)
 
-
-def get_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeVideos_gen', 
-        results_dir = 'result_images', render_factor:int=21, nf_factor:float=1.25)->VideoColorizer:
-    learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name, nf_factor=nf_factor)
-    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
-    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
-    return VideoColorizer(vis)
-
 def get_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeImages_gen', 
-        results_dir = 'result_images', render_factor:int=21, arch=models.resnet34)->ModelImageVisualizer:
-    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, arch=arch)
+        results_dir = 'result_images', render_factor:int=21)->ModelImageVisualizer:
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, arch=models.resnet101)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis

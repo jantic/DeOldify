@@ -27,24 +27,3 @@ def custom_gan_critic(n_channels:int=3, nf:int=256, n_blocks:int=3, p:int=0.15):
 
 def colorize_crit_learner(data:ImageDataBunch, loss_critic=AdaptiveLoss(nn.BCEWithLogitsLoss()), nf:int=256)->Learner:
     return Learner(data, custom_gan_critic(nf=nf), metrics=accuracy_thresh_expand, loss_func=loss_critic, wd=1e-3)
-
-
-
-def custom_gan_critic2(n_channels:int=3, nf:int=256, n_blocks:int=3, p:int=0.15):
-    "Critic to train a `GAN`."
-    layers = [
-        _conv(n_channels, nf, ks=4, stride=2),
-        nn.Dropout2d(p/2),
-        _conv(nf, nf, ks=3, stride=1)]
-    for i in range(n_blocks):
-        layers += [
-            nn.Dropout2d(p),
-            _conv(nf, nf*2, ks=4, stride=2, self_attention=(i==0))]
-        nf *= 2
-    layers += [
-        _conv(nf, 1, ks=4, bias=False, padding=0, use_activ=False),
-        Flatten()]
-    return nn.Sequential(*layers)
-
-def colorize_crit_learner2(data:ImageDataBunch, loss_critic=AdaptiveLoss(nn.BCEWithLogitsLoss()), nf:int=256)->Learner:
-    return Learner(data, custom_gan_critic2(nf=nf), metrics=accuracy_thresh_expand, loss_func=loss_critic, wd=1e-3)
