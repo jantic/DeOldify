@@ -37,7 +37,7 @@ def unet_learner_wide(data:DataBunch, arch:Callable, pretrained:bool=True, blur_
 #----------------------------------------------------------------------
 
 #Weights are implicitly read from ./models/ folder 
-def gen_inference_deep(root_folder:Path, weights_name:str, arch=models.resnet34, nf_factor:float=1.25)->Learner:
+def gen_inference_deep(root_folder:Path, weights_name:str, arch=models.resnet34, nf_factor:float=1.5)->Learner:
       data = get_dummy_databunch()
       learn = gen_learner_deep(data=data, gen_loss=F.l1_loss, arch=arch, nf_factor=nf_factor)
       learn.path = root_folder
@@ -45,7 +45,7 @@ def gen_inference_deep(root_folder:Path, weights_name:str, arch=models.resnet34,
       learn.model.eval()
       return learn
 
-def gen_learner_deep(data:ImageDataBunch, gen_loss=FeatureLoss(), arch=models.resnet34, nf_factor:float=1.25)->Learner:
+def gen_learner_deep(data:ImageDataBunch, gen_loss=FeatureLoss(), arch=models.resnet34, nf_factor:float=1.5)->Learner:
     return unet_learner_deep(data, arch, wd=1e-3, blur=True, norm_type=NormType.Spectral,
                         self_attention=True, y_range=(-3.,3.), loss_func=gen_loss, nf_factor=nf_factor)
 
@@ -53,7 +53,7 @@ def gen_learner_deep(data:ImageDataBunch, gen_loss=FeatureLoss(), arch=models.re
 def unet_learner_deep(data:DataBunch, arch:Callable, pretrained:bool=True, blur_final:bool=True,
                  norm_type:Optional[NormType]=NormType, split_on:Optional[SplitFuncOrIdxList]=None, 
                  blur:bool=False, self_attention:bool=False, y_range:Optional[Tuple[float,float]]=None, last_cross:bool=True,
-                 bottle:bool=False, nf_factor:float=1.0, **kwargs:Any)->Learner:
+                 bottle:bool=False, nf_factor:float=1.5, **kwargs:Any)->Learner:
     "Build Unet learner from `data` and `arch`."
     meta = cnn_config(arch)
     body = create_body(arch, pretrained)

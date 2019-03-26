@@ -11,12 +11,18 @@ from scipy import misc
 from PIL import Image 
 import ffmpeg
 import youtube_dl
+import gc
 
 
 class ModelImageVisualizer():
     def __init__(self, filter:IFilter, results_dir:str=None):
         self.filter = filter
         self.results_dir=None if results_dir is None else Path(results_dir)
+    
+    def _clean_mem(self):
+        return
+        #torch.cuda.empty_cache()
+        #gc.collect()
 
     def _open_pil_image(self, path:Path)->Image:
         return PIL.Image.open(path).convert('RGB')
@@ -37,6 +43,7 @@ class ModelImageVisualizer():
         image.save(result_path)
 
     def get_transformed_image(self, path:Path, render_factor:int=None)->Image:
+        self._clean_mem()
         orig_image = self._open_pil_image(path)
         filtered_image = self.filter.filter(orig_image, orig_image, render_factor=render_factor)
         return filtered_image
@@ -134,16 +141,23 @@ class VideoColorizer():
         self._colorize_raw_frames(source_path)
         self._build_video(source_path)
 
-def get_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeVideos_gen', 
-        results_dir = 'result_images', render_factor:int=36)->VideoColorizer:
-    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, arch=models.resnet101)
+def get_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeImagesStable_gen', 
+        results_dir='result_images', render_factor:int=36)->VideoColorizer:
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return VideoColorizer(vis)
 
-def get_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeImages_gen', 
-        results_dir = 'result_images', render_factor:int=21)->ModelImageVisualizer:
-    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, arch=models.resnet101)
+def get_stable_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeImagesStable_gen', 
+        results_dir='result_images', render_factor:int=36)->ModelImageVisualizer:
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
+    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
+    return vis
+
+def get_artistic_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeImagesArtistic_gen', 
+        results_dir='result_images', render_factor:int=36)->ModelImageVisualizer:
+    learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis
