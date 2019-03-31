@@ -142,11 +142,8 @@ class VideoColorizer():
         self._build_video(source_path)
 
 
-def get_video_colorizer(render_factor:int=36, artistic:bool=False)->VideoColorizer:
-    if artistic:
-        return get_artistic_video_colorizer(render_factor=render_factor)
-    else:
-        return get_stable_video_colorizer(render_factor=render_factor)
+def get_video_colorizer(render_factor:int=36)->VideoColorizer:
+    return get_stable_video_colorizer(render_factor=render_factor)
 
 def get_stable_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeImagesStable_gen', 
         results_dir='result_images', render_factor:int=36)->VideoColorizer:
