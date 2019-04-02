@@ -181,17 +181,19 @@ And you can do video colorization in this notebook:  [VideoColorizer.ipynb](Vide
 The notebooks should be able to guide you from here.
 
 -------------------------
-### Stuff that Should Probably be in a Paper
+### Stuff That Should Probably Be In A Paper
 
-#### **How Stable Video Achieved**
+#### **How Stable Video Achieved*
 
 NoGAN training is crucial to getting the kind of stable and colorful results achieved here. NoGAN training is elaborated on in more detail below but the gist is that it is that it enables getting the benefits of GAN training (wonderful colorization) without the nasty side effects (like flickering objects in video). It just takes 30-60 minutes of the GAN portion of NoGAN training, using 1% to 3% of imagenet data once.  Believe it or not, video is rendered just using isolated image generation without any sort of temporal modeling tacked on.  That is to say, we're literally just DeOldifying individual frames just like we'd do for normal image colorization. 
 
 There's more to the stability however, as I think there's an interesting thing going on here worth mentioning.  It turns out the models I run, even different ones and with different training structures, keep arriving at more or less the same exact solution.  That's even the case for the colorization of things you may think would be arbitrary and unknowable, like the color of clothing, cars, and even special effects in Metropolis.  So I think the models must be learning some interesting rules about how to colorize based on some cues present in the black and white images that I certainly wouldn't expect to exist.  This leads to nicely deterministic and consistent results, and that means you don't have to things like track model colorization decisions because they're not arbitrary.  Additionally, they seem remarkably robust so that even in moving scenes the renders are very consistent.
 
-Other ways to stabilize video add up as well. First, generally speaking rendering at a higher resolution (higher render_factor) will increase stability of colorization decisions.  This stands to reason because the model has more image information to work with and will have a greater chance of making the "right" decision consistently.  Closely related to this is the use of resnet101 instead of resnet34 as the backbone of the generator- objects are detected more consistently and corrrectly with this. This is especially important for getting good and consistent skin rendering, which can be particular jarring if it's missed and you wind up with "zombie limbs" and whatnot.
+Other ways to stabilize video add up as well. First, generally speaking rendering at a higher resolution (higher render_factor) will increase stability of colorization decisions.  This stands to reason because the model has higher fidelity image information to work with and will have a greater chance of making the "right" decision consistently.  Closely related to this is the use of resnet101 instead of resnet34 as the backbone of the generator- objects are detected more consistently and corrrectly with this. This is especially important for getting good and consistent skin rendering, which can be particular jarring if it's missed and you wind up with "zombie limbs" and whatnot.
 
-Additionally, gaussian noise augmentation during training appears to help but at this point the conclusions as to just how much are bit less tenuous (I just haven't formally measured this yet).  This is loosely based on work done in style transfer video, described here:  https://medium.com/element-ai-research-lab/stabilizing-neural-style-transfer-for-video-62675e203e42.  
+Additionally, gaussian noise augmentation during training appears to help but at this point the conclusions as to just how much are bit more tenuous (I just haven't formally measured this yet).  This is loosely based on work done in style transfer video, described here:  https://medium.com/element-ai-research-lab/stabilizing-neural-style-transfer-for-video-62675e203e42.  
+
+Special thanks go to Rani Horev for his contributions in implementing this noise augmentation.
 
 -------------------------
 #### **What is NoGAN???**
