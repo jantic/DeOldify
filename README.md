@@ -183,7 +183,7 @@ The notebooks should be able to guide you from here.
 -------------------------
 ### Stuff That Should Probably Be In A Paper
 
-#### **How Stable Video Achieved*
+#### **How Stable Video Achieved**
 
 NoGAN training is crucial to getting the kind of stable and colorful results achieved here. NoGAN training is elaborated on in more detail below but the gist is that it is that it enables getting the benefits of GAN training (wonderful colorization) without the nasty side effects (like flickering objects in video). It just takes 30-60 minutes of the GAN portion of NoGAN training, using 1% to 3% of imagenet data once.  Believe it or not, video is rendered just using isolated image generation without any sort of temporal modeling tacked on.  That is to say, we're literally just DeOldifying individual frames just like we'd do for normal image colorization. 
 
