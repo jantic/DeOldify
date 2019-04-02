@@ -3,7 +3,7 @@ from fastai.vision.image import TfmPixel
 import random
 
 #Contributed by Rani Horev. Thank you!
-def _noisify(x, pct_pixels_min:float=0.003, pct_pixels_max:float=0.0031, noise_range:int=30):
+def _noisify(x, pct_pixels_min:float=0.001, pct_pixels_max:float=0.4, noise_range:int=30):
     if noise_range > 255 or noise_range < 0:
         raise('noise_range must be between 0 and 255, inclusively.')
     h,w = x.shape[1:]
