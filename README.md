@@ -4,6 +4,13 @@ Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align
 
 [Get more updates on Twitter <img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj)
 
+------------------------
+### New and Exciting Stuff in DeOldify
+* Glitches and artifacts are almost entirely eliminated
+* Better skin (less zombies)
+* More highly detailed and photorealistic renders
+* **Video** - it actually looks good!
+* **NoGAN** - a new and weird but highly effective way to do GAN training for image to image.
 
 Simply put, the mission of this project is to colorize and restore old images and film footage.  I'll get into the details in a bit, but first let's see some pretty pictures and videos! 
 
