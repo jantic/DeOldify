@@ -167,11 +167,13 @@ This project is built around the wonderful Fast.AI library.  Prereqs, in summary
 --------------------------
 #### Pretrained Weights 
 
-To start right away on your own machine with your own images or videos without training the models yourself, you'll need to download the weights and drop them in the /models/ folder.
+To start right away on your own machine with your own images or videos without training the models yourself, you'll need to download the generator weights and drop them in the /models/ folder.
 
-[Download image weights here](https://www.dropbox.com/s/3e4dqky91h824ik/ColorizeImages_gen.pth)
+[Download 'artistic' model weights here](https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0)
 
-[Download video weights here](https://www.dropbox.com/s/3e4dqky91h824ik/ColorizeVideos_gen.pth)
+[Download 'stable' model weights here](https://www.dropbox.com/s/mwjep3vyqk5mkjc/ColorizeStable_gen.pth?dl=0)
+
+[Download 'video' model weights here](https://www.dropbox.com/s/336vn9y4qwyg9yz/ColorizeVideo_gen.pth?dl=0)
 
 
 You can then do image colorization in this notebook:  [ImageColorizer.ipynb](ImageColorizer.ipynb) 
@@ -179,6 +181,8 @@ You can then do image colorization in this notebook:  [ImageColorizer.ipynb](Ima
 And you can do video colorization in this notebook:  [VideoColorizer.ipynb](VideoColorizer.ipynb) 
 
 The notebooks should be able to guide you from here.
+
+A more complete list of available pretrained weights, including those for critics, can be found at the bottom of the readme.
 
 -------------------------
 ### Stuff That Should Probably Be In A Paper
@@ -210,7 +214,35 @@ Keep in mind- I haven't been entirely rigorous in figuring out what all is going
 
 This builds upon a technique developed in collaboration with Jeremy Howard and Sylvain Gugger for Fast.AI's Lesson 7 in version 3 of Practical Deep Learning for Coders Part I. The particular lesson notebook can be found here: https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb  
 
+-------------------------
+### Weights, Weights, and More Weights
 
+
+#### Completed Generator Weights
+
+[artistic](https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0)
+[stable](https://www.dropbox.com/s/mwjep3vyqk5mkjc/ColorizeStable_gen.pth?dl=0)
+[video](https://www.dropbox.com/s/336vn9y4qwyg9yz/ColorizeVideo_gen.pth?dl=0)
+
+#### Completed Critic Weights
+
+[artistic](https://www.dropbox.com/s/8g5txfzt2fw8mf5/ColorizeArtistic_crit.pth?dl=0)
+[stable](https://www.dropbox.com/s/7a8u20e7xdu1dtd/ColorizeStable_crit.pth?dl=0)
+[video](https://www.dropbox.com/s/0401djgo1dfxdzt/ColorizeVideo_crit.pth?dl=0)
+
+#### Pretrain Only Generator Weights
+
+[artistic](https://www.dropbox.com/s/9zexurvrve141n9/ColorizeArtistic_PretrainOnly_gen.pth?dl=0)
+[stable](https://www.dropbox.com/s/mdnuo1563bb8nh4/ColorizeStable_PretrainOnly_gen.pth?dl=0)
+[video](https://www.dropbox.com/s/avzixh1ujf86e8x/ColorizeVideo_PretrainOnly_gen.pth?dl=0)
+
+#### Pretrain Only Critic Weights
+
+[artistic](https://www.dropbox.com/s/lakxe8akzjgjnmh/ColorizeArtistic_PretrainOnly_crit.pth?dl=0)
+[stable](https://www.dropbox.com/s/b3wka56iyv1fvdc/ColorizeStable_PretrainOnly_crit.pth?dl=0)
+[video](https://www.dropbox.com/s/j7og84cbhpa94gs/ColorizeVideo_PretrainOnly_crit.pth?dl=0)
+
+-------------------------
 ### Want More?
 
 I'll be posting more results on Twitter. [<img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
