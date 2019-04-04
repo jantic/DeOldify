@@ -1,7 +1,7 @@
 data
 fasterai/__pycache__/*.pyc
 *SymbolicLinks.sh
-*.ipynb_checkpoints/*
+*.ipynb_checkpoints*
 ColorizeTraining[0-9]*.ipynb
 ColorizeTrainingNew[0-9]*.ipynb
 Colorize[0-9]*.ipynb
@@ -26,6 +26,4 @@ test_images/James5.jpg
 test_images/James6.jpg
 fasterai/.ipynb_checkpoints/augs-checkpoint.py
 fasterai/.ipynb_checkpoints/visualize-checkpoint.py
-tmp71czymfy
-tmp8xjl4b5g
-tmplp68e2yj
+tmp*
