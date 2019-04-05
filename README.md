@@ -18,46 +18,56 @@ Simply put, the mission of this project is to colorize and restore old images an
 
 ### Example Images
 
+
 "Migrant Woman" by Dorothea Lange (1936)
 
 ![MigrantWoman](resource_images/10_dorothea-lange_artistic_RF25_compared_sm.jpg)
+
 
 Woman relaxing in her livingroom in Sweden (1920)
 
 ![SwedenLivingRoom](resource_images/0_LivingRoom1920Sweden_artistic_RF46_compared_sm.jpg)
 
+
 "Toffs and Toughs" by Jimmy Sime (1937)
 
 ![ClassDivide](resource_images/1_ClassDivide1930sBrittain_artistic_RF30_compared_sm.jpg)
+
 
 Thanksgiving Maskers (1911)
 
 ![ThanksgivingMaskers](resource_images/2_1911ThanksgivingMaskers_artistic_RF36_compared_sm.jpg)
 
+
 Glen Echo Madame Careta Gypsy Camp in Maryland (1925)
 
 ![GypsyCamp](resource_images/3_1925GypsyCampMaryland_artistic_RF45_compared_sm.jpg)
 
+
 "Mr. and Mrs. Lemuel Smith and their younger children in their farm house, Carroll County, Georgia." (1941)
 
 ![GeorgiaFarmhouse](resource_images/4_1941GeorgiaFarmhouse_stable_RF43_compared_sm.jpg)
- Something Something
+
  
 "Building the Golden Gate Bridge" (est 1936)
 
 ![GoldenGateBridge](resource_images/5_GoldenGateConstruction_stable_RF45_compared_sm.jpg)
 
+
 "Terrasse de café, Paris" (1925)
 
 ![CafeParis](resource_images/6_CafeTerrace1925Paris_artistic_RF37_compared_sm.jpg)
+
 
 Norwegian Bride (est late 1890s)
 
 ![NorwegianBride](resource_images/7_NorwegianBride1890s_artistic_RF40_compared_sm.jpg)
 
+
 Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)
 
 ![NativeWoman](resource_images/8_NativeWoman1898_artistic_RF19_compared_sm.jpg)
+
 
 Chinese Opium Smokers (1880)
 
