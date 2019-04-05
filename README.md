@@ -18,82 +18,51 @@ Simply put, the mission of this project is to colorize and restore old images an
 
 ### Example Images
 
-Maria Anderson as the Fairy Fleur de farine and Lyubov Rabtsova as her page in the ballet “Sleeping Beauty” at the Imperial Theater, St. Petersburg, Russia, 1890.
+"Migrant Woman" by Dorothea Lange (1936)
 
-![Ballerinas](result_images/Ballerinas.jpg)
+![MigrantWoman](resource_images/10_dorothea-lange_artistic_RF25_compared_sm.jpg)
 
-Woman relaxing in her livingroom (1920, Sweden)
+Woman relaxing in her livingroom in Sweden (1920)
 
-![SwedenLivingRoom](result_images/SweedishLivingRoom1920.jpg)
+![SwedenLivingRoom](resource_images/0_LivingRoom1920Sweden_artistic_RF46_compared_sm.jpg)
 
-Medical Students pose with a cadaver around 1890
+"Toffs and Toughs" by Jimmy Sime (1937)
 
-![MedStudents](result_images/MedStudentsCards.jpg)
+![ClassDivide](resource_images/1_ClassDivide1930sBrittain_artistic_RF30_compared_sm.jpg)
 
-Surfer in Hawaii, 1890
+Thanksgiving Maskers (1911)
 
-![1890Surfer](result_images/1890Surfer.jpg)
+![ThanksgivingMaskers](resource_images/2_1911ThanksgivingMaskers_artistic_RF36_compared_sm.jpg)
 
-Whirling Horse, 1898
+Glen Echo Madame Careta Gypsy Camp in Maryland (1925)
 
-![WhirlingHorse](result_images/WhirlingHorse.jpg)
+![GypsyCamp](resource_images/3_1925GypsyCampMaryland_artistic_RF45_compared_sm.jpg)
 
-Interior of Miller and Shoemaker Soda Fountain, 1899
+"Mr. and Mrs. Lemuel Smith and their younger children in their farm house, Carroll County, Georgia." (1941)
 
-![SodaFountain](result_images/SodaShop.jpg)
+![GeorgiaFarmhouse](resource_images/4_1941GeorgiaFarmhouse_stable_RF43_compared_sm.jpg)
+ Something Something
+ 
+"Building the Golden Gate Bridge" (est 1936)
 
-Paris in the 1880s
+![GoldenGateBridge](resource_images/5_GoldenGateConstruction_stable_RF45_compared_sm.jpg)
 
-![Paris1880s](result_images/Paris1880s.jpg)
+"Terrasse de café, Paris" (1925)
 
-Edinburgh from the sky in the 1920s
+![CafeParis](resource_images/6_CafeTerrace1925Paris_artistic_RF37_compared_sm.jpg)
 
-![Edinburgh](result_images/FlyingOverEdinburgh.jpg)
+Norwegian Bride (est late 1890s)
 
-Texas Woman in 1938
+![NorwegianBride](resource_images/7_NorwegianBride1890s_artistic_RF40_compared_sm.jpg)
 
-![TexasWoman](result_images/TexasWoman.jpg)
+Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)
 
-People watching a television set for the first time at Waterloo station, London, 1936
+![NativeWoman](resource_images/8_NativeWoman1898_artistic_RF19_compared_sm.jpg)
 
-![Television](result_images/FirstTV1930s.jpg)
+Chinese Opium Smokers (1880)
 
-Geography Lessons in 1850
+![OpiumReal](resource_images/9_ChinaOpiumc1880_artistic_RF43_compared_sm.jpg)
 
-![Geography](result_images/GeographyLessons.jpg)
-
-Chinese Opium Smokers in 1880
-
-![OpiumReal](result_images/ChineseOpium1880s.jpg)
-
-
-#### Note that even really old and/or poor quality photos will still turn out looking pretty cool:
-
-Deadwood, South Dakota, 1877
-
-![Deadwood](result_images/OldWest.jpg)
-
-Siblings in 1877
-
-![Deadwood](result_images/Olds1875.jpg)
-
-Portsmouth Square in San Franscisco, 1851
-
-![PortsmouthSquare](result_images/SanFran1850sRetry.jpg)
-
-Samurais, circa 1860s
-
-![Samurais](result_images/Samurais.jpg)
-
-#### Granted, the model isn't always perfect.  This one's red hand drives me nuts because it's otherwise fantastic:
-
-Seneca Native in 1908
-
-![Samurais](result_images/SenecaNative1908.jpg)
-
-#### It can also colorize b&w line drawings:
-
-![OpiumDrawing](result_images/OpiumSmokersDrawing.jpg)
 
 
 -------------------------
