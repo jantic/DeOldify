@@ -2,14 +2,15 @@
 
 Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)  |  Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
 
-[Get more updates on Twitter <img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj)
+[Get more updates on Twitter <img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj)
 
 ------------------------
 ### New and Exciting Stuff in DeOldify
 * Glitches and artifacts are almost entirely eliminated
 * Better skin (less zombies)
 * More highly detailed and photorealistic renders
-* **Video** - it actually looks good!
+* Much less "blue bias"
+* **Video** - it actually looks good!  
 * **NoGAN** - a new and weird but highly effective way to do GAN training for image to image.
 
 Simply put, the mission of this project is to colorize and restore old images and film footage.  I'll get into the details in a bit, but first let's see some pretty pictures and videos! 
@@ -247,4 +248,4 @@ The colorization inference notebooks should be able to guide you from here. The 
 -------------------------
 ### Want More?
 
-I'll be posting more results on Twitter. [<img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
+I'll be posting more results on Twitter. [<img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
