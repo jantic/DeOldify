@@ -20,9 +20,9 @@ Simply put, the mission of this project is to colorize and restore old images an
 ### Example Images
 
 
-"Migrant Woman" by Dorothea Lange (1936)
+"Migrant Mother" by Dorothea Lange (1936)
 
-![MigrantWoman](resource_images/10_dorothea-lange_artistic_RF25_compared_sm.jpg)
+![MigrantMother](resource_images/10_dorothea-lange_artistic_RF25_compared_sm.jpg)
 
 
 Woman relaxing in her livingroom in Sweden (1920)
