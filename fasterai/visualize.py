@@ -12,6 +12,8 @@ from PIL import Image
 import ffmpeg
 import youtube_dl
 import gc
+import requests
+from io import BytesIO
 
 
 class ModelImageVisualizer():
@@ -26,6 +28,12 @@ class ModelImageVisualizer():
 
     def _open_pil_image(self, path:Path)->Image:
         return PIL.Image.open(path).convert('RGB')
+
+    def plot_transformed_image_from_url(self, path:str, url:str, figsize:(int,int)=(20,20), render_factor:int=None)->Image:
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content))
+        img.save(path)
+        return self.plot_transformed_image(path=path, figsize=figsize, render_factor=render_factor)
 
     def plot_transformed_image(self, path:str, figsize:(int,int)=(20,20), render_factor:int=None)->Image:
         path = Path(path)
@@ -101,7 +109,7 @@ class VideoColorizer():
         ffmpeg.input(str(source_path)).output(str(bwframe_path_template), format='image2', vcodec='mjpeg', qscale=0).run(capture_stdout=True)
 
 
-    def _colorize_raw_frames(self, source_path:Path):
+    def _colorize_raw_frames(self, source_path:Path, render_factor:int=None):
         colorframes_folder = self.colorframes_root/(source_path.stem)
         colorframes_folder.mkdir(parents=True, exist_ok=True)
         self._purge_images(colorframes_folder)
@@ -110,7 +118,7 @@ class VideoColorizer():
         for img in progress_bar(os.listdir(str(bwframes_folder))):
             img_path = bwframes_folder/img
             if os.path.isfile(str(img_path)):
-                color_image = self.vis.get_transformed_image(str(img_path))
+                color_image = self.vis.get_transformed_image(str(img_path), render_factor=render_factor)
                 color_image.save(str(colorframes_folder/img))
     
     def _build_video(self, source_path:Path):
@@ -127,49 +135,49 @@ class VideoColorizer():
         
         print('Video created here: ' + str(result_path))
 
-    def colorize_from_url(self, source_url, file_name:str):    
+    def colorize_from_url(self, source_url, file_name:str, render_factor:int=None): 
         source_path =  self.source_folder/file_name
         self._download_video_from_url(source_url, source_path)
-        self._colorize_from_path(source_path)
+        self._colorize_from_path(source_path, render_factor=render_factor)
 
-    def colorize_from_file_name(self, file_name:str):
+    def colorize_from_file_name(self, file_name:str, render_factor:int=None):
         source_path =  self.source_folder/file_name
-        self._colorize_from_path(source_path)
+        self._colorize_from_path(source_path, render_factor=render_factor)
 
-    def _colorize_from_path(self, source_path:Path):
+    def _colorize_from_path(self, source_path:Path, render_factor:int=None):
         if not source_path.exists():
             raise Exception('Video at path specfied, ' + str(source_path) + ' could not be found.')
 
         self._extract_raw_frames(source_path)
-        self._colorize_raw_frames(source_path)
+        self._colorize_raw_frames(source_path, render_factor=render_factor)
         self._build_video(source_path)
 
 
-def get_video_colorizer(render_factor:int=36)->VideoColorizer:
+def get_video_colorizer(render_factor:int=21)->VideoColorizer:
     return get_stable_video_colorizer(render_factor=render_factor)
 
 def get_stable_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeVideo_gen', 
-        results_dir='result_images', render_factor:int=36)->VideoColorizer:
+        results_dir='result_images', render_factor:int=21)->VideoColorizer:
     learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return VideoColorizer(vis)
 
-def get_image_colorizer(render_factor:int=36, artistic:bool=True)->ModelImageVisualizer:
+def get_image_colorizer(render_factor:int=35, artistic:bool=True)->ModelImageVisualizer:
     if artistic:
         return get_artistic_image_colorizer(render_factor=render_factor)
     else:
         return get_stable_image_colorizer(render_factor=render_factor)
 
 def get_stable_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeStable_gen', 
-        results_dir='result_images', render_factor:int=36)->ModelImageVisualizer:
+        results_dir='result_images', render_factor:int=35)->ModelImageVisualizer:
     learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis
 
 def get_artistic_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeArtistic_gen', 
-        results_dir='result_images', render_factor:int=36)->ModelImageVisualizer:
+        results_dir='result_images', render_factor:int=35)->ModelImageVisualizer:
     learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)

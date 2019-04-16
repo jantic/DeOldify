@@ -11,7 +11,7 @@ def get_colorize_data(sz:int, bs:int, crappy_path:Path, good_path:Path, random_s
 
     src = (ImageImageList.from_folder(crappy_path)
         .use_partial_data(sample_pct=keep_pct, seed=random_seed)
-        .random_split_by_pct(0.1, seed=random_seed))
+        .split_by_rand_pct(0.1, seed=random_seed))
 
     data = (src.label_from_func(lambda x: good_path/x.relative_to(crappy_path))
         .transform(get_transforms(max_zoom=1.2, max_lighting=0.5, max_warp=0.25, xtra_tfms=xtra_tfms), size=sz, tfm_y=True)
