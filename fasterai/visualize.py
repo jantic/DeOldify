@@ -20,6 +20,7 @@ class ModelImageVisualizer():
     def __init__(self, filter:IFilter, results_dir:str=None):
         self.filter = filter
         self.results_dir=None if results_dir is None else Path(results_dir)
+        self.results_dir.mkdir(parents=True, exist_ok=True)
     
     def _clean_mem(self):
         return
