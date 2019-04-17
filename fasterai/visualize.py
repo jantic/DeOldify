@@ -30,9 +30,9 @@ class ModelImageVisualizer():
     def _open_pil_image(self, path:Path)->Image:
         return PIL.Image.open(path).convert('RGB')
 
-    def plot_transformed_image_from_url(self, path:str, url:str, figsize:(int,int)=(20,20), render_factor:int=None)->Image:
+    def plot_transformed_image_from_url(self, url:str, path:str='test_images/image.png', figsize:(int,int)=(20,20), render_factor:int=None)->Image:
         response = requests.get(url)
-        img = Image.open(BytesIO(response.content))
+        img = Image.open(BytesIO(response.content)).convert('RGB')
         img.save(path)
         return self.plot_transformed_image(path=path, figsize=figsize, render_factor=render_factor)
 
