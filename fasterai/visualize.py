@@ -16,7 +16,7 @@ from io import BytesIO
 import base64
 from IPython import display as ipythondisplay
 from IPython.display import HTML
-
+from IPython.display import Image as ipythonimage
 
 class ModelImageVisualizer():
     def __init__(self, filter:IFilter, results_dir:str=None):
@@ -32,26 +32,29 @@ class ModelImageVisualizer():
     def _open_pil_image(self, path:Path)->Image:
         return PIL.Image.open(path).convert('RGB')
 
-    def plot_transformed_image_from_url(self, url:str, path:str='test_images/image.png', figsize:(int,int)=(20,20), render_factor:int=None)->Image:
+    def _get_image_from_url(self, url:str)->Image:
         response = requests.get(url)
         img = Image.open(BytesIO(response.content)).convert('RGB')
+        return img
+
+    def plot_transformed_image_from_url(self, url:str, path:str='test_images/image.png', figsize:(int,int)=(20,20), render_factor:int=None)->Path:
+        img = self._get_image_from_url(url)
         img.save(path)
         return self.plot_transformed_image(path=path, figsize=figsize, render_factor=render_factor)
 
-    def plot_transformed_image(self, path:str, figsize:(int,int)=(20,20), render_factor:int=None)->Image:
+    def plot_transformed_image(self, path:str, figsize:(int,int)=(20,20), render_factor:int=None)->Path:
         path = Path(path)
         result = self.get_transformed_image(path, render_factor)
         orig = self._open_pil_image(path)
         fig,axes = plt.subplots(1, 2, figsize=figsize)
         self._plot_image(orig, axes=axes[0], figsize=figsize)
         self._plot_image(result, axes=axes[1], figsize=figsize)
+        return self._save_result_image(path, result)
 
-        if self.results_dir is not None:
-            self._save_result_image(path, result)
-
-    def _save_result_image(self, source_path:Path, image:Image):
+    def _save_result_image(self, source_path:Path, image:Image)->Path:
         result_path = self.results_dir/source_path.name
         image.save(result_path)
+        return result_path
 
     def get_transformed_image(self, path:Path, render_factor:int=None)->Image:
         self._clean_mem()
@@ -124,7 +127,7 @@ class VideoColorizer():
                 color_image = self.vis.get_transformed_image(str(img_path), render_factor=render_factor)
                 color_image.save(str(colorframes_folder/img))
     
-    def _build_video(self, source_path:Path)->str:
+    def _build_video(self, source_path:Path)->Path:
         result_path = self.result_folder/source_path.name
         colorframes_folder = self.colorframes_root/(source_path.stem)
         colorframes_path_template = str(colorframes_folder/'%5d.jpg')
@@ -139,16 +142,16 @@ class VideoColorizer():
         print('Video created here: ' + str(result_path))
         return result_path
 
-    def colorize_from_url(self, source_url, file_name:str, render_factor:int=None)->str: 
+    def colorize_from_url(self, source_url, file_name:str, render_factor:int=None)->Path: 
         source_path =  self.source_folder/file_name
         self._download_video_from_url(source_url, source_path)
         return self._colorize_from_path(source_path, render_factor=render_factor)
 
-    def colorize_from_file_name(self, file_name:str, render_factor:int=None)->str:
+    def colorize_from_file_name(self, file_name:str, render_factor:int=None)->Path:
         source_path =  self.source_folder/file_name
         return self._colorize_from_path(source_path, render_factor=render_factor)
 
-    def _colorize_from_path(self, source_path:Path, render_factor:int=None)->str:
+    def _colorize_from_path(self, source_path:Path, render_factor:int=None)->Path:
         if not source_path.exists():
             raise Exception('Video at path specfied, ' + str(source_path) + ' could not be found.')
 
@@ -187,7 +190,10 @@ def get_artistic_image_colorizer(root_folder:Path=Path('./'), weights_name:str='
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis
 
-def show_video_in_notebook(video_path:str):
+def show_image_in_notebook(image_path:Path):
+    ipythondisplay.display(ipythonimage(str(image_path)))
+
+def show_video_in_notebook(video_path:Path):
     video = io.open(video_path, 'r+b').read()
     encoded = base64.b64encode(video)
     ipythondisplay.display(HTML(data='''<video alt="test" autoplay 
