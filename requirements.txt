@@ -1,4 +1,6 @@
-fastai>=1.0.42
-tensorboardX>=1.4
-ffmpeg-python
-youtube-dl
+python=3.7
+fastai=1.0.51
+tensorboardX=1.6
+ffmpeg=4.11
+ffmpeg-python=0.1.17
+youtube-dl>=2019.4.17
