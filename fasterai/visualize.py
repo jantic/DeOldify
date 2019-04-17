@@ -5,7 +5,6 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from .filters import IFilter, MasterFilter, ColorizerFilter
 from .generators import gen_inference_deep, gen_inference_wide
-from IPython.display import display
 from tensorboardX import SummaryWriter
 from scipy import misc
 from PIL import Image 
@@ -14,6 +13,9 @@ import youtube_dl
 import gc
 import requests
 from io import BytesIO
+import base64
+from IPython import display as ipythondisplay
+from IPython.display import HTML
 
 
 class ModelImageVisualizer():
@@ -122,7 +124,7 @@ class VideoColorizer():
                 color_image = self.vis.get_transformed_image(str(img_path), render_factor=render_factor)
                 color_image.save(str(colorframes_folder/img))
     
-    def _build_video(self, source_path:Path):
+    def _build_video(self, source_path:Path)->str:
         result_path = self.result_folder/source_path.name
         colorframes_folder = self.colorframes_root/(source_path.stem)
         colorframes_path_template = str(colorframes_folder/'%5d.jpg')
@@ -135,23 +137,24 @@ class VideoColorizer():
             .run(capture_stdout=True)
         
         print('Video created here: ' + str(result_path))
+        return result_path
 
-    def colorize_from_url(self, source_url, file_name:str, render_factor:int=None): 
+    def colorize_from_url(self, source_url, file_name:str, render_factor:int=None)->str: 
         source_path =  self.source_folder/file_name
         self._download_video_from_url(source_url, source_path)
-        self._colorize_from_path(source_path, render_factor=render_factor)
+        return self._colorize_from_path(source_path, render_factor=render_factor)
 
-    def colorize_from_file_name(self, file_name:str, render_factor:int=None):
+    def colorize_from_file_name(self, file_name:str, render_factor:int=None)->str:
         source_path =  self.source_folder/file_name
-        self._colorize_from_path(source_path, render_factor=render_factor)
+        return self._colorize_from_path(source_path, render_factor=render_factor)
 
-    def _colorize_from_path(self, source_path:Path, render_factor:int=None):
+    def _colorize_from_path(self, source_path:Path, render_factor:int=None)->str:
         if not source_path.exists():
             raise Exception('Video at path specfied, ' + str(source_path) + ' could not be found.')
 
         self._extract_raw_frames(source_path)
         self._colorize_raw_frames(source_path, render_factor=render_factor)
-        self._build_video(source_path)
+        return self._build_video(source_path)
 
 
 def get_video_colorizer(render_factor:int=21)->VideoColorizer:
@@ -184,6 +187,12 @@ def get_artistic_image_colorizer(root_folder:Path=Path('./'), weights_name:str='
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis
 
-
+def show_video_in_notebook(video_path:str):
+    video = io.open(video_path, 'r+b').read()
+    encoded = base64.b64encode(video)
+    ipythondisplay.display(HTML(data='''<video alt="test" autoplay 
+                loop controls style="height: 400px;">
+                <source src="data:video/mp4;base64,{0}" type="video/mp4" />
+             </video>'''.format(encoded.decode('ascii'))))
 
 
