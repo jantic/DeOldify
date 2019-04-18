@@ -1,4 +1,7 @@
 fastai==1.0.51
 tensorboardX==1.6
+ffmpeg==4.1.1
 ffmpeg-python==0.1.17
 youtube-dl>=2019.4.17
+jupyterlab
+opencv-python>=3.3.0.10
