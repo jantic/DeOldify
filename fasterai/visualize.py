@@ -34,21 +34,23 @@ class ModelImageVisualizer():
 
     def _get_image_from_url(self, url:str)->Image:
         response = requests.get(url)
-        img = Image.open(BytesIO(response.content)).convert('RGB')
+        img = PIL.Image.open(BytesIO(response.content)).convert('RGB')
         return img
 
-    def plot_transformed_image_from_url(self, url:str, path:str='test_images/image.png', figsize:(int,int)=(20,20), render_factor:int=None)->Path:
+    def plot_transformed_image_from_url(self, url:str, path:str='test_images/image.png', figsize:(int,int)=(20,20), 
+            render_factor:int=None, display_render_factor:bool=False)->Path:
         img = self._get_image_from_url(url)
         img.save(path)
-        return self.plot_transformed_image(path=path, figsize=figsize, render_factor=render_factor)
+        return self.plot_transformed_image(path=path, figsize=figsize, render_factor=render_factor, 
+                                            display_render_factor=display_render_factor)
 
-    def plot_transformed_image(self, path:str, figsize:(int,int)=(20,20), render_factor:int=None)->Path:
+    def plot_transformed_image(self, path:str, figsize:(int,int)=(20,20), render_factor:int=None, display_render_factor:bool=False)->Path:
         path = Path(path)
         result = self.get_transformed_image(path, render_factor)
         orig = self._open_pil_image(path)
         fig,axes = plt.subplots(1, 2, figsize=figsize)
-        self._plot_image(orig, axes=axes[0], figsize=figsize)
-        self._plot_image(result, axes=axes[1], figsize=figsize)
+        self._plot_image(orig, axes=axes[0], figsize=figsize, render_factor=render_factor, display_render_factor=False)
+        self._plot_image(result, axes=axes[1], figsize=figsize, render_factor=render_factor, display_render_factor=display_render_factor)
         return self._save_result_image(path, result)
 
     def _save_result_image(self, source_path:Path, image:Image)->Path:
@@ -62,11 +64,13 @@ class ModelImageVisualizer():
         filtered_image = self.filter.filter(orig_image, orig_image, render_factor=render_factor)
         return filtered_image
 
-    def _plot_image(self, image:Image, axes:Axes=None, figsize=(20,20)):
+    def _plot_image(self, image:Image, render_factor:int, axes:Axes=None, figsize=(20,20), display_render_factor:bool=False):
         if axes is None: 
             _,axes = plt.subplots(figsize=figsize)
         axes.imshow(np.asarray(image)/255)
         axes.axis('off')
+        if render_factor is not None and display_render_factor:
+            plt.text(10,10,'render_factor: ' + str(render_factor), backgroundcolor='black')
 
     def _get_num_rows_columns(self, num_images:int, max_columns:int)->(int,int):
         columns = min(num_images, max_columns)
