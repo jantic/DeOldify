@@ -70,7 +70,7 @@ class ModelImageVisualizer():
         axes.imshow(np.asarray(image)/255)
         axes.axis('off')
         if render_factor is not None and display_render_factor:
-            plt.text(10,10,'render_factor: ' + str(render_factor), backgroundcolor='black')
+            plt.text(10,10,'render_factor: ' + str(render_factor), color='white', backgroundcolor='black')
 
     def _get_num_rows_columns(self, num_images:int, max_columns:int)->(int,int):
         columns = min(num_images, max_columns)
