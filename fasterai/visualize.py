@@ -216,4 +216,3 @@ def show_video_in_notebook(video_path:Path):
                 <source src="data:video/mp4;base64,{0}" type="video/mp4" />
              </video>'''.format(encoded.decode('ascii'))))
 
-
