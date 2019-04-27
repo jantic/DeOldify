@@ -20,57 +20,58 @@ Simply put, the mission of this project is to colorize and restore old images an
 ### Example Images
 
 
-"Migrant Mother" by Dorothea Lange (1936)
+<sup>"Migrant Mother" by Dorothea Lange (1936)</sup>
 
 ![MigrantMother](resource_images/10_dorothea-lange_artistic_RF25_compared_sm.jpg)
 
 
-Woman relaxing in her livingroom in Sweden (1920)
+<sup>Woman relaxing in her livingroom in Sweden (1920)</sup>
 
 ![SwedenLivingRoom](resource_images/0_LivingRoom1920Sweden_artistic_RF46_compared_sm.jpg)
 
 
-"Toffs and Toughs" by Jimmy Sime (1937)
+<sup>"Toffs and Toughs" by Jimmy Sime (1937)</sup>
 
 ![ClassDivide](resource_images/1_ClassDivide1930sBrittain_artistic_RF30_compared_sm.jpg)
 
 
-Thanksgiving Maskers (1911)
+<sup>Thanksgiving Maskers (1911)</sup>
 
 ![ThanksgivingMaskers](resource_images/2_1911ThanksgivingMaskers_artistic_RF36_compared_sm.jpg)
 
 
-Glen Echo Madame Careta Gypsy Camp in Maryland (1925)
+<sup>Glen Echo Madame Careta Gypsy Camp in Maryland (1925)</sup>
 
 ![GypsyCamp](resource_images/3_1925GypsyCampMaryland_artistic_RF45_compared_sm.jpg)
 
 
-"Mr. and Mrs. Lemuel Smith and their younger children in their farm house, Carroll County, Georgia." (1941)
+<sup>"Mr. and Mrs. Lemuel Smith and their younger children in their farm house, Carroll County, Georgia." (1941)</sup>
 
 ![GeorgiaFarmhouse](resource_images/4_1941GeorgiaFarmhouse_stable_RF43_compared_sm.jpg)
 
  
-"Building the Golden Gate Bridge" (est 1937)
+<sup>"Building the Golden Gate Bridge" (est 1937)</sup>
 
 ![GoldenGateBridge](resource_images/5_GoldenGateConstruction_stable_RF45_compared_sm.jpg)
+<sub>NOTE:  What you might be wondering is while this render looks cool, are the colors accurate? The original photo certainly makes it look like the towers of the bridge could be white. We looked into this and it turns out the answer is no- the towers were already covered in red primer by this time. So that's something to keep in mind- historical accuracy remains a huge challenge!</sub>
 
 
-"Terrasse de café, Paris" (1925)
+<sup>"Terrasse de café, Paris" (1925)</sup>
 
 ![CafeParis](resource_images/6_CafeTerrace1925Paris_artistic_RF37_compared_sm.jpg)
 
 
-Norwegian Bride (est late 1890s)
+<sup>Norwegian Bride (est late 1890s)</sup>
 
 ![NorwegianBride](resource_images/7_NorwegianBride1890s_artistic_RF40_compared_sm.jpg)
 
 
-Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)
+<sup>Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)</sup>
 
 ![NativeWoman](resource_images/8_NativeWoman1898_artistic_RF19_compared_sm.jpg)
 
 
-Chinese Opium Smokers (1880)
+<sup>Chinese Opium Smokers (1880)</sup>
 
 ![OpiumReal](resource_images/9_ChinaOpiumc1880_artistic_RF43_compared_sm.jpg)
 
@@ -105,11 +106,11 @@ Special thanks go to Rani Horev for his contributions in implementing this noise
 
 This is a new type of GAN training that I've developed to solve some key problems in the previous DeOldify model. It provides the benefits of GAN training while spending minimal time doing direct GAN training.  Instead, most of the training time is spent pretraining the generator and critic separately with more straight-forward, fast and reliable conventional methods.  A key insight here is that those more "conventional" methods generally get you most of the results you need, and that GANs can be used to close the gap on realism. During the very short amount of actual GAN training the generator not only gets the full realistic colorization capabilities that used to take days of progressively resized GAN training, but it also doesn't accrue nearly as much of the artifacts and other ugly baggage of GANs. In fact, you can pretty much eliminate glitches and artifacts almost entirely depending on your approach. As far as I know this is a new technique. And it's incredibly effective. 
 
-Original DeOldify Model
+<sup>Original DeOldify Model</sup>
 
 ![BeforeFlicker](https://thumbs.gfycat.com/CoordinatedVeneratedHogget-size_restricted.gif)
 
-NoGAN-Based DeOldify Model
+<sup>NoGAN-Based DeOldify Model</sup>
 
 ![AfterFlicker](https://thumbs.gfycat.com/OilyBlackArctichare-size_restricted.gif)
 
@@ -209,7 +210,7 @@ From there you can start running the notebooks in Jupyter Lab, via the url they 
 #### Installation Details
 
 This project is built around the wonderful Fast.AI library.  Prereqs, in summary:
-* **Fast.AI 1.0.46** (and its dependencies)
+* **Fast.AI 1.0.51** (and its dependencies)
 * **Jupyter Lab** `conda install -c conda-forge jupyterlab`
 * **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  FastAI now comes with built in support for this- you just  need to install the prereqs: `conda install -c anaconda tensorflow-gpu` and `pip install tensorboardX`
 * **ImageNet** – Only if you're training, of course. It has proven to be a great dataset for my purposes.  http://www.image-net.org/download-images
@@ -246,6 +247,7 @@ The colorization inference notebooks should be able to guide you from here. The 
 [video](https://www.dropbox.com/s/j7og84cbhpa94gs/ColorizeVideo_PretrainOnly_crit.pth?dl=0)
 -------------------------
 ### Want the Old DeOldify?
+
 We suspect some of you are going to want access to the original DeOldify model for various reasons.  We have that archived here:  https://github.com/dana-kelley/DeOldify
 
 -------------------------
