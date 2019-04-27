@@ -50,7 +50,7 @@ Glen Echo Madame Careta Gypsy Camp in Maryland (1925)
 ![GeorgiaFarmhouse](resource_images/4_1941GeorgiaFarmhouse_stable_RF43_compared_sm.jpg)
 
  
-"Building the Golden Gate Bridge" (est 1936)
+"Building the Golden Gate Bridge" (est 1937)
 
 ![GoldenGateBridge](resource_images/5_GoldenGateConstruction_stable_RF45_compared_sm.jpg)
 
