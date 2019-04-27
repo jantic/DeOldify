@@ -244,8 +244,12 @@ The colorization inference notebooks should be able to guide you from here. The 
 [artistic](https://www.dropbox.com/s/lakxe8akzjgjnmh/ColorizeArtistic_PretrainOnly_crit.pth?dl=0)
 [stable](https://www.dropbox.com/s/b3wka56iyv1fvdc/ColorizeStable_PretrainOnly_crit.pth?dl=0)
 [video](https://www.dropbox.com/s/j7og84cbhpa94gs/ColorizeVideo_PretrainOnly_crit.pth?dl=0)
+-------------------------
+### Want the Old DeOldify?
+We suspect some of you are going to want access to the original DeOldify model for various reasons.  We have that archived here:  https://github.com/dana-kelley/DeOldify
 
 -------------------------
 ### Want More?
 
 I'll be posting more results on Twitter. [<img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
+
