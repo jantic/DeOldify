@@ -15,6 +15,18 @@ Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align
 
 Simply put, the mission of this project is to colorize and restore old images and film footage.  I'll get into the details in a bit, but first let's see some pretty pictures and videos! 
 
+
+-------------------------
+### Introducing Video!
+
+NOTE:  Click images to watch
+
+#### Facebook F8 Demo
+[![](http://img.youtube.com/vi/l3UXXid04Ys/0.jpg)](http://www.youtube.com/watch?v=l3UXXid04Ys "")
+
+#### Silent Movie Examples
+[![](http://img.youtube.com/vi/EXn-n2iqEjI/0.jpg)](http://www.youtube.com/watch?v=EXn-n2iqEjI "")
+
 -----------------------
 
 ### Example Images
@@ -74,8 +86,6 @@ Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)
 Chinese Opium Smokers (1880)
 
 ![OpiumReal](resource_images/9_ChinaOpiumc1880_artistic_RF43_compared_sm.jpg)
-
-
 
 -------------------------
 ### Stuff That Should Probably Be In A Paper
