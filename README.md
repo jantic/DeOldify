@@ -1,120 +1,200 @@
 # DeOldify
 
-[<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/DeOldify_colab.ipynb) 
+Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)  |  Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
 
-[Get more updates on Twitter <img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj)
+[Get more updates on Twitter <img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj)
 
+------------------------
+### New and Exciting Stuff in DeOldify
+* Glitches and artifacts are almost entirely eliminated
+* Better skin (less zombies)
+* More highly detailed and photorealistic renders
+* Much less "blue bias"
+* **Video** - it actually looks good!  
+* **NoGAN** - a new and weird but highly effective way to do GAN training for image to image.
 
-Simply put, the mission of this project is to colorize and restore old images.  I'll get into the details in a bit, but first let's get to the pictures!  BTW – most of these source images originally came from the [TheWayWeWere](https://www.reddit.com/r/TheWayWeWere) subreddit, so credit to them for finding such great photos.
-
-
-#### Some of many results - These are pretty typical!
-
-Maria Anderson as the Fairy Fleur de farine and Lyubov Rabtsova as her page in the ballet “Sleeping Beauty” at the Imperial Theater, St. Petersburg, Russia, 1890.
-
-![Ballerinas](result_images/Ballerinas.jpg)
-
-Woman relaxing in her livingroom (1920, Sweden)
-
-![SwedenLivingRoom](result_images/SweedishLivingRoom1920.jpg)
-
-Medical Students pose with a cadaver around 1890
-
-![MedStudents](result_images/MedStudentsCards.jpg)
-
-Surfer in Hawaii, 1890
-
-![1890Surfer](result_images/1890Surfer.jpg)
-
-Whirling Horse, 1898
-
-![WhirlingHorse](result_images/WhirlingHorse.jpg)
-
-Interior of Miller and Shoemaker Soda Fountain, 1899
-
-![SodaFountain](result_images/SodaShop.jpg)
-
-Paris in the 1880s
-
-![Paris1880s](result_images/Paris1880s.jpg)
-
-Edinburgh from the sky in the 1920s
-
-![Edinburgh](result_images/FlyingOverEdinburgh.jpg)
-
-Texas Woman in 1938
-
-![TexasWoman](result_images/TexasWoman.jpg)
-
-People watching a television set for the first time at Waterloo station, London, 1936
-
-![Television](result_images/FirstTV1930s.jpg)
-
-Geography Lessons in 1850
-
-![Geography](result_images/GeographyLessons.jpg)
-
-Chinese Opium Smokers in 1880
-
-![OpiumReal](result_images/ChineseOpium1880s.jpg)
+Simply put, the mission of this project is to colorize and restore old images and film footage.  I'll get into the details in a bit, but first let's see some pretty pictures and videos! 
 
 
-#### Note that even really old and/or poor quality photos will still turn out looking pretty cool:
+-------------------------
+### Introducing Video!
 
-Deadwood, South Dakota, 1877
+NOTE:  Click images to watch
 
-![Deadwood](result_images/OldWest.jpg)
+#### Facebook F8 Demo
+[![](http://img.youtube.com/vi/l3UXXid04Ys/0.jpg)](http://www.youtube.com/watch?v=l3UXXid04Ys "")
 
-Siblings in 1877
+#### Silent Movie Examples
+[![](http://img.youtube.com/vi/EXn-n2iqEjI/0.jpg)](http://www.youtube.com/watch?v=EXn-n2iqEjI "")
 
-![Deadwood](result_images/Olds1875.jpg)
+-----------------------
 
-Portsmouth Square in San Franscisco, 1851
+### Example Images
 
-![PortsmouthSquare](result_images/SanFran1850sRetry.jpg)
 
-Samurais, circa 1860s
+"Migrant Mother" by Dorothea Lange (1936)
 
-![Samurais](result_images/Samurais.jpg)
+![MigrantMother](resource_images/10_dorothea-lange_artistic_RF25_compared_sm.jpg)
 
-#### Granted, the model isn't always perfect.  This one's red hand drives me nuts because it's otherwise fantastic:
 
-Seneca Native in 1908
+Woman relaxing in her livingroom in Sweden (1920)
 
-![Samurais](result_images/SenecaNative1908.jpg)
+![SwedenLivingRoom](resource_images/0_LivingRoom1920Sweden_artistic_RF46_compared_sm.jpg)
 
-#### It can also colorize b&w line drawings:
 
-![OpiumDrawing](result_images/OpiumSmokersDrawing.jpg)
+"Toffs and Toughs" by Jimmy Sime (1937)
 
+![ClassDivide](resource_images/1_ClassDivide1930sBrittain_artistic_RF30_compared_sm.jpg)
+
+
+Thanksgiving Maskers (1911)
+
+![ThanksgivingMaskers](resource_images/2_1911ThanksgivingMaskers_artistic_RF36_compared_sm.jpg)
+
+
+Glen Echo Madame Careta Gypsy Camp in Maryland (1925)
+
+![GypsyCamp](resource_images/3_1925GypsyCampMaryland_artistic_RF45_compared_sm.jpg)
+
+
+"Mr. and Mrs. Lemuel Smith and their younger children in their farm house, Carroll County, Georgia." (1941)
+
+![GeorgiaFarmhouse](resource_images/4_1941GeorgiaFarmhouse_stable_RF43_compared_sm.jpg)
+
+ 
+"Building the Golden Gate Bridge" (est 1937)
+
+![GoldenGateBridge](resource_images/5_GoldenGateConstruction_stable_RF45_compared_sm.jpg)
+<sub>NOTE:  What you might be wondering is while this render looks cool, are the colors accurate? The original photo certainly makes it look like the towers of the bridge could be white. We looked into this and it turns out the answer is no- the towers were already covered in red primer by this time. So that's something to keep in mind- historical accuracy remains a huge challenge!</sub>
+
+
+"Terrasse de café, Paris" (1925)
+
+![CafeParis](resource_images/6_CafeTerrace1925Paris_artistic_RF37_compared_sm.jpg)
+
+
+Norwegian Bride (est late 1890s)
+
+![NorwegianBride](resource_images/7_NorwegianBride1890s_artistic_RF40_compared_sm.jpg)
+
+
+Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)
+
+![NativeWoman](resource_images/8_NativeWoman1898_artistic_RF19_compared_sm.jpg)
+
+
+Chinese Opium Smokers (1880)
+
+![OpiumReal](resource_images/9_ChinaOpiumc1880_artistic_RF43_compared_sm.jpg)
+
+-------------------------
+### Stuff That Should Probably Be In A Paper
+
+#### **How to Achieve Stable Video**
+
+NoGAN training is crucial to getting the kind of stable and colorful images seen in this iteration of DeOldify. NoGAN training combines the benefits of GAN training (wonderful colorization) while eliminating the nasty side effects (like flickering objects in video). Believe it or not, video is rendered using isolated image generation without any sort of temporal modeling tacked on. The process performs 30-60 minutes of the GAN portion of "NoGAN" training, using 1% to 3% of imagenet data once.  Then, as with still image colorization, we "DeOldify" individual frames before rebuilding the video.
+
+In addition to improved video stability, there is an interesting thing going on here worth mentioning. It turns out the models I run, even different ones and with different training structures, keep arriving at more or less the same solution.  That's even the case for the colorization of things you may think would be arbitrary and unknowable, like the color of clothing, cars, and even special effects (as seen in "Metropolis").  
+
+![MetropolisSpecialFX](https://thumbs.gfycat.com/HeavyLoneBlowfish-size_restricted.gif)
+
+My best guess is that the models are learning some interesting rules about how to colorize based on subtle cues present in the black and white images that I certainly wouldn't expect to exist.  This result leads to nicely deterministic and consistent results, and that means you don't have track model colorization decisions because they're not arbitrary.  Additionally, they seem remarkably robust so that even in moving scenes the renders are very consistent.
+
+![MovingSceneExample](https://thumbs.gfycat.com/FamiliarJubilantAsp-size_restricted.gif)
+
+Other ways to stabilize video add up as well. First, generally speaking rendering at a higher resolution (higher render_factor) will increase stability of colorization decisions.  This stands to reason because the model has higher fidelity image information to work with and will have a greater chance of making the "right" decision consistently.  Closely related to this is the use of resnet101 instead of resnet34 as the backbone of the generator- objects are detected more consistently and corrrectly with this. This is especially important for getting good, consistent skin rendering.  It can be particularly visually jarring if you wind up with "zombie hands", for example.
+
+![ZombieHandExample](https://thumbs.gfycat.com/ThriftyInferiorIsabellinewheatear-size_restricted.gif)
+
+
+Additionally, gaussian noise augmentation during training appears to help but at this point the conclusions as to just how much are bit more tenuous (I just haven't formally measured this yet).  This is loosely based on work done in style transfer video, described here:  https://medium.com/element-ai-research-lab/stabilizing-neural-style-transfer-for-video-62675e203e42.  
+
+Special thanks go to Rani Horev for his contributions in implementing this noise augmentation.
+
+-------------------------
+#### **What is NoGAN???**
+
+This is a new type of GAN training that I've developed to solve some key problems in the previous DeOldify model. It provides the benefits of GAN training while spending minimal time doing direct GAN training.  Instead, most of the training time is spent pretraining the generator and critic separately with more straight-forward, fast and reliable conventional methods.  A key insight here is that those more "conventional" methods generally get you most of the results you need, and that GANs can be used to close the gap on realism. During the very short amount of actual GAN training the generator not only gets the full realistic colorization capabilities that used to take days of progressively resized GAN training, but it also doesn't accrue nearly as much of the artifacts and other ugly baggage of GANs. In fact, you can pretty much eliminate glitches and artifacts almost entirely depending on your approach. As far as I know this is a new technique. And it's incredibly effective. 
+
+Original DeOldify Model
+
+![BeforeFlicker](https://thumbs.gfycat.com/CoordinatedVeneratedHogget-size_restricted.gif)
+
+NoGAN-Based DeOldify Model
+
+![AfterFlicker](https://thumbs.gfycat.com/OilyBlackArctichare-size_restricted.gif)
+
+The steps are as follows: First train the generator in a conventional way by itself with just the feature loss. Next, generate images from that, and train the critic on distinguishing between those outputs and real images as a basic binary classifier. Finally, train the generator and critic together in a GAN setting (starting right at the target size of 192px in this case).  Now for the weird part:  All the useful GAN training here only takes place within a very small window of time.  There's an inflection point where it appears the critic has transferred everything it can that is useful to the generator. Past this point, image quality oscillates between the best that you can get at the inflection point, or bad in a predictable way (orangish skin, overly red lips, etc).  There appears to be no productive training after the inflection point.  And this point lies within training on just 1% to 3% of the Imagenet Data!  That amounts to about 30-60 minutes of training at 192px.  
+
+The hard part is finding this inflection point.  So far, I've accomplished this by making a whole bunch of model save checkpoints (every 0.1% of data iterated on) and then just looking for the point where images look great before they go totally bonkers with orange skin (always the first thing to go). Additionally, generator rendering starts immediately getting glitchy and inconsistent at this point, which is no good particularly for video. What I'd really like to figure out is what the tell-tale sign of the inflection point is that can be easily automated as an early stopping point.  Unfortunately, nothing definitive is jumping out at me yet.  For one, it's happening in the middle of training loss decreasing- not when it flattens out, which would seem more reasonable on the surface.   
+
+Another key thing about NoGAN training is you can repeat pretraining the critic on generated images after the initial GAN training, then repeat the GAN training itself in the same fashion.  This is how I was able to get extra colorful results with the "artistic" model.  But this does come at a cost currently- the output of the generator becomes increasingly inconsistent and you have to experiment with render resolution (render_factor) to get the best result.  But the renders are still glitch free and way more consistent than I was ever able to achieve with the original DeOldify model. You can do about five of these repeat cycles, give or take, before you get diminishing returns, as far as I can tell.  
+
+Keep in mind- I haven't been entirely rigorous in figuring out what all is going on in NoGAN- I'll save that for a paper. That means there's a good chance I'm wrong about something.  But I think it's definitely worth putting out there now because I'm finding it very useful- it's solving basically much of my remaining problems I had in DeOldify.
+
+This builds upon a technique developed in collaboration with Jeremy Howard and Sylvain Gugger for Fast.AI's Lesson 7 in version 3 of Practical Deep Learning for Coders Part I. The particular lesson notebook can be found here: https://github.com/fastai/course-v3/blob/master/nbs/dl1/lesson7-superres-gan.ipynb  
+
+------------------------
+### Why Three Models?
+
+There are now three models to choose from in DeOldify. Each of these has key strengths and weaknesses, and so have different use cases.  Video is for video of course.  But stable and artistic are both for images, and sometimes one will do images better than the other.  
+
+More details:
+
+* **Artistic**  This model achieves the highest quality results in image coloration, in terms of interesting details and vibrance. The most notable drawback however is that it's a bit of a pain to fiddle around with to get the best results (you have to adjust the rendering resolution or render_factor to achieve this).  Additionally, the model does not do as well as stable in a few key common scenarios- nature scenes and portraits.  The model uses a resnet34 backbone on a UNet with an emphasis on depth of layers on the decoder side.  This model was trained with 5 critic pretrain/GAN cycle repeats via NoGAN, in addition to the initial generator/critic pretrain/GAN NoGAN training, at 192px.  This adds up to a total of 32% of Imagenet data trained once (12.5 hours of direct GAN training).  
+* **Stable**  This model achieves the best results with landscapes and portraits. Notably, it produces less "zombies"- where faces or limbs stay gray rather than being colored in properly.  It generally has less weird miscolorations than artistic, but it's also less colorful in general.  This model uses a resnet101 backbone on a UNet with an emphasis on width of layers on the decoder side.  This model was trained with 3 critic pretrain/GAN cycle repeats via NoGAN, in addition to the initial generator/critic pretrain/GAN NoGAN training, at 192px.  This adds up to a total of 7% of Imagenet data trained once (3 hours of direct GAN training).
+* **Video**  This model is optimized for smooth, consistent and flicker-free video.  This would definitely be the least colorful of the three models, but it's honestly not too far off from "stable". The model is the same as "stable" in terms of architecture, but differs in training.  It's trained for a mere 2.2% of Imagenet data once at 192px, using only the initial generator/critic pretrain/GAN NoGAN training (1 hour of direct GAN training).
+
+Because the training of the artistic and stable models was done before the "inflection point" of NoGAN training described in "What is NoGAN???" was discovered,  I believe this amount of training on them can be knocked down considerably. As far as I can tell, the models were stopped at "good points" that were well beyond where productive training was taking place.  I'll be looking into this in the future.
+
+Ideally, eventually these three models will be consolidated into one that has all these good desirable unified.  I think there's a path there, but it's going to require more work!  So for now, the most practical solution appears to be to maintain multiple models.
+
+-----------------------
 
 ### The Technical Details
 
 This is a deep learning based model.  More specifically, what I've done is combined the following approaches:
-* **Self-Attention Generative Adversarial Network** (https://arxiv.org/abs/1805.08318).  Except the generator is a **pretrained U-Net**, and I've just modified it to have the spectral normalization and self-attention.  It's a pretty straightforward translation. I'll tell you what though – it made all the difference when I switched to this after trying desperately to get a Wasserstein GAN version to work.  I liked the theory of Wasserstein GANs but it just didn't pan out in practice.  But I'm in *love* with Self-Attention GANs.
-* Training structure inspired by (but not the same as) **Progressive Growing of GANs** (https://arxiv.org/abs/1710.10196).  The difference here is the number of layers remains constant – I just changed the size of the input progressively and adjusted learning rates to make sure that the transitions between sizes happened successfully.  It seems to have the same basic end result – training is faster, more stable, and generalizes better.  
-* **Two Time-Scale Update Rule** (https://arxiv.org/abs/1706.08500).  This is also very straightforward – it's just one to one generator/critic iterations and higher critic learning rate. 
-* **Generator Loss** is two parts:  One is a basic Perceptual Loss (or Feature Loss) based on VGG16 – this just biases the generator model to replicate the input image.  The second is the loss score from the critic.  For the curious – Perceptual Loss isn't sufficient by itself to produce good results.  It tends to just encourage a bunch of brown/green/blue – you know, cheating to the test, basically, which neural networks are really good at doing!  Key thing to realize here is that GANs essentially are learning the loss function for you – which is really one big step closer to toward the ideal that we're shooting for in machine learning.  And of course you generally get much better results when you get the machine to learn something you were previously hand coding.  That's certainly the case here.
 
-The beauty of this model is that it should be generally useful for all sorts of image modification, and it should do it quite well.  What you're seeing above are the results of the colorization model, but that's just one component in a pipeline that I'm looking to develop here with the exact same model. 
+#### **Self-Attention Generative Adversarial Network** (https://arxiv.org/abs/1805.08318)  
+Except the generator is a **pretrained U-Net**, and I've just modified it to have the spectral normalization and self-attention.  It's a pretty straightforward translation.
 
-What I develop next with this model will be based on trying to solve the problem of making these old images look great, so the next item on the agenda for me is the "defade" model.  I've committed initial efforts on that and it's in the early stages of training as I write this.  Basically it's just training the same model to reconstruct images that augmented with ridiculous contrast/brightness adjustments, as a simulation of fading photos and photos taken with old/bad equipment. I've already seen some promising results on that as well:
+#### **Two Time-Scale Update Rule** (https://arxiv.org/abs/1706.08500)
+This is also very straightforward – it's just one to one generator/critic iterations and higher critic learning rate. This is modified to incorporate a "threshold" critic loss that makes sure that the critic is "caught up" before moving on to generator training.  This is particularly useful for the "NoGAN" method described below.
 
-![DeloresTwoChanges](result_images/DeloresTwoChanges.jpg)
+#### **NoGAN**
+There's no paper here! This is a new type of GAN training that I've developed to solve some key problems in the previous DeOldify model. The gist is that you get the benefits of GAN training while spending minimal time doing direct GAN training.  More details are in the "What is NoGAN???" section of the readme (it's a doozy).
+
+#### **Generator Loss**
+Loss during NoGAN learning is two parts:  One is a basic Perceptual Loss (or Feature Loss) based on VGG16 – this just biases the generator model to replicate the input image.  The second is the loss score from the critic.  For the curious – Perceptual Loss isn't sufficient by itself to produce good results.  It tends to just encourage a bunch of brown/green/blue – you know, cheating to the test, basically, which neural networks are really good at doing!  Key thing to realize here is that GANs essentially are learning the loss function for you – which is really one big step closer to toward the ideal that we're shooting for in machine learning.  And of course you generally get much better results when you get the machine to learn something you were previously hand coding.  That's certainly the case here.
+
+**Of note:**  There's no longer any "Progressive Growing of GANs" type training going on here.  It's just not needed in lieu of the superior results obtained by the "NoGAN" technique described above.
+
+The beauty of this model is that it should be generally useful for all sorts of image modification, and it should do it quite well.  What you're seeing above are the results of the colorization model, but that's just one component in a pipeline that I'm developing with the exact same approach.
+
+-----------------------
 
 ### This Project, Going Forward
-So that's the gist of this project – I'm looking to make old photos look reeeeaaally good with GANs, and more importantly, make the project *useful*.  And yes, I'm definitely interested in doing video, but first I need to sort out how to get this model under control with memory (it's a beast).  It'd be nice if the models didn't take two to three days to train on a 1080TI as well (typical of GANs, unfortunately). In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseeable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
+So that's the gist of this project – I'm looking to make old photos and film look reeeeaaally good with GANs, and more importantly, make the project *useful*.  In the meantime though this is going to be my baby and I'll be actively updating and improving the code over the foreseeable future.  I'll try to make this as user-friendly as possible, but I'm sure there's going to be hiccups along the way.  
 
 Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *one of those* people who believes in "self documenting code" (LOL).
 
-### Getting Started Yourself
-The easiest way to get started is to simply try out colorization here on Colab: https://colab.research.google.com/github/jantic/DeOldify/blob/master/DeOldify_colab.ipynb.  This was contributed by Matt Robinson, and it's simply awesome.
+-----------------------
 
+### Getting Started Yourself- Easiest Approach
+The easiest way to get started is to go straight to the Colab notebooks: 
+
+Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) | Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
+
+Special thanks to Matt Robinson and María Benavente for their image Colab notebook contributions, and Robert Bell for the video Colab notebook work!
+
+-----------------------
+
+### Getting Started Yourself- Your Own Machine (not -as- easy)
 
 #### Hardware and Operating System Requirements
 
-* **(Training Only) BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Unet and Critic are ridiculously large but honestly I just kept getting better results the bigger I made them.  
-* **(Colorization Alone) A decent graphics card**. You'll benefit from having more memory in a graphics card in terms of the quality of the output achievable by.  Now what the term "decent" means exactly...I'm going to say 6GB +.  I haven't tried it but in my head the math works....  
+* **(Training Only) BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Generators and Critic are ridiculously large.  
+* **(Colorization Alone) A decent graphics card**. Approximately 4GB+ memory video cards should be sufficient.
 * **Linux (or maybe Windows 10)**  I'm using Ubuntu 16.04, but nothing about this precludes Windows 10 support as far as I know.  I just haven't tested it and am not going to make it a priority for now.  
 
 #### Easy Install
@@ -135,111 +215,54 @@ jupyter lab
 
 From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
 
-**Disclaimer**: This conda install process is new- I did test it locally but the classic developer's excuse is "well it works on my machine!" I'm keeping that in mind- there's a good chance it doesn't necessarily work on others's machines!  I probably, most definitely did something wrong here.  Definitely, in fact.  Please let me know via opening an issue. Pobody's nerfect.
 
-#### More Details for Those So Inclined
+--------------------------
+#### Installation Details
 
-This project is built around the wonderful Fast.AI library.  Unfortunately, it's the -old- version and I have yet to upgrade it to the new version.  (That's definitely [update 11/18/2018: maybe] on the agenda.)  So prereqs, in summary:
-* ***Old* Fast.AI library (version 0.7)** [**UPDATE 11/18/2018**] A forked version is now bundled with the project, for ease of deployment and independence from whatever happens to the old version from here on out.
-* **Python 3.6**
-* **Pytorch 0.4.1** (needs spectral_norm, so  latest stable release is needed). https://pytorch.org/get-started/locally/
+This project is built around the wonderful Fast.AI library.  Prereqs, in summary:
+* **Fast.AI 1.0.51** (and its dependencies)
 * **Jupyter Lab** `conda install -c conda-forge jupyterlab`
-* **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  And I've conveniently provided hooks/callbacks to automatically write all kinds of stuff to tensorboard for you already!  The notebooks have examples of these being instantiated (or commented out since I didn't really need the ones doing histograms of the model weights).  Notably, progress images will be written to Tensorboard every 200 iterations by default, so you get a constant and convenient look at what the model is doing.  `conda install -c anaconda tensorflow-gpu` 
-* **ImageNet** – Only if training of course. It proved to be a great dataset.  http://www.image-net.org/download-images
+* **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  FastAI now comes with built in support for this- you just  need to install the prereqs: `conda install -c anaconda tensorflow-gpu` and `pip install tensorboardX`
+* **ImageNet** – Only if you're training, of course. It has proven to be a great dataset for my purposes.  http://www.image-net.org/download-images
 
-### Pretrained Weights 
-To start right away with your own images without training the model yourself, [download the weights here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). Then open the [ColorizeVisualization.ipynb](ColorizeVisualization.ipynb) in Jupyter Lab.  Make sure that there's this sort of line in the notebook referencing the weights:
-```python
-colorizer_path = IMAGENET.parent/('colorize_gen_192.h5')
-```
+--------------------------
+#### Pretrained Weights 
 
-Then you simply pass it to this (all this should be in the notebooks already):
-```python
-filters = [Colorizer(gpu=0, weights_path=colorizer_path)]
-```
+To start right away on your own machine with your own images or videos without training the models yourself, you'll need to download the "Completed Generator Weights" listed below and drop them in the /models/ folder.
 
-Which then feed into this:
+The colorization inference notebooks should be able to guide you from here. The notebooks to use are named ImageColorizerArtistic.ipynb, ImageColorizerStable.ipynb, and VideoColorizer.ipynb.
 
-```python
-vis = ModelImageVisualizer(filters, render_factor=render_factor, results_dir='result_images')
-```
+#### Completed Generator Weights
 
-### Colorizing Your Own Photos
-Just drop whatever images in the `/test_images/` folder you want to run this against and you can visualize the results inside the notebook with lines like this:
+[artistic](https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0)
+[stable](https://www.dropbox.com/s/mwjep3vyqk5mkjc/ColorizeStable_gen.pth?dl=0)
+[video](https://www.dropbox.com/s/336vn9y4qwyg9yz/ColorizeVideo_gen.pth?dl=0)
 
-```python
-vis.plot_transformed_image("test_images/derp.jpg")
-```
+#### Completed Critic Weights
 
-The result images will automatically go into that **result_dir** defined above, in addition to being displayed in Jupyter.
+[artistic](https://www.dropbox.com/s/8g5txfzt2fw8mf5/ColorizeArtistic_crit.pth?dl=0)
+[stable](https://www.dropbox.com/s/7a8u20e7xdu1dtd/ColorizeStable_crit.pth?dl=0)
+[video](https://www.dropbox.com/s/0401djgo1dfxdzt/ColorizeVideo_crit.pth?dl=0)
 
-There's a **render_factor** variable that basically determines the quality of the rendered colors (but not the resolution of the output image).  The higher it is, the better, but you'll also need more GPU memory to accomodate this.  The max I've been able to have my GeForce 1080TI use is 42.  Lower the number if you get a CUDA_OUT_OF_MEMORY error.  You can customize this render_factor per image like this, overriding the default:
+#### Pretrain Only Generator Weights
 
-```python
-vis.plot_transformed_image("test_images/Chief.jpg", render_factor=17)
-```
+[artistic](https://www.dropbox.com/s/9zexurvrve141n9/ColorizeArtistic_PretrainOnly_gen.pth?dl=0)
+[stable](https://www.dropbox.com/s/mdnuo1563bb8nh4/ColorizeStable_PretrainOnly_gen.pth?dl=0)
+[video](https://www.dropbox.com/s/avzixh1ujf86e8x/ColorizeVideo_PretrainOnly_gen.pth?dl=0)
 
-For older and low quality images in particular, this seems to improve the colorization pretty reliably.  In contrast, more detailed and higher quality images tend to do better with a higher render_factor.
+#### Pretrain Only Critic Weights
 
-### Additional Things to Know
+[artistic](https://www.dropbox.com/s/lakxe8akzjgjnmh/ColorizeArtistic_PretrainOnly_crit.pth?dl=0)
+[stable](https://www.dropbox.com/s/b3wka56iyv1fvdc/ColorizeStable_PretrainOnly_crit.pth?dl=0)
+[video](https://www.dropbox.com/s/j7og84cbhpa94gs/ColorizeVideo_PretrainOnly_crit.pth?dl=0)
 
-Model weight saves are also done automatically during the training runs by the `GANTrainer` – defaulting to saving every 1000 iterations (it's an expensive operation).  They're stored in the root training data folder you provide, and the name goes by the save_base_name you provide to the training schedule.  Weights are saved for each training size separately.
+-------------------------
+### Want the Old DeOldify?
 
-I'd recommend navigating the code top down – the Jupyter notebooks are the place to start.  I treat them just as a convenient interface to prototype and visualize – everything else goes into `.py` files (and therefore a proper IDE) as soon as I can find a place for them.  I already have visualization examples conveniently included – just open the `xVisualization` notebooks to run these – they point to test images already included in the project so you can start right away (in test_images). 
+We suspect some of you are going to want access to the original DeOldify model for various reasons.  We have that archived here:  https://github.com/dana-kelley/DeOldify
 
-The "GAN Schedules" you'll see in the notebooks are probably the ugliest looking thing I've put in the code, but they're just my version of implementing progressive GAN training, suited to a Unet generator.  That's all that's going on there really.
-
-[Pretrained weights for the colorizer generator again are here](https://www.dropbox.com/s/7r2wu0af6okv280/colorize_gen_192.h5) (right click and download from this link). The DeFade stuff is still a work in progress so I'll try to get good weights for those up in a few days.
-
-Generally with training, you'll start seeing good results when you get midway through size 192px (assuming you're following the progressive training examples I laid out in the notebooks).  Note that this training regime is still a work in progress- I'm stil trying to figure out what exactly is optimal.  In other words, there's a good chance you'll find something to improve upon there.
-
-I'm sure I screwed up something putting this up, so [please let me know](https://github.com/jantic/DeOldify/issues/new) if that's the case. 
-
-### Known Issues
-
-* Getting the best images really boils down to the **art of selection**.  You'll mostly get good results the first go, but playing around with the render_factor a bit may make a difference.  Thus, I'd consider this tool at this point fit for the "AI artist" but not something I'd deploy as a general purpose tool for all consumers.  It's just not there yet. 
-* The model *loves* blue clothing.  Not quite sure what the answer is yet, but I'll be on the lookout for a solution!
-
+-------------------------
 ### Want More?
 
-I'll be posting more results on Twitter. [<img src="result_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
+I'll be posting more results on Twitter. [<img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
 
----
-
-### UPDATE 11/15/2018
-I just put up a bunch of significant improvements!  I'll just repeat what I put in Twitter, here:
-
-So first, this image should really help visualize what is going on under the hood. Notice the smallified square image in the center.
-
-![BeforeAfterChief](result_images/BeforeAfterChief.jpg)
-
-
-#### Squarification 
-That small square center image is what the deep learning generator actually generates now.  Before I was just shrinking the images keeping the same aspect ratio.  It turns out, the model does better with squares- even if they're distorted in the process!
-
-Note that I tried other things like keeping the core image's aspect ratio the same and doing various types of padding to make a square (reflect, symmetric, 0, etc).  None of this worked as well.  Two reasons why I think this works.  
-
-* One- model was trained on squares;
-* Two- at smaller resolutions I think this is particularly significant- you're giving the model more real image to work with if you just stretch it as opposed to padding.  And padding wasn't something the model trained on anyway.
-
-#### Chrominance Optimization
-It turns out that the human eye doesn't perceive color (chrominance) with nearly as much sensitivity as it does intensity (luminance).  Hence, we can render the color part at much lower resolution compared to the desired target res.
-
-Before, I was having the model render the image at the same size as the end result image that you saw. So you maxed out around 550px (maybe) because the GPU couldn't handle anymore.  Now?  Colors can be rendered at say a tiny 272x272 (as the image above), then the color part of the model output is simply resized and stretched to map over the much higher resolution original images's luminance portion (we already have that!). So the end result looks fantastic, because your eyes can't tell the difference with the color anyway!
-
-#### Graceful Rendering Degradation
-With the above, we're now able to generate much more consistently good looking images, even at different color gpu rendering sizes.  Basically, you do generally get a better image if you have the model take up more memory with a bigger render.  BUT if you reduce that memory footprint even in half with having the model render a smaller image, the difference in image quality of the end result is often pretty negligible.  This effectively means the colorization is usable on a wide variety of machines now! 
-
-i.e. You don't need a GeForce 1080TI to do it anymore.  You can get by with much less.
-
-#### Consistent Rendering Quality 
-Finally- With the above, I was finally able to narrow down a scheme to make it so that the hunt to find the best version of what the model can render is a lot less tedious.  Basically, it amounts to providing a render_factor (int) by the user and multiplying it by a base size multiplier of 16.  This, combined with the square rendering, plays well together.  It means that you get predictable behavior of rendering as you increase and decrease render_factor, without too many surprise glitches.
-
-Increase render_factor: Get more details right.  Decrease:  Still looks good but might miss some details.  Simple!  So you're no longer going to deal with a clumsy sz factor.  Bonus:  The memory usage is consistent and predictable so you just have to figure out the render_factor that works for your gpu once and forget about it.  I'll probably try to make that render_factor determination automatic eventually but this should be a big improvement in the meantime.
-
-#### P.S 
-
-You're not losing any image anymore with padding issues.  That's solved as a byproduct.  
-
-#### Also Also
-I added a new generic filter interface that replaces the visualizer dealing with models directly.  The visualizer loops through these filters that you provide as a list.  They don't have to be backed by deep learning models- they can be any image modification you want!

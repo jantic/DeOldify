@@ -1,207 +1,218 @@
-from numpy import ndarray
-from fastai.torch_imports import *
 from fastai.core import *
+from fastai.vision import *
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from fastai.dataset import FilesDataset, ImageData, ModelData, open_image
-from fastai.transforms import Transform, scale_min, tfms_from_stats, inception_stats
-from fastai.transforms import CropType, NoCrop, Denormalize, Scale
-from .transforms import BlackAndWhiteTransform
-from .training import GenResult, CriticResult, GANTrainer
-from .images import ModelImageSet, EasyTensorImage
-from .generators import GeneratorModule
-from .filters import Filter
-from IPython.display import display
+from .filters import IFilter, MasterFilter, ColorizerFilter
+from .generators import gen_inference_deep, gen_inference_wide
 from tensorboardX import SummaryWriter
 from scipy import misc
-import torchvision.utils as vutils
-import statistics
-from PIL import Image
+from PIL import Image 
+import ffmpeg
+import youtube_dl
+import gc
+import requests
+from io import BytesIO
+import base64
+from IPython import display as ipythondisplay
+from IPython.display import HTML
+from IPython.display import Image as ipythonimage
 
 class ModelImageVisualizer():
-    def __init__(self, filters:[Filter]=[], render_factor:int=18, results_dir:str=None):
-        self.filters = filters
-        self.render_factor=render_factor 
+    def __init__(self, filter:IFilter, results_dir:str=None):
+        self.filter = filter
         self.results_dir=None if results_dir is None else Path(results_dir)
+        self.results_dir.mkdir(parents=True, exist_ok=True)
+    
+    def _clean_mem(self):
+        torch.cuda.empty_cache()
+        #gc.collect()
 
-    def plot_transformed_image(self, path:str, figsize:(int,int)=(20,20), render_factor:int=None)->ndarray:
+    def _open_pil_image(self, path:Path)->Image:
+        return PIL.Image.open(path).convert('RGB')
+
+    def _get_image_from_url(self, url:str)->Image:
+        response = requests.get(url)
+        img = PIL.Image.open(BytesIO(response.content)).convert('RGB')
+        return img
+
+    def plot_transformed_image_from_url(self, url:str, path:str='test_images/image.png', figsize:(int,int)=(20,20), 
+            render_factor:int=None, display_render_factor:bool=False, compare:bool=False)->Path:
+        img = self._get_image_from_url(url)
+        img.save(path)
+        return self.plot_transformed_image(path=path, figsize=figsize, render_factor=render_factor, 
+                                            display_render_factor=display_render_factor, compare=compare)
+
+    def plot_transformed_image(self, path:str, figsize:(int,int)=(20,20), render_factor:int=None, 
+                            display_render_factor:bool=False, compare:bool=False)->Path:
         path = Path(path)
-        result = self._get_transformed_image_ndarray(path, render_factor)
-        orig = open_image(str(path))
+        result = self.get_transformed_image(path, render_factor)
+        orig = self._open_pil_image(path)
+        if compare: 
+            self._plot_comparison(figsize, render_factor, display_render_factor, orig, result)
+        else:
+            self._plot_solo(figsize, render_factor, display_render_factor, result)
+
+        return self._save_result_image(path, result)
+
+    def _plot_comparison(self, figsize:(int,int), render_factor:int, display_render_factor:bool, orig:Image, result:Image):
         fig,axes = plt.subplots(1, 2, figsize=figsize)
-        self._plot_image_from_ndarray(orig, axes=axes[0], figsize=figsize)
-        self._plot_image_from_ndarray(result, axes=axes[1], figsize=figsize)
+        self._plot_image(orig, axes=axes[0], figsize=figsize, render_factor=render_factor, display_render_factor=False)
+        self._plot_image(result, axes=axes[1], figsize=figsize, render_factor=render_factor, display_render_factor=display_render_factor)
+ 
+    def _plot_solo(self, figsize:(int,int), render_factor:int, display_render_factor:bool, result:Image):
+        fig,axes = plt.subplots(1, 1, figsize=figsize)
+        self._plot_image(result, axes=axes, figsize=figsize, render_factor=render_factor, display_render_factor=display_render_factor)
 
-        if self.results_dir is not None:
-            self._save_result_image(path, result)
-
-    def get_transformed_image_as_pil(self, path:str, render_factor:int=None)->Image:
-        path = Path(path)
-        array = self._get_transformed_image_ndarray(path, render_factor)
-        return misc.toimage(array)
-
-    def _save_result_image(self, source_path:Path, result:ndarray):
+    def _save_result_image(self, source_path:Path, image:Image)->Path:
         result_path = self.results_dir/source_path.name
-        misc.imsave(result_path, np.clip(result,0,1))
+        image.save(result_path)
+        return result_path
 
-    def _get_transformed_image_ndarray(self, path:Path, render_factor:int=None):
-        orig_image = open_image(str(path))
-        filtered_image = orig_image
-        render_factor = self.render_factor if render_factor is None else render_factor
-
-        for filt in self.filters:
-            filtered_image = filt.filter(orig_image, filtered_image, render_factor=render_factor)
-
+    def get_transformed_image(self, path:Path, render_factor:int=None)->Image:
+        self._clean_mem()
+        orig_image = self._open_pil_image(path)
+        filtered_image = self.filter.filter(orig_image, orig_image, render_factor=render_factor)
         return filtered_image
 
-    def _plot_image_from_ndarray(self, image:ndarray, axes:Axes=None, figsize=(20,20)):
+    def _plot_image(self, image:Image, render_factor:int, axes:Axes=None, figsize=(20,20), display_render_factor:bool=False):
         if axes is None: 
             _,axes = plt.subplots(figsize=figsize)
-        clipped_image =np.clip(image,0,1)
-        axes.imshow(clipped_image)
+        axes.imshow(np.asarray(image)/255)
         axes.axis('off')
+        if render_factor is not None and display_render_factor:
+            plt.text(10,10,'render_factor: ' + str(render_factor), color='white', backgroundcolor='black')
 
-    def _get_num_rows_columns(self, num_images:int, max_columns:int):
+    def _get_num_rows_columns(self, num_images:int, max_columns:int)->(int,int):
         columns = min(num_images, max_columns)
         rows = num_images//columns
         rows = rows if rows * columns == num_images else rows + 1
         return rows, columns
 
+class VideoColorizer():
+    def __init__(self, vis:ModelImageVisualizer):
+        self.vis=vis
+        workfolder = Path('./video')
+        self.source_folder = workfolder/"source"
+        self.bwframes_root = workfolder/"bwframes"
+        self.audio_root = workfolder/"audio"
+        self.colorframes_root = workfolder/"colorframes"
+        self.result_folder = workfolder/"result"
 
-class ModelGraphVisualizer():
-    def __init__(self):
-        return 
-     
-    def write_model_graph_to_tensorboard(self, ds:FilesDataset, model:nn.Module, tbwriter:SummaryWriter):
-        try:
-            x,_=ds[0]
-            tbwriter.add_graph(model, V(x[None]))
-        except Exception as e:
-            print(("Failed to generate graph for model: {0}. Note that there's an outstanding issue with "
-                + "scopes being addressed here:  https://github.com/pytorch/pytorch/pull/12400").format(e))
+    def _purge_images(self, dir):
+        for f in os.listdir(dir):
+            if re.search('.*?\.jpg', f):
+                os.remove(os.path.join(dir, f))
 
-class ModelHistogramVisualizer():
-    def __init__(self):
-        return 
+    def _get_fps(self, source_path: Path)->float:
+        probe = ffmpeg.probe(str(source_path))
+        stream_data = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
+        avg_frame_rate = stream_data['avg_frame_rate']
+        fps_num=avg_frame_rate.split("/")[0]
+        fps_den = avg_frame_rate.rsplit("/")[1]
+        return round(float(fps_num)/float(fps_den))
 
-    def write_tensorboard_histograms(self, model:nn.Module, iter_count:int, tbwriter:SummaryWriter):
-        for name, param in model.named_parameters():
-            tbwriter.add_histogram('/weights/' + name, param, iter_count)
+    def _download_video_from_url(self, source_url, source_path:Path):
+        if source_path.exists(): source_path.unlink()
+
+        ydl_opts = {    
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',     
+            'outtmpl': str(source_path)   
+            }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([source_url])
+
+    def _extract_raw_frames(self, source_path:Path):
+        bwframes_folder = self.bwframes_root/(source_path.stem)
+        bwframe_path_template = str(bwframes_folder/'%5d.jpg')
+        bwframes_folder.mkdir(parents=True, exist_ok=True)
+        self._purge_images(bwframes_folder)
+        ffmpeg.input(str(source_path)).output(str(bwframe_path_template), format='image2', vcodec='mjpeg', qscale=0).run(capture_stdout=True)
+
+
+    def _colorize_raw_frames(self, source_path:Path, render_factor:int=None):
+        colorframes_folder = self.colorframes_root/(source_path.stem)
+        colorframes_folder.mkdir(parents=True, exist_ok=True)
+        self._purge_images(colorframes_folder)
+        bwframes_folder = self.bwframes_root/(source_path.stem)
+
+        for img in progress_bar(os.listdir(str(bwframes_folder))):
+            img_path = bwframes_folder/img
+            if os.path.isfile(str(img_path)):
+                color_image = self.vis.get_transformed_image(str(img_path), render_factor=render_factor)
+                color_image.save(str(colorframes_folder/img))
     
+    def _build_video(self, source_path:Path)->Path:
+        result_path = self.result_folder/source_path.name
+        colorframes_folder = self.colorframes_root/(source_path.stem)
+        colorframes_path_template = str(colorframes_folder/'%5d.jpg')
+        result_path.parent.mkdir(parents=True, exist_ok=True)
+        if result_path.exists(): result_path.unlink()
+        fps = self._get_fps(source_path)
+
+        ffmpeg.input(str(colorframes_path_template), format='image2', vcodec='mjpeg', framerate=str(fps)) \
+            .output(str(result_path), crf=17, vcodec='libx264') \
+            .run(capture_stdout=True)
+        
+        print('Video created here: ' + str(result_path))
+        return result_path
+
+    def colorize_from_url(self, source_url, file_name:str, render_factor:int=None)->Path: 
+        source_path =  self.source_folder/file_name
+        self._download_video_from_url(source_url, source_path)
+        return self._colorize_from_path(source_path, render_factor=render_factor)
+
+    def colorize_from_file_name(self, file_name:str, render_factor:int=None)->Path:
+        source_path =  self.source_folder/file_name
+        return self._colorize_from_path(source_path, render_factor=render_factor)
+
+    def _colorize_from_path(self, source_path:Path, render_factor:int=None)->Path:
+        if not source_path.exists():
+            raise Exception('Video at path specfied, ' + str(source_path) + ' could not be found.')
+
+        self._extract_raw_frames(source_path)
+        self._colorize_raw_frames(source_path, render_factor=render_factor)
+        return self._build_video(source_path)
 
 
-class ModelStatsVisualizer(): 
-    def __init__(self):
-        return 
+def get_video_colorizer(render_factor:int=21)->VideoColorizer:
+    return get_stable_video_colorizer(render_factor=render_factor)
 
-    def write_tensorboard_stats(self, model:nn.Module, iter_count:int, tbwriter:SummaryWriter):
-        gradients = [x.grad  for x in model.parameters() if x.grad is not None]
-        gradient_nps = [to_np(x.data) for x in gradients]
- 
-        if len(gradients) == 0:
-            return 
+def get_stable_video_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeVideo_gen', 
+        results_dir='result_images', render_factor:int=21)->VideoColorizer:
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
+    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
+    return VideoColorizer(vis)
 
-        avg_norm = sum(x.data.norm() for x in gradients)/len(gradients)
-        tbwriter.add_scalar('/gradients/avg_norm', avg_norm, iter_count)
+def get_image_colorizer(render_factor:int=35, artistic:bool=True)->ModelImageVisualizer:
+    if artistic:
+        return get_artistic_image_colorizer(render_factor=render_factor)
+    else:
+        return get_stable_image_colorizer(render_factor=render_factor)
 
-        median_norm = statistics.median(x.data.norm() for x in gradients)
-        tbwriter.add_scalar('/gradients/median_norm', median_norm, iter_count)
+def get_stable_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeStable_gen', 
+        results_dir='result_images', render_factor:int=35)->ModelImageVisualizer:
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
+    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
+    return vis
 
-        max_norm = max(x.data.norm() for x in gradients)
-        tbwriter.add_scalar('/gradients/max_norm', max_norm, iter_count)
+def get_artistic_image_colorizer(root_folder:Path=Path('./'), weights_name:str='ColorizeArtistic_gen', 
+        results_dir='result_images', render_factor:int=35)->ModelImageVisualizer:
+    learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
+    vis = ModelImageVisualizer(filtr, results_dir=results_dir)
+    return vis
 
-        min_norm = min(x.data.norm() for x in gradients)
-        tbwriter.add_scalar('/gradients/min_norm', min_norm, iter_count)
+def show_image_in_notebook(image_path:Path):
+    ipythondisplay.display(ipythonimage(str(image_path)))
 
-        num_zeros = sum((np.asarray(x)==0.0).sum() for x in  gradient_nps)
-        tbwriter.add_scalar('/gradients/num_zeros', num_zeros, iter_count)
-
-
-        avg_gradient= sum(x.data.mean() for x in gradients)/len(gradients)
-        tbwriter.add_scalar('/gradients/avg_gradient', avg_gradient, iter_count)
-
-        median_gradient = statistics.median(x.data.median() for x in gradients)
-        tbwriter.add_scalar('/gradients/median_gradient', median_gradient, iter_count)
-
-        max_gradient = max(x.data.max() for x in gradients) 
-        tbwriter.add_scalar('/gradients/max_gradient', max_gradient, iter_count)
-
-        min_gradient = min(x.data.min() for x in gradients) 
-        tbwriter.add_scalar('/gradients/min_gradient', min_gradient, iter_count)
-
-class ImageGenVisualizer():
-    def __init__(self):
-        self.model_vis = ModelImageVisualizer()
-
-    def output_image_gen_visuals(self, md:ImageData, model:GeneratorModule, iter_count:int, tbwriter:SummaryWriter):
-        self._output_visuals(ds=md.val_ds, model=model, iter_count=iter_count, tbwriter=tbwriter, validation=True)
-        self._output_visuals(ds=md.trn_ds, model=model, iter_count=iter_count, tbwriter=tbwriter, validation=False)
-
-    def _output_visuals(self, ds:FilesDataset, model:GeneratorModule, iter_count:int, tbwriter:SummaryWriter, validation:bool):
-        #TODO:  Parameterize these
-        start_idx=0
-        count = 8
-        end_index = start_idx + count
-        idxs = list(range(start_idx,end_index))
-        image_sets = ModelImageSet.get_list_from_model(ds=ds, model=model, idxs=idxs)
-        self._write_tensorboard_images(image_sets=image_sets, iter_count=iter_count, tbwriter=tbwriter, validation=validation)
-    
-    def _write_tensorboard_images(self, image_sets:[ModelImageSet], iter_count:int, tbwriter:SummaryWriter, validation:bool):
-        orig_images = []
-        gen_images = []
-        real_images = []
-
-        for image_set in image_sets:
-            orig_images.append(image_set.orig.tensor)
-            gen_images.append(image_set.gen.tensor)
-            real_images.append(image_set.real.tensor)
-
-        prefix = 'val' if validation else 'train'
-
-        tbwriter.add_image(prefix + ' orig images', vutils.make_grid(orig_images, normalize=True), iter_count)
-        tbwriter.add_image(prefix + ' gen images', vutils.make_grid(gen_images, normalize=True), iter_count)
-        tbwriter.add_image(prefix + ' real images', vutils.make_grid(real_images, normalize=True), iter_count)
-
-
-class GANTrainerStatsVisualizer():
-    def __init__(self):
-        return
-
-    def write_tensorboard_stats(self, gresult:GenResult, cresult:CriticResult, iter_count:int, tbwriter:SummaryWriter):
-        tbwriter.add_scalar('/loss/hingeloss', cresult.hingeloss, iter_count)
-        tbwriter.add_scalar('/loss/dfake', cresult.dfake, iter_count)
-        tbwriter.add_scalar('/loss/dreal', cresult.dreal, iter_count)
-        tbwriter.add_scalar('/loss/gcost', gresult.gcost, iter_count)
-        tbwriter.add_scalar('/loss/gcount', gresult.iters, iter_count)
-        tbwriter.add_scalar('/loss/gaddlloss', gresult.gaddlloss, iter_count)
-
-    def print_stats_in_jupyter(self, gresult:GenResult, cresult:CriticResult):
-        print(f'\nHingeLoss {cresult.hingeloss}; RScore {cresult.dreal}; FScore {cresult.dfake}; GAddlLoss {gresult.gaddlloss}; ' + 
-                f'Iters: {gresult.iters}; GCost: {gresult.gcost};')
-
-
-class LearnerStatsVisualizer():
-    def __init__(self):
-        return
-    
-    def write_tensorboard_stats(self, metrics, iter_count:int, tbwriter:SummaryWriter):
-        if isinstance(metrics, list):
-            tbwriter.add_scalar('/loss/trn_loss', metrics[0], iter_count)    
-            if len(metrics) == 1: return
-            tbwriter.add_scalar('/loss/val_loss', metrics[1], iter_count)        
-            if len(metrics) == 2: return
-
-            for metric in metrics[2:]:
-                name = metric.__name__
-                tbwriter.add_scalar('/loss/'+name, metric, iter_count)
-                    
-        else: 
-            tbwriter.add_scalar('/loss/trn_loss', metrics, iter_count)
-
-  
-
-
-
-
+def show_video_in_notebook(video_path:Path):
+    video = io.open(video_path, 'r+b').read()
+    encoded = base64.b64encode(video)
+    ipythondisplay.display(HTML(data='''<video alt="test" autoplay 
+                loop controls style="height: 400px;">
+                <source src="data:video/mp4;base64,{0}" type="video/mp4" />
+             </video>'''.format(encoded.decode('ascii'))))
 
