@@ -199,6 +199,8 @@ Special thanks to Matt Robinson and María Benavente for their image Colab noteb
 
 #### Easy Install
 
+**NOTE** Make sure you have Git LFS installed if you're planning on using images in the /test_images/ folder.  Otherwise, you'll just wind up getting tiny files that will have the same file names but you will run into errors trying to open them or colorize them.  If you have a fancy shmancy git client like GitHub Desktop, it will probably prompt you to install it and do it for you.  If that doesn't happen,  get it here: https://git-lfs.github.com/
+
 You should now be able to do a simple install with Anaconda. Here are the steps:
 
 Open the command line and navigate to the root folder you wish to install.  Then type the following commands 
