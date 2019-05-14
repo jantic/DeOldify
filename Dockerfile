@@ -8,7 +8,6 @@ RUN add-apt-repository ppa:git-core/ppa
 
 RUN apt-get -y update
 
-
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 
 RUN apt-get install -y git-lfs --allow-unauthenticated
