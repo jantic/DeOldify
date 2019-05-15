@@ -217,7 +217,7 @@ From there you can start running the notebooks in Jupyter Lab, via the url they 
 
 #### Docker
 
-You can build and run the docker using the foloowing process:
+You can build and run the docker using the following process:
 
 Cloning
 ```console
@@ -234,7 +234,7 @@ Running Docker
 echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify
 ```
 
-If you don't have Nvidia Docker here the installation guide :
+If you don't have Nvidia Docker, here is the installation guide :
 https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20
 
 #### Note 
