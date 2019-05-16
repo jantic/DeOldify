@@ -258,7 +258,7 @@ curl -X POST "http:/MY_API_IP:5000/process" -H "accept: image/png" -H "Content-T
 ```
 #### Note Regarding Docker
 
-If you don't have Nvidia Docker, here the installation guide :
+If you don't have Nvidia Docker, here is the installation guide :
 https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20
 
 #### Note Regarding git LFS (test images download) 
