@@ -289,4 +289,3 @@ We suspect some of you are going to want access to the original DeOldify model f
 ### Want More?
 
 I'll be posting more results on Twitter. [<img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
-
