@@ -258,10 +258,10 @@ curl -X POST "http:/MY_API_IP:5000/process" -H "accept: image/png" -H "Content-T
 ```
 #### Note Regarding Docker
 
-If you don't have Nvidia Docker here the installation guide :
+If you don't have Nvidia Docker, here the installation guide :
 https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20
 
-#### Note 
+#### Note Regarding git LFS (test images download) 
 Make sure you have Git LFS installed if you're planning on using images in the /test_images/ folder.  Otherwise, you'll just wind up getting tiny files that will have the same file names but you will run into errors trying to open them or colorize them.  If you have a fancy shmancy git client like GitHub Desktop, it will probably prompt you to install it and do it for you.  If that doesn't happen,  get it here: https://git-lfs.github.com/
 
 --------------------------
