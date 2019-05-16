@@ -102,7 +102,7 @@ My best guess is that the models are learning some interesting rules about how t
 
 ![MovingSceneExample](https://thumbs.gfycat.com/FamiliarJubilantAsp-size_restricted.gif)
 
-Other ways to stabilize video add up as well. First, generally speaking rendering at a higher resolution (higher render_factor) will increase stability of colorization decisions.  This stands to reason because the model has higher fidelity image information to work with and will have a greater chance of making the "right" decision consistently.  Closely related to this is the use of resnet101 instead of resnet34 as the backbone of the generator- objects are detected more consistently and corrrectly with this. This is especially important for getting good, consistent skin rendering.  It can be particularly visually jarring if you wind up with "zombie hands", for example.
+Other ways to stabilize video add up as well. First, generally speaking rendering at a higher resolution (higher render_factor) will increase stability of colorization decisions.  This stands to reason because the model has higher fidelity image information to work with and will have a greater chance of making the "right" decision consistently.  Closely related to this is the use of resnet101 instead of resnet34 as the backbone of the generator- objects are detected more consistently and correctly with this. This is especially important for getting good, consistent skin rendering.  It can be particularly visually jarring if you wind up with "zombie hands", for example.
 
 ![ZombieHandExample](https://thumbs.gfycat.com/ThriftyInferiorIsabellinewheatear-size_restricted.gif)
 
@@ -215,7 +215,7 @@ jupyter lab
 
 From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
 
-#### Docker for jupyter
+#### Docker for Jupyter
 
 You can build and run the docker using the following process:
 
@@ -226,15 +226,16 @@ git clone https://github.com/jantic/DeOldify.git DeOldify
 
 Building Docker
 ```console
-cd DeOldify && docker build -t deoldify -f Dockerfile .
+cd DeOldify && docker build -t deoldify_jupyter -f Dockerfile .
 ```
 
 Running Docker
 ```console
-echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify
+echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify_jupyter
 ```
 
-#### Docker for api
+#### Docker for API
+
 You can build and run the docker using the following process:
 
 Cloning
@@ -252,16 +253,16 @@ Running Docker
 echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -it deoldify_api
 ```
 
-Calling the api for colorization
+Call the API
 ```console
-curl -X POST "http:/MY_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
+curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
 ```
-#### Note Regarding Docker
 
+#### Note Regarding Docker
 If you don't have Nvidia Docker, here is the installation guide :
 https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20
 
-#### Note Regarding git LFS (test images download) 
+#### Note GIT LFS (test images download)
 Make sure you have Git LFS installed if you're planning on using images in the /test_images/ folder.  Otherwise, you'll just wind up getting tiny files that will have the same file names but you will run into errors trying to open them or colorize them.  If you have a fancy shmancy git client like GitHub Desktop, it will probably prompt you to install it and do it for you.  If that doesn't happen,  get it here: https://git-lfs.github.com/
 
 --------------------------
