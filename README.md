@@ -253,11 +253,15 @@ Running Docker
 echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -it deoldify_api
 ```
 
-Calling the API
+Calling the API for image processing
 ```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
+curl -X POST "http://MY_SUPER_API_IP:5000/process_image" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
 ```
 
+Calling the API for video processing
+```console
+curl -X POST "http://MY_SUPER_API_IP:5000/process_video" -H "accept: application/octet-stream" -H "Content-Type: application/json" -d "{\"source_url\":\"https://v.redd.it/d1ku57kvuf421/HLSPlaylist.m3u8\", \"render_factor\":35}" --output colorized_video.mp4
+```
 #### Note Regarding Docker
 If you don't have Nvidia Docker, here is the installation guide :
 https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20
