@@ -215,9 +215,9 @@ jupyter lab
 
 From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
 
-#### Docker
+#### Docker for jupyter
 
-You can build and run the docker using the foloowing process:
+You can build and run the docker using the following process:
 
 Cloning
 ```console
@@ -226,13 +226,37 @@ git clone https://github.com/jantic/DeOldify.git DeOldify
 
 Building Docker
 ```console
-cd DeOldify && docker build -t deoldify .
+cd DeOldify && docker build -t deoldify -f Dockerfile .
 ```
 
 Running Docker
 ```console
 echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify
 ```
+
+#### Docker for api
+You can build and run the docker using the following process:
+
+Cloning
+```console
+git clone https://github.com/jantic/DeOldify.git DeOldify
+```
+
+Building Docker
+```console
+cd DeOldify && docker build -t deoldify_api -f Dockerfile-api .
+```
+
+Running Docker
+```console
+echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -it deoldify_api
+```
+
+Calling the api for colorization
+```console
+curl -X POST "http:/MY_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
+```
+#### Note Regarding Docker
 
 If you don't have Nvidia Docker here the installation guide :
 https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20
