@@ -28,6 +28,7 @@ os.environ['CUDA_VISIBLE_DEVICES']='0'
 app = Flask(__name__)
 
 # define a predict function as an endpoint
+
 @app.route("/process_image", methods=["POST"])
 def process_image():
     source_url = request.json["source_url"]
@@ -38,7 +39,7 @@ def process_image():
            os.mkdir(upload_directory)
 
     random_filename = str(uuid4()) + '.png'
-
+    
     image_colorizer.plot_transformed_image_from_url(url=source_url, path=os.path.join(upload_directory, random_filename), figsize=(20,20),
             render_factor=render_factor, display_render_factor=True, compare=False)
 
@@ -48,7 +49,6 @@ def process_image():
     os.remove(os.path.join("upload", random_filename))
 
     return callback
-
 
 @app.route("/process_video", methods=["POST"])
 def process_video():
