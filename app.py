@@ -62,9 +62,10 @@ def process_video():
     random_filename = str(uuid4()) + '.mp4'
 
     video_path = video_colorizer.colorize_from_url(source_url, random_filename, render_factor)
-    callback = send_file(os.path.join("video/result/", random_filename), mimetype='application/octet-stream')
+    callback = send_file(os.path.join("video/result/", random_filename.replace('.mp4', '-w-audio.mp4')), mimetype='application/octet-stream')
 
     os.remove(os.path.join("video/result/", random_filename))
+    os.remove(os.path.join("video/result/", random_filename.replace('.mp4', '-w-audio.mp4')))
 
     return callback
 

@@ -17,6 +17,8 @@ import base64
 from IPython import display as ipythondisplay
 from IPython.display import HTML
 from IPython.display import Image as ipythonimage
+import subprocess
+from moviepy.editor import *
 
 class ModelImageVisualizer():
     def __init__(self, filter:IFilter, results_dir:str=None):
@@ -153,9 +155,19 @@ class VideoColorizer():
         ffmpeg.input(str(colorframes_path_template), format='image2', vcodec='mjpeg', framerate=str(fps)) \
             .output(str(result_path), crf=17, vcodec='libx264') \
             .run(capture_stdout=True)
-        
-        print('Video created here: ' + str(result_path))
-        return result_path
+
+        # replace output video sound (blank) by original video sound
+        # kudos to https://github.com/btahir 
+        videoclip = VideoFileClip(str(source_path))
+        audioclip = videoclip.audio
+        video = VideoFileClip(str(result_path))
+        final = video.set_audio(audioclip)
+        out = str(result_path).replace('.mp4', '-w-audio.mp4')
+        final.write_videofile(out, codec='mpeg4', audio_codec='aac', temp_audiofile='temp-audio.m4a', remove_temp=True)
+
+        print('Video without audio created here: ' + str(result_path))
+        print('Video with audio created here: ' + str(out))
+        return out
 
     def colorize_from_url(self, source_url, file_name:str, render_factor:int=None)->Path: 
         source_path =  self.source_folder/file_name
