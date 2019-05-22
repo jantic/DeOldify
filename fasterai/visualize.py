@@ -17,8 +17,6 @@ import base64
 from IPython import display as ipythondisplay
 from IPython.display import HTML
 from IPython.display import Image as ipythonimage
-import subprocess
-from moviepy.editor import *
 
 class ModelImageVisualizer():
     def __init__(self, filter:IFilter, results_dir:str=None):
@@ -145,29 +143,33 @@ class VideoColorizer():
                 color_image.save(str(colorframes_folder/img))
     
     def _build_video(self, source_path:Path)->Path:
-        result_path = self.result_folder/source_path.name
+        colorized_path = self.result_folder/(source_path.name.replace('.mp4', '_no_audio.mp4'))
         colorframes_folder = self.colorframes_root/(source_path.stem)
         colorframes_path_template = str(colorframes_folder/'%5d.jpg')
-        result_path.parent.mkdir(parents=True, exist_ok=True)
-        if result_path.exists(): result_path.unlink()
+        colorized_path.parent.mkdir(parents=True, exist_ok=True)
+        if colorized_path.exists(): colorized_path.unlink()
         fps = self._get_fps(source_path)
 
         ffmpeg.input(str(colorframes_path_template), format='image2', vcodec='mjpeg', framerate=str(fps)) \
-            .output(str(result_path), crf=17, vcodec='libx264') \
+            .output(str(colorized_path), crf=17, vcodec='libx264') \
             .run(capture_stdout=True)
 
-        # replace output video sound (blank) by original video sound
-        # kudos to https://github.com/btahir 
-        videoclip = VideoFileClip(str(source_path))
-        audioclip = videoclip.audio
-        video = VideoFileClip(str(result_path))
-        final = video.set_audio(audioclip)
-        out = str(result_path).replace('.mp4', '-w-audio.mp4')
-        final.write_videofile(out, codec='libx264', audio_codec='aac', threads=64, temp_audiofile='temp-audio.m4a', remove_temp=True)
+        result_path = self.result_folder/source_path.name
+        if result_path.exists(): result_path.unlink()
+        #making copy of non-audio version in case adding back audio doesn't apply or fails.
+        shutil.copyfile(str(colorized_path), str(result_path))
 
-        print('Video without audio created here: ' + str(result_path))
-        print('Video with audio created here: ' + str(out))
-        return out
+        # adding back sound here
+        audio_file = Path(str(source_path).replace('.mp4', '.aac'))
+        if audio_file.exists(): audio_file.unlink()
+
+        os.system('ffmpeg -y -i "' + str(source_path) + '" -vn -acodec copy "' + str(audio_file) + '"')
+
+        if audio_file.exists:
+            os.system('ffmpeg -y -i "' + str(colorized_path) + '" -i "' + str(audio_file) 
+                + '" -shortest -c:v copy -c:a aac -b:a 256k "' + str(result_path) + '"')
+        print('Video created here: ' + str(result_path))
+        return result_path
 
     def colorize_from_url(self, source_url, file_name:str, render_factor:int=None)->Path: 
         source_path =  self.source_folder/file_name
