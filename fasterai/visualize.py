@@ -163,7 +163,7 @@ class VideoColorizer():
         video = VideoFileClip(str(result_path))
         final = video.set_audio(audioclip)
         out = str(result_path).replace('.mp4', '-w-audio.mp4')
-        final.write_videofile(out, codec='mpeg4', audio_codec='aac', temp_audiofile='temp-audio.m4a', remove_temp=True)
+        final.write_videofile(out, codec='libx264', audio_codec='aac', threads=64, temp_audiofile='temp-audio.m4a', remove_temp=True)
 
         print('Video without audio created here: ' + str(result_path))
         print('Video with audio created here: ' + str(out))
