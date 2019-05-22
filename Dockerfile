@@ -2,7 +2,7 @@ From nvcr.io/nvidia/pytorch:19.04-py3
 
 RUN apt-get -y update
 
-RUN apt-get install -y python3-pip software-properties-common wget
+RUN apt-get install -y python3-pip software-properties-common wget ffmpeg
 
 RUN add-apt-repository ppa:git-core/ppa
 
