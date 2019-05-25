@@ -104,13 +104,10 @@ class VideoColorizer():
             if re.search('.*?\.jpg', f):
                 os.remove(os.path.join(dir, f))
 
-    def _get_fps(self, source_path: Path)->float:
+    def _get_fps(self, source_path: Path)->str:
         probe = ffmpeg.probe(str(source_path))
         stream_data = next((stream for stream in probe['streams'] if stream['codec_type'] == 'video'), None)
-        avg_frame_rate = stream_data['avg_frame_rate']
-        fps_num=avg_frame_rate.split("/")[0]
-        fps_den = avg_frame_rate.rsplit("/")[1]
-        return round(float(fps_num)/float(fps_den))
+        return stream_data['avg_frame_rate']
 
     def _download_video_from_url(self, source_url, source_path:Path):
         if source_path.exists(): source_path.unlink()
@@ -150,7 +147,7 @@ class VideoColorizer():
         if colorized_path.exists(): colorized_path.unlink()
         fps = self._get_fps(source_path)
 
-        ffmpeg.input(str(colorframes_path_template), format='image2', vcodec='mjpeg', framerate=str(fps)) \
+        ffmpeg.input(str(colorframes_path_template), format='image2', vcodec='mjpeg', framerate=fps) \
             .output(str(colorized_path), crf=17, vcodec='libx264') \
             .run(capture_stdout=True)
 
