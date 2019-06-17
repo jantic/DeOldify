@@ -318,3 +318,8 @@ We suspect some of you are going to want access to the original DeOldify model f
 ### Want More?
 
 I'll be posting more results on Twitter. [<img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
+
+-------------------------
+### License
+All code in this repository is under the MIT license as specified by the LICENSE file.
+The model weights listed in this readme under the "Pretrained Weights" section are trained by ourselves and are released under the MIT license.
