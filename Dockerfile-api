@@ -42,5 +42,5 @@ RUN cd /data/test_images && git lfs pull
 
 EXPOSE 5000
 
-#ENTRYPOINT ["python3", "app.py"]
+ENTRYPOINT ["python3", "app.py"]
 
