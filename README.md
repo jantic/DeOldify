@@ -250,7 +250,7 @@ cd DeOldify && docker build -t deoldify_api -f Dockerfile-api .
 
 Running Docker
 ```console
-echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -it deoldify_api
+echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -d deoldify_api
 ```
 
 Calling the API for image processing
