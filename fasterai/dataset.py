@@ -9,7 +9,7 @@ from .augs import noisify
 def get_colorize_data(sz:int, bs:int, crappy_path:Path, good_path:Path, random_seed:int=None, 
         keep_pct:float=1.0, num_workers:int=8, xtra_tfms=[])->ImageDataBunch:
 
-    src = (ImageImageList.from_folder(crappy_path)
+    src = (ImageImageList.from_folder(crappy_path, convert_mode='RGB')
         .use_partial_data(sample_pct=keep_pct, seed=random_seed)
         .split_by_rand_pct(0.1, seed=random_seed))
 
