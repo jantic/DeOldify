@@ -68,7 +68,7 @@ class DynamicUnetDeep(SequentialEx):
         imsize = (256,256)
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
-        self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
+        self.sfs = hook_outputs([encoder[i] for i in sfs_idxs], detach=False)
         x = dummy_eval(encoder, imsize).detach()
 
         ni = sfs_szs[-1][1]
@@ -138,7 +138,7 @@ class DynamicUnetWide(SequentialEx):
         imsize = (256,256)
         sfs_szs = model_sizes(encoder, size=imsize)
         sfs_idxs = list(reversed(_get_sfs_idxs(sfs_szs)))
-        self.sfs = hook_outputs([encoder[i] for i in sfs_idxs])
+        self.sfs = hook_outputs([encoder[i] for i in sfs_idxs], detach=False)
         x = dummy_eval(encoder, imsize).detach()
 
         ni = sfs_szs[-1][1]

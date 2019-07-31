@@ -34,58 +34,58 @@ NOTE:  Click images to watch
 
 "Migrant Mother" by Dorothea Lange (1936)
 
-![MigrantMother](resource_images/10_dorothea-lange_artistic_RF25_compared_sm.jpg)
+![MigrantMother](https://i.imgur.com/Bt0vnke.jpg)
 
 
 Woman relaxing in her livingroom in Sweden (1920)
 
-![SwedenLivingRoom](resource_images/0_LivingRoom1920Sweden_artistic_RF46_compared_sm.jpg)
+![SwedenLivingRoom](https://i.imgur.com/158d0oU.jpg)
 
 
 "Toffs and Toughs" by Jimmy Sime (1937)
 
-![ClassDivide](resource_images/1_ClassDivide1930sBrittain_artistic_RF30_compared_sm.jpg)
+![ClassDivide](https://i.imgur.com/VYuav4I.jpg)
 
 
 Thanksgiving Maskers (1911)
 
-![ThanksgivingMaskers](resource_images/2_1911ThanksgivingMaskers_artistic_RF36_compared_sm.jpg)
+![ThanksgivingMaskers](https://i.imgur.com/n8qVJ5c.jpg)
 
 
 Glen Echo Madame Careta Gypsy Camp in Maryland (1925)
 
-![GypsyCamp](resource_images/3_1925GypsyCampMaryland_artistic_RF45_compared_sm.jpg)
+![GypsyCamp](https://i.imgur.com/1oYrJRI.jpg)
 
 
 "Mr. and Mrs. Lemuel Smith and their younger children in their farm house, Carroll County, Georgia." (1941)
 
-![GeorgiaFarmhouse](resource_images/4_1941GeorgiaFarmhouse_stable_RF43_compared_sm.jpg)
+![GeorgiaFarmhouse](https://i.imgur.com/I2j8ynm.jpg)
 
  
 "Building the Golden Gate Bridge" (est 1937)
 
-![GoldenGateBridge](resource_images/5_GoldenGateConstruction_stable_RF45_compared_sm.jpg)
+![GoldenGateBridge](https://i.imgur.com/6SbFjfq.jpg)
 <sub>NOTE:  What you might be wondering is while this render looks cool, are the colors accurate? The original photo certainly makes it look like the towers of the bridge could be white. We looked into this and it turns out the answer is no- the towers were already covered in red primer by this time. So that's something to keep in mind- historical accuracy remains a huge challenge!</sub>
 
 
 "Terrasse de café, Paris" (1925)
 
-![CafeParis](resource_images/6_CafeTerrace1925Paris_artistic_RF37_compared_sm.jpg)
+![CafeParis](https://i.imgur.com/WprQwP5.jpg)
 
 
 Norwegian Bride (est late 1890s)
 
-![NorwegianBride](resource_images/7_NorwegianBride1890s_artistic_RF40_compared_sm.jpg)
+![NorwegianBride](https://i.imgur.com/MmtvrZm.jpg)
 
 
 Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)
 
-![NativeWoman](resource_images/8_NativeWoman1898_artistic_RF19_compared_sm.jpg)
+![NativeWoman](https://i.imgur.com/zIGM043.jpg)
 
 
 Chinese Opium Smokers (1880)
 
-![OpiumReal](resource_images/9_ChinaOpiumc1880_artistic_RF43_compared_sm.jpg)
+![OpiumReal](https://i.imgur.com/lVGq8Vq.jpg)
 
 -------------------------
 ### Stuff That Should Probably Be In A Paper
@@ -215,7 +215,7 @@ jupyter lab
 
 From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
 
-#### Docker
+#### Docker for Jupyter
 
 You can build and run the docker using the following process:
 
@@ -226,18 +226,47 @@ git clone https://github.com/jantic/DeOldify.git DeOldify
 
 Building Docker
 ```console
-cd DeOldify && docker build -t deoldify .
+cd DeOldify && docker build -t deoldify_jupyter -f Dockerfile .
 ```
 
 Running Docker
 ```console
-echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify
+echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify_jupyter
 ```
 
+#### Docker for API
+
+You can build and run the docker using the following process:
+
+Cloning
+```console
+git clone https://github.com/jantic/DeOldify.git DeOldify
+```
+
+Building Docker
+```console
+cd DeOldify && docker build -t deoldify_api -f Dockerfile-api .
+```
+
+Running Docker
+```console
+echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -d deoldify_api
+```
+
+Calling the API for image processing
+```console
+curl -X POST "http://MY_SUPER_API_IP:5000/process_image" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
+```
+
+Calling the API for video processing
+```console
+curl -X POST "http://MY_SUPER_API_IP:5000/process_video" -H "accept: application/octet-stream" -H "Content-Type: application/json" -d "{\"source_url\":\"https://v.redd.it/d1ku57kvuf421/HLSPlaylist.m3u8\", \"render_factor\":35}" --output colorized_video.mp4
+```
+#### Note Regarding Docker
 If you don't have Nvidia Docker, here is the installation guide :
 https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20
 
-#### Note 
+#### Note GIT LFS (test images download support)
 Make sure you have Git LFS installed if you're planning on using images in the /test_images/ folder.  Otherwise, you'll just wind up getting tiny files that will have the same file names but you will run into errors trying to open them or colorize them.  If you have a fancy shmancy git client like GitHub Desktop, it will probably prompt you to install it and do it for you.  If that doesn't happen,  get it here: https://git-lfs.github.com/
 
 --------------------------
@@ -290,3 +319,7 @@ We suspect some of you are going to want access to the original DeOldify model f
 
 I'll be posting more results on Twitter. [<img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="28">](https://twitter.com/citnaj)
 
+-------------------------
+### License
+All code in this repository is under the MIT license as specified by the LICENSE file.
+The model weights listed in this readme under the "Pretrained Weights" section are trained by ourselves and are released under the MIT license.
