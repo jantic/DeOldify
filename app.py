@@ -51,7 +51,7 @@ def process_image():
 
     except:
         traceback.print_exc()
-        return {message: 'input error'}, 400
+        return {'message': 'input error'}, 400
 
     finally:
         os.remove(os.path.join("result_images", random_filename))
@@ -77,7 +77,7 @@ def process_video():
 
     except:
         traceback.print_exc()
-        return {message: 'input error'}, 400
+        return {'message': 'input error'}, 400
 
     finally:
         os.remove(os.path.join("video/result/", random_filename))
