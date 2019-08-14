@@ -255,7 +255,7 @@ echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5
 
 Calling the API for image processing
 ```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process_image" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
+curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
 ```
 
 Calling the API for video processing
