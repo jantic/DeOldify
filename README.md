@@ -260,7 +260,7 @@ curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Co
 
 Calling the API for video processing
 ```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process_video" -H "accept: application/octet-stream" -H "Content-Type: application/json" -d "{\"source_url\":\"https://v.redd.it/d1ku57kvuf421/HLSPlaylist.m3u8\", \"render_factor\":35}" --output colorized_video.mp4
+curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: application/octet-stream" -H "Content-Type: application/json" -d "{\"source_url\":\"https://v.redd.it/d1ku57kvuf421/HLSPlaylist.m3u8\", \"render_factor\":35}" --output colorized_video.mp4
 ```
 #### Note Regarding Docker
 If you don't have Nvidia Docker, here is the installation guide :
