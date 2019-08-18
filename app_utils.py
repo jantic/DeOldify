@@ -106,7 +106,7 @@ def clean_all(files):
 
 
 def create_directory(path):
-    os.system("mkdir -p %s" % os.path.dirname(path))
+    os.makedirs(os.path.dirname(path), exist_ok=True)
 
 
 def get_model_bin(url, output_path):
