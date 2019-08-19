@@ -6,10 +6,16 @@ from notebook.auth import passwd
 
 
 def run():
-    password = sys.argv[1:].pop()
+    args = sys.argv[1:]
+
+    if not args:
+        print('Error: Missing password.', file=sys.stderr)
+        return
+
+    password = args[0]
 
     if not password:
-        print('Error: Missing or empty password.', file=sys.stderr)
+        print('Error: Empty password.', file=sys.stderr)
     else:
         encoded = passwd(password)
         print(encoded)
