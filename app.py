@@ -21,7 +21,7 @@ from os import path
 import torch
 
 import fastai
-from fasterai.visualize import *
+from deoldify.visualize import *
 from pathlib import Path
 import traceback
 

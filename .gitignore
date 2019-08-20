@@ -1,5 +1,5 @@
 data
-fasterai/__pycache__/*.pyc
+deoldify/__pycache__/*.pyc
 *SymbolicLinks.sh
 *.ipynb_checkpoints*
 ColorizeTraining*[0-9]*.ipynb
@@ -11,7 +11,7 @@ result_images/*.jpg
 result_images/*.jpeg
 result_images/*.png
 
-fasterai/fastai
+deoldify/fastai
 
 *.prof
 fastai
@@ -25,5 +25,5 @@ test_images/James5.jpg
 test_images/James6.jpg
 test_images/image.png
 test_images/image.jpg
-fasterai/.ipynb_checkpoints/*-checkpoint.py
+deoldify/.ipynb_checkpoints/*-checkpoint.py
 tmp*
