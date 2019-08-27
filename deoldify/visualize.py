@@ -32,7 +32,7 @@ class ModelImageVisualizer():
         return PIL.Image.open(path).convert('RGB')
 
     def _get_image_from_url(self, url:str)->Image:
-        response = requests.get(url)
+        response = requests.get(url, timeout=30)
         img = PIL.Image.open(BytesIO(response.content)).convert('RGB')
         return img
 
