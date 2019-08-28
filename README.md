@@ -215,6 +215,8 @@ jupyter lab
 
 From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
 
+**NOTE** You can also now do "conda activate deoldify" if you have the latest version of conda and in fact that's now recommended. But a lot of people don't have that yet so I'm not going to make it the default instruction here yet.
+
 #### Docker for Jupyter
 
 You can build and run the docker using the following process:
