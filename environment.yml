@@ -6,6 +6,7 @@ channels:
 dependencies:
 - python>=3.7.3
 - fastai=1.0.51
+- pytorch=1.0.1
 - ffmpeg=4.1.1
 - tensorboardX=1.6
 - youtube-dl>=2019.4.17
