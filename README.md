@@ -275,7 +275,8 @@ The images in this folder have been removed because they were using Git LFS and 
 #### Installation Details
 
 This project is built around the wonderful Fast.AI library.  Prereqs, in summary:
-* **Fast.AI 1.0.51** (and its dependencies)
+* **Fast.AI 1.0.51** (and its dependencies).  If you use any higher version you'll see grid artifacts in rendering and tensorboard will malfunction. So yeah...don't do that.
+* **PyTorch 1.0.1** Not the latest version of PyTorch- that will not play nicely with the version of FastAI above.  Note however that the conda install of FastAI 1.0.51 grabs the latest PyTorch, which doesn't work.  This is patched over by our own conda install but fyi.
 * **Jupyter Lab** `conda install -c conda-forge jupyterlab`
 * **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  FastAI now comes with built in support for this- you just  need to install the prereqs: `conda install -c anaconda tensorflow-gpu` and `pip install tensorboardX`
 * **ImageNet** – Only if you're training, of course. It has proven to be a great dataset for my purposes.  http://www.image-net.org/download-images
