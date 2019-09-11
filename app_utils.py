@@ -3,70 +3,17 @@ import requests
 import random
 import _thread as thread
 from uuid import uuid4
+import urllib.parse as urlparse
 
 import numpy as np
 import skimage
 from skimage.filters import gaussian
+
+import zipfile
+from pyunpack import Archive
 from PIL import Image
-
-def compress_image(image, path_original):
-    size = 1920, 1080
-    width = 1920
-    height = 1080
-
-    name = os.path.basename(path_original).split('.')
-    first_name = os.path.join(os.path.dirname(path_original), name[0] + '.jpg')
-
-    if image.size[0] > width and image.size[1] > height:
-        image.thumbnail(size, Image.ANTIALIAS)
-        image.save(first_name, quality=85)
-    elif image.size[0] > width:
-        wpercent = (width/float(image.size[0]))
-        height = int((float(image.size[1])*float(wpercent)))
-        image = image.resize((width,height), PIL.Image.ANTIALIAS)
-        image.save(first_name,quality=85)
-    elif image.size[1] > height:
-        wpercent = (height/float(image.size[1]))
-        width = int((float(image.size[0])*float(wpercent)))
-        image = image.resize((width,height), Image.ANTIALIAS)
-        image.save(first_name, quality=85)
-    else:
-        image.save(first_name, quality=85)
-
-
-def convertToJPG(path_original):
-    img = Image.open(path_original)
-    name = os.path.basename(path_original).split('.')
-    first_name = os.path.join(os.path.dirname(path_original), name[0] + '.jpg')
-
-    if img.format == "JPEG":
-        image = img.convert('RGB')
-        compress_image(image, path_original)
-        img.close()
-
-    elif img.format == "GIF":
-        i = img.convert("RGBA")
-        bg = Image.new("RGBA", i.size)
-        image = Image.composite(i, bg, i)
-        compress_image(image, path_original)
-        img.close()
-
-    elif img.format == "PNG":
-        try:
-            image = Image.new("RGB", img.size, (255,255,255))
-            image.paste(img,img)
-            compress_image(image, path_original)
-        except ValueError:
-            image = img.convert('RGB')
-            compress_image(image, path_original)
-        
-        img.close()
-
-    elif img.format == "BMP":
-        image = img.convert('RGB')
-        compress_image(image, path_original)
-        img.close()
-
+import matplotlib.image as mpimg
+import cv2
 
 
 def blur(image, x0, x1, y0, y1, sigma=1, multichannel=True):
@@ -106,15 +53,17 @@ def clean_all(files):
 
 
 def create_directory(path):
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    os.system("mkdir -p %s" % os.path.dirname(path))
 
 
 def get_model_bin(url, output_path):
     if not os.path.exists(output_path):
         create_directory(output_path)
-        cmd = "wget -O %s %s" % (output_path, url)
-        print(cmd)
-        os.system(cmd)
+        filename, ext = os.path.splitext(os.path.basename(urlparse.urlsplit(url).path))
+        if not os.path.exists(os.path.join(output_path, filename, ext)):
+            print("downloading model :" + filename + ext)
+            cmd = "wget -O %s %s" % (output_path, url)
+            os.system(cmd)
 
     return output_path
 
@@ -123,4 +72,65 @@ def get_model_bin(url, output_path):
 def get_multi_model_bin(model_list):
     for m in model_list:
         thread.start_new_thread(get_model_bin, m)
+
+
+def unzip(path_to_zip_file, directory_to_extract_to='.'):
+    print("deflating model :" + path_to_zip_file)
+    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
+        zip_ref.extractall(directory_to_extract_to)
+
+
+def unrar(path_to_rar_file, directory_to_extract_to='.'):
+    print("deflating model :" + path_to_rar_file)
+    Archive(path_to_rar_file).extractall(directory_to_extract_to)
+
+
+def resize_img_in_folder(path, w, h):
+    dirs = os.listdir(path)
+    for item in dirs:
+        if os.path.isfile(path+item):
+            im = Image.open(path+item)
+            f, e = os.path.splitext(path+item)
+            imResize = im.resize((w, h), Image.ANTIALIAS)
+            imResize.save(f + '.jpg', 'JPEG', quality=90)
+
+
+def resize_img(path, w, h):
+    img = mpimg.imread(path)
+    img = cv2.resize(img, dsize=(w, h))
+    return img
+
+def square_center_crop(image_path, output_path):
+    im = Image.open(image_path)
+
+    width, height = im.size
+
+    new_width = min(width, height)
+    new_height = new_width
+
+    left = (width - new_width)/2
+    top = (height - new_height)/2
+    right = (width + new_width)/2
+    bottom = (height + new_height)/2
+
+
+
+def image_crop(image_path, output_path, x0, y0, x1, y1):
+    """
+    The syntax is the following:
+    cropped = img.crop( ( x, y, x + width , y + height ) )
+
+    x and y are the top left coordinate on image;
+    x + width and y + height are the width and height respectively of the region that you want to crop starting at x and ypoint.
+    Note: x + width and y + height are the bottom right coordinate of the cropped region.
+    """
+    
+    image = cv2.imread(image_path)
+
+    print(x0, y0, x1, y1)
+    crop = image[y0:y1, x0:x1]
+
+    print(crop)
+
+    cv2.imwrite(output_path, crop)
 
