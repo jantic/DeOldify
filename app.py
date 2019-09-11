@@ -101,7 +101,7 @@ def process_image():
 if __name__ == '__main__':
     global upload_directory
     global results_img_directory
-    global image_colorizer
+    global image_colorizer, video_colorizer
 
     upload_directory = '/data/upload/'
     create_directory(upload_directory)
@@ -120,6 +120,9 @@ if __name__ == '__main__':
     # the purpose is to avoid
 
     api_type = os.getenv('COLORIZER_API_TYPE', 'BOTH')
+
+    image_colorizer = None
+    video_colorizer = None
     
     if api_type == 'IMAGE' or api_type == 'BOTH':
         artistic_model_url = 'http://storage.gra5.cloud.ovh.net/v1/AUTH_18b62333a540498882ff446ab602528b/pretrained-models/image/deoldify/ColorizeArtistic_gen.pth'
