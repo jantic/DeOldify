@@ -40,11 +40,15 @@ def process_video():
 
     input_path = generate_random_filename(upload_directory,"jpeg")
     output_path = os.path.join(results_img_directory, os.path.basename(input_path))
- 
+
     try:
         url = request.json["source_url"]
         render_factor = int(request.json["render_factor"])
+    except (TypeError):
+        traceback.print_exc()
+        return {'message': 'Not Acceptable'}, 406 
 
+    try:
         video_path = video_colorizer.colorize_from_url(source_url=url, file_name=input_path, render_factor=render_factor)
         callback = send_file(output_path, mimetype='application/octet-stream')
 
@@ -72,7 +76,11 @@ def process_image():
     try:
         url = request.json["source_url"]
         render_factor = int(request.json["render_factor"])
-
+    except (TypeError):
+        traceback.print_exc()
+        return {'message': 'input error'}, 406
+        
+    try:
         download(url, input_path)
 
         try:
@@ -97,6 +105,7 @@ def process_image():
             input_path,
             output_path
             ])
+
 
 if __name__ == '__main__':
     global upload_directory
@@ -138,4 +147,4 @@ if __name__ == '__main__':
     port = 5000
     host = '0.0.0.0'
 
-    app.run(host=host, port=port, threaded=True)
+    app.run(host=host, port=port, threaded=True, debug=False)

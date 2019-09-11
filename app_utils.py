@@ -16,6 +16,40 @@ import matplotlib.image as mpimg
 import cv2
 
 
+def convertToJPG(path_original):
+    img = Image.open(path_original)
+    name = os.path.basename(path_original).split('.')
+    first_name = os.path.join(os.path.dirname(path_original), name[0] + '.jpg')
+
+    if img.format == "JPEG":
+        image = img.convert('RGB')
+        compress_image(image, path_original)
+        img.close()
+
+    elif img.format == "GIF":
+        i = img.convert("RGBA")
+        bg = Image.new("RGBA", i.size)
+        image = Image.composite(i, bg, i)
+        compress_image(image, path_original)
+        img.close()
+
+    elif img.format == "PNG":
+        try:
+            image = Image.new("RGB", img.size, (255,255,255))
+            image.paste(img,img)
+            compress_image(image, path_original)
+        except ValueError:
+            image = img.convert('RGB')
+            compress_image(image, path_original)
+
+        img.close()
+
+    elif img.format == "BMP":
+        image = img.convert('RGB')
+        compress_image(image, path_original)
+        img.close()
+
+
 def blur(image, x0, x1, y0, y1, sigma=1, multichannel=True):
     y0, y1 = min(y0, y1), max(y0, y1)
     x0, x1 = min(x0, x1), max(x0, x1)
