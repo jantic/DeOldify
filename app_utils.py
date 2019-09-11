@@ -16,6 +16,31 @@ import matplotlib.image as mpimg
 import cv2
 
 
+def compress_image(image, path_original):
+    size = 1920, 1080
+    width = 1920
+    height = 1080
+
+    name = os.path.basename(path_original).split('.')
+    first_name = os.path.join(os.path.dirname(path_original), name[0] + '.jpg')
+
+    if image.size[0] > width and image.size[1] > height:
+        image.thumbnail(size, Image.ANTIALIAS)
+        image.save(first_name, quality=85)
+    elif image.size[0] > width:
+        wpercent = (width/float(image.size[0]))
+        height = int((float(image.size[1])*float(wpercent)))
+        image = image.resize((width,height), PIL.Image.ANTIALIAS)
+        image.save(first_name,quality=85)
+    elif image.size[1] > height:
+        wpercent = (height/float(image.size[1]))
+        width = int((float(image.size[0])*float(wpercent)))
+        image = image.resize((width,height), Image.ANTIALIAS)
+        image.save(first_name, quality=85)
+    else:
+        image.save(first_name, quality=85)
+
+
 def convertToJPG(path_original):
     img = Image.open(path_original)
     name = os.path.basename(path_original).split('.')
