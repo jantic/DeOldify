@@ -38,7 +38,7 @@ app = Flask(__name__)
 @app.route("/process_video", methods=["POST"])
 def process_video():
 
-    input_path = generate_random_filename(upload_directory,"mp4")
+    input_path = generate_random_filename(upload_directory, "mp4")
     output_path = os.path.join(results_img_directory, os.path.basename(input_path))
 
     try:
@@ -70,7 +70,7 @@ def process_video():
 @app.route("/process_image", methods=["POST"])
 def process_image():
 
-    input_path = generate_random_filename(upload_directory,"jpeg")
+    input_path = generate_random_filename(upload_directory, "jpeg")
     output_path = os.path.join(results_img_directory, os.path.basename(input_path))
  
     try:
