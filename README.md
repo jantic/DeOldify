@@ -261,8 +261,11 @@ nvidia-docker run --ipc=host \
 ```
 
 -e COLORIZER_API_TYPE='BOTH' could be also
+
 -e COLORIZER_API_TYPE='IMAGE'
+
 -e COLORIZER_API_TYPE='VIDEO'
+
 default is BOTH
 
 Calling the API for image processing
