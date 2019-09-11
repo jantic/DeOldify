@@ -24,8 +24,6 @@ RUN wget -O /root/.torch/models/vgg16_bn-6c64b313.pth https://download.pytorch.o
 
 RUN wget -O /root/.torch/models/resnet34-333f7ec4.pth https://download.pytorch.org/models/resnet34-333f7ec4.pth
 
-RUN wget -O /data/models/ColorizeArtistic_gen.pth https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0 
-
 ADD . /data/
 
 WORKDIR /data

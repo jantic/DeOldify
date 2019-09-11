@@ -34,14 +34,41 @@ os.environ['CUDA_VISIBLE_DEVICES']='0'
 app = Flask(__name__)
 
 
+# define a predict function as an endpoint
+@app.route("/process_video", methods=["POST"])
+def process_video():
+
+    input_path = generate_random_filename(upload_directory,"jpeg")
+    output_path = os.path.join(results_img_directory, os.path.basename(input_path))
+ 
+    try:
+        url = request.json["source_url"]
+        render_factor = int(request.json["render_factor"])
+
+        video_path = video_colorizer.colorize_from_url(source_url=url, file_name=input_path, render_factor=render_factor)
+        callback = send_file(output_path, mimetype='application/octet-stream')
+
+        return callback, 200
+
+    except:
+        traceback.print_exc()
+        return {'message': 'input error'}, 400
+
+    finally:
+        pass
+        clean_all([
+            input_path,
+            output_path
+            ])
+
 
 # define a predict function as an endpoint
-@app.route("/process", methods=["POST"])
+@app.route("/process_image", methods=["POST"])
 def process_image():
 
     input_path = generate_random_filename(upload_directory,"jpeg")
     output_path = os.path.join(results_img_directory, os.path.basename(input_path))
-
+ 
     try:
         url = request.json["source_url"]
         render_factor = int(request.json["render_factor"])
@@ -85,13 +112,27 @@ if __name__ == '__main__':
     model_directory = '/data/models/'
     create_directory(model_directory)
     
-    artistic_model_url = 'https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0'
-    get_model_bin(artistic_model_url, os.path.join(model_directory, 'ColorizeArtistic_gen.pth'))
 
+    # could be either 
+    # BOTH for both Video and Image
+    # IMAGE for Image API Only
+    # VIDEO for Video API Only
+    # the purpose is to avoid
 
-    image_colorizer = get_image_colorizer(artistic=True)
+    api_type = os.getenv('COLORIZER_API_TYPE', 'BOTH')
+    
+    if api_type == 'IMAGE' or api_type == 'BOTH':
+        artistic_model_url = 'http://storage.gra5.cloud.ovh.net/v1/AUTH_18b62333a540498882ff446ab602528b/pretrained-models/image/deoldify/ColorizeArtistic_gen.pth'
+        get_model_bin(artistic_model_url, os.path.join(model_directory, 'ColorizeArtistic_gen.pth'))
+        image_colorizer = get_image_colorizer(artistic=True)
+
+    if api_type == 'VIDEO' or api_type == 'BOTH':
+        video_model_url = 'http://storage.gra5.cloud.ovh.net/v1/AUTH_18b62333a540498882ff446ab602528b/pretrained-models/image/deoldify/ColorizeVideo_gen.pth'
+        get_model_bin(video_model_url, os.path.join(model_directory, 'ColorizeVideo_gen.pth'))
+        video_colorizer = get_video_colorizer()
+
     
     port = 5000
     host = '0.0.0.0'
 
-    app.run(host=host, port=port, threaded=False)
+    app.run(host=host, port=port, threaded=True)
