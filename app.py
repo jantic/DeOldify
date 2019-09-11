@@ -39,7 +39,7 @@ app = Flask(__name__)
 def process_video():
 
     input_path = generate_random_filename(upload_directory, "mp4")
-    output_path = os.path.join(results_img_directory, os.path.basename(input_path))
+    output_path = os.path.join(results_video_directory, os.path.basename(input_path))
 
     try:
         url = request.json["source_url"]
@@ -109,7 +109,7 @@ def process_image():
 
 if __name__ == '__main__':
     global upload_directory
-    global results_img_directory
+    global results_img_directory, results_video_directory
     global image_colorizer, video_colorizer
 
     upload_directory = '/data/upload/'
@@ -117,6 +117,9 @@ if __name__ == '__main__':
 
     results_img_directory = '/data/result_images/'
     create_directory(results_img_directory)
+
+    results_video_directory = '/data/video/result/'
+    create_directory(results_video_directory)
 
     model_directory = '/data/models/'
     create_directory(model_directory)
