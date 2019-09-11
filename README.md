@@ -260,11 +260,11 @@ nvidia-docker run --ipc=host \
 -d deoldify_api
 ```
 
--e COLORIZER_API_TYPE='BOTH' could be also
+In order to limit vRAM occupation it's possible to load only one of the 2 APIs passing the environment variable COLORIZER_API_TYPE to the Docker here is the usage:
 
--e COLORIZER_API_TYPE='IMAGE'
-
--e COLORIZER_API_TYPE='VIDEO'
+-e COLORIZER_API_TYPE='BOTH'  # will load both API (process_image and process_video endpoints)
+-e COLORIZER_API_TYPE='IMAGE' # will load only the image API (process_image endpoint)
+-e COLORIZER_API_TYPE='VIDEO' # will load only the video API (process_video endpoint)
 
 default is BOTH
 
