@@ -48,7 +48,7 @@ We'll get into the details in a bit, but first let's see some pretty pictures an
 
 [![](http://img.youtube.com/vi/EXn-n2iqEjI/0.jpg)](http://www.youtube.com/watch?v=EXn-n2iqEjI)
 
-### Example Images
+## Example Images
 
 "Migrant Mother" by Dorothea Lange (1936)
 
