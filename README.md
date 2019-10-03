@@ -1,13 +1,15 @@
 
 # DeOldify
 
-Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
+Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) |
 Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
 
+Get more updates on [Twitter <img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj).
+
+## Table of Contents
 - [About DeOldify](#about-deoldify)
-- [Examples](#examples)
-    - [Video](#video)
-    - [Image](#image)
+- [Example Videos](#example-videos)
+- [Example Images](#example-images)
 - [Stuff That Should Probably Be In A Paper](#stuff-that-should-probably-be-in-a-paper)
     - [How to Achieve Stable Video](#how-to-achieve-stable-video)
     - [What is NoGAN?](#what-is-nogan)
@@ -16,15 +18,14 @@ Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align
 - [Going Forward](#this-project-going-forward)
 - [Getting Started Yourself](#getting-started-yourself)
     - [Easiest Approach](#easiest-approach)
-    - [Your Own Machine](#your-own-machine-not--as--easy)
+    - [Your Own Machine](#your-own-machine-not-as-easy)
+- [Docker](#docker)
 - [Pretrained Weights](#pretrained-weights)
 
 ## About DeOldify
 
 Simply put, the mission of this project is to colorize and restore old images and film footage.
 We'll get into the details in a bit, but first let's see some pretty pictures and videos! 
-
-Get more updates on [Twitter <img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj).
 
 ### New and Exciting Stuff in DeOldify
 
@@ -35,21 +36,19 @@ Get more updates on [Twitter <img src="resource_images/Twitter_Social_Icon_Round
 * **Video** - it actually looks good!  
 * **NoGAN** - a new and weird but highly effective way to do GAN training for image to image.
 
-## Examples
+## Example Videos
 
-### Video
-
-> **Note:**  Click images to watch
+**Note:**  Click images to watch
 
 #### Facebook F8 Demo
 
 [![](http://img.youtube.com/vi/l3UXXid04Ys/0.jpg)](http://www.youtube.com/watch?v=l3UXXid04Ys)
 
-#### Silent Movie Example
+#### Silent Movie Examples
 
 [![](http://img.youtube.com/vi/EXn-n2iqEjI/0.jpg)](http://www.youtube.com/watch?v=EXn-n2iqEjI)
 
-### Image
+### Example Images
 
 "Migrant Mother" by Dorothea Lange (1936)
 
@@ -96,6 +95,7 @@ Zitkála-Šá (Lakota: Red Bird), also known as Gertrude Simmons Bonnin (1898)
 Chinese Opium Smokers (1880)
 
 ![Opium Real](https://i.imgur.com/lVGq8Vq.jpg)
+
 
 ## Stuff That Should Probably Be In A Paper
 
@@ -204,15 +204,12 @@ Oh and I swear I'll document the code properly...eventually.  Admittedly I'm *on
 The easiest way to get started is to go straight to the Colab notebooks: 
 
 Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
-Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
+| Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb) 
 
 Special thanks to Matt Robinson and María Benavente for their image Colab notebook contributions, and Robert Bell for the video Colab notebook work!
 
-### Your Own Machine (not -as- easy)
+### Your Own Machine (not as easy)
 
-#### Note on test_images Folder
-
-The images in the `test_images` folder have been removed because they were using Git LFS and that costs a lot of money when GitHub actually charges for bandwidth on a popular open source project (they had a billing bug for while that was recently fixed).  The notebooks that use them (the image test ones) still point to images in that directory that I (Jason) have personally and I'd like to keep it that way because, after all, I'm by far the primary and most active developer.  But they won't work for you.  Still, those notebooks are a convenient template for making your own tests if you're so inclined.
 
 #### Hardware and Operating System Requirements
 
@@ -243,7 +240,13 @@ From there you can start running the notebooks in Jupyter Lab, via the url they 
 
 > **Note:** You can also now do "conda activate deoldify" if you have the latest version of conda and in fact that's now recommended. But a lot of people don't have that yet so I'm not going to make it the default instruction here yet.
 
-#### Docker for Jupyter
+#### Note on test_images Folder
+
+The images in the `test_images` folder have been removed because they were using Git LFS and that costs a lot of money when GitHub actually charges for bandwidth on a popular open source project (they had a billing bug for while that was recently fixed).  The notebooks that use them (the image test ones) still point to images in that directory that I (Jason) have personally and I'd like to keep it that way because, after all, I'm by far the primary and most active developer.  But they won't work for you.  Still, those notebooks are a convenient template for making your own tests if you're so inclined.
+
+## Docker
+
+### Docker for Jupyter
 
 You can build and run the docker using the following process:
 
@@ -262,7 +265,7 @@ Running Docker
 echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify_jupyter
 ```
 
-#### Docker for API
+### Docker for API
 
 You can build and run the docker using the following process:
 
