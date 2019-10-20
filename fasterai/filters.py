@@ -8,8 +8,14 @@ from fastai.vision.data import *
 from fastai import *
 import math
 from scipy import misc
+import os
 import cv2
 from PIL import Image as PilImage
+
+
+cuda = True
+if os.environ['CUDA_VISIBLE_DEVICES'] == '':
+    cuda = False
 
 
 class IFilter(ABC):
@@ -42,8 +48,16 @@ class BaseFilter(IFilter):
         x =  pil2tensor(model_image,np.float32)
         x.div_(255)
         x,y = self.norm((x,x), do_x=True)
-        result = self.learn.pred_batch(ds_type=DatasetType.Valid, 
-            batch=(x[None].cuda(),y[None]), reconstruct=True)
+
+        if cuda:
+            result = self.learn.pred_batch(ds_type=DatasetType.Valid,
+                                           batch=(x[None].cuda(), y[None]),
+                                           reconstruct=True)
+        else:
+            result = self.learn.pred_batch(ds_type=DatasetType.Valid,
+                                           batch=(x[None], y[None]),
+                                           reconstruct=True)
+
         out = result[0]
         out = self.denorm(out.px, do_x=False)
         out = image2np(out*255).astype(np.uint8)

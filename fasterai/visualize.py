@@ -11,12 +11,19 @@ from PIL import Image
 import ffmpeg
 import youtube_dl
 import gc
+import os
 import requests
 from io import BytesIO
 import base64
 from IPython import display as ipythondisplay
 from IPython.display import HTML
 from IPython.display import Image as ipythonimage
+
+
+cuda = True
+if os.environ['CUDA_VISIBLE_DEVICES'] == '':
+    cuda = False
+
 
 class ModelImageVisualizer():
     def __init__(self, filter:IFilter, results_dir:str=None):
@@ -25,8 +32,10 @@ class ModelImageVisualizer():
         self.results_dir.mkdir(parents=True, exist_ok=True)
     
     def _clean_mem(self):
-        torch.cuda.empty_cache()
-        #gc.collect()
+        if cuda:
+            torch.cuda.empty_cache()
+        else:
+            gc.collect()
 
     def _open_pil_image(self, path:Path)->Image:
         return PIL.Image.open(path).convert('RGB')

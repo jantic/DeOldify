@@ -1,3 +1,4 @@
+import os
 from fastai import *
 from fastai.core import *
 from fastai.torch_core import *
@@ -5,11 +6,20 @@ from fastai.callbacks  import hook_outputs
 import torchvision.models as models
 
 
+cuda = True
+if os.environ['CUDA_VISIBLE_DEVICES'] == '':
+    cuda = False
+
+
 class FeatureLoss(nn.Module):
     def __init__(self, layer_wgts=[20,70,10]):
         super().__init__()
 
-        self.m_feat = models.vgg16_bn(True).features.cuda().eval()
+        if cuda:
+            self.m_feat = models.vgg16_bn(True).features.cuda().eval()
+        else:
+            self.m_feat = models.vgg16_bn(True).features
+
         requires_grad(self.m_feat, False)
         blocks = [i-1 for i,o in enumerate(children(self.m_feat)) if isinstance(o,nn.MaxPool2d)]
         layer_ids = blocks[2:5]
