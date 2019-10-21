@@ -13,11 +13,6 @@ import cv2
 from PIL import Image as PilImage
 
 
-cuda = True
-if os.environ['CUDA_VISIBLE_DEVICES'] == '':
-    cuda = False
-
-
 class IFilter(ABC):
     @abstractmethod
     def filter(self, orig_image:PilImage, filtered_image:PilImage, render_factor:int)->PilImage:
@@ -49,7 +44,7 @@ class BaseFilter(IFilter):
         x.div_(255)
         x,y = self.norm((x,x), do_x=True)
 
-        if cuda:
+        if torch.cuda.is_available():
             result = self.learn.pred_batch(ds_type=DatasetType.Valid,
                                            batch=(x[None].cuda(), y[None]),
                                            reconstruct=True)

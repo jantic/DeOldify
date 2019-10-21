@@ -16,11 +16,9 @@ import torch
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-if device == 'cuda':
+if torch.cuda.is_available():
     os.environ['CUDA_VISIBLE_DEVICES']='0'
     torch.backends.cudnn.benchmark=True
-else:
-    os.environ['CUDA_VISIBLE_DEVICES']=''
 
 print('Using device:', device)
 

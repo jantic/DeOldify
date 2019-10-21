@@ -6,16 +6,11 @@ from fastai.callbacks  import hook_outputs
 import torchvision.models as models
 
 
-cuda = True
-if os.environ['CUDA_VISIBLE_DEVICES'] == '':
-    cuda = False
-
-
 class FeatureLoss(nn.Module):
     def __init__(self, layer_wgts=[20,70,10]):
         super().__init__()
 
-        if cuda:
+        if torch.cuda.is_available():
             self.m_feat = models.vgg16_bn(True).features.cuda().eval()
         else:
             self.m_feat = models.vgg16_bn(True).features

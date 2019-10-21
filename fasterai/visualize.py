@@ -20,11 +20,6 @@ from IPython.display import HTML
 from IPython.display import Image as ipythonimage
 
 
-cuda = True
-if os.environ['CUDA_VISIBLE_DEVICES'] == '':
-    cuda = False
-
-
 class ModelImageVisualizer():
     def __init__(self, filter:IFilter, results_dir:str=None):
         self.filter = filter
@@ -32,7 +27,7 @@ class ModelImageVisualizer():
         self.results_dir.mkdir(parents=True, exist_ok=True)
     
     def _clean_mem(self):
-        if cuda:
+        if torch.cuda.is_available():
             torch.cuda.empty_cache()
         else:
             gc.collect()
