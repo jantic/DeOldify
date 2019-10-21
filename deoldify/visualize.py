@@ -25,8 +25,10 @@ class ModelImageVisualizer():
         self.results_dir.mkdir(parents=True, exist_ok=True)
     
     def _clean_mem(self):
-        torch.cuda.empty_cache()
-        #gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        else:
+            gc.collect()
 
     def _open_pil_image(self, path:Path)->Image:
         return PIL.Image.open(path).convert('RGB')
