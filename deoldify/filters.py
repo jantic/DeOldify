@@ -14,12 +14,9 @@ from PIL import Image as PilImage
 
 class IFilter(ABC):
     @abstractmethod
-    def filter(
-        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int
-    ) -> PilImage:
-        pass
-
-
+    def filter(self, orig_image:PilImage, filtered_image:PilImage, render_factor:int)->PilImage:
+        pass   
+  
 class BaseFilter(IFilter):
     def __init__(self, learn: Learner):
         super().__init__()
@@ -44,10 +41,15 @@ class BaseFilter(IFilter):
         model_image = self._get_model_ready_image(orig, sz)
         x = pil2tensor(model_image, np.float32)
         x.div_(255)
-        x, y = self.norm((x, x), do_x=True)
-        result = self.learn.pred_batch(
-            ds_type=DatasetType.Valid, batch=(x[None].cuda(), y[None]), reconstruct=True
-        )
+        x,y = self.norm((x,x), do_x=True)
+
+        if torch.cuda.is_available():
+            batch = (x[None].cuda(), y[None])
+        else:
+            batch = (x[None], y[None])
+
+        result = self.learn.pred_batch(ds_type=DatasetType.Valid,
+                                       batch=batch, reconstruct=True)
         out = result[0]
         out = self.denorm(out.px, do_x=False)
         out = image2np(out * 255).astype(np.uint8)

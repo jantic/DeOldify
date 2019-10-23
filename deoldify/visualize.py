@@ -7,7 +7,7 @@ from .filters import IFilter, MasterFilter, ColorizerFilter
 from .generators import gen_inference_deep, gen_inference_wide
 from tensorboardX import SummaryWriter
 from scipy import misc
-from PIL import Image
+from PIL import Image 
 import ffmpeg
 import youtube_dl
 import gc
@@ -26,8 +26,10 @@ class ModelImageVisualizer:
         self.results_dir.mkdir(parents=True, exist_ok=True)
 
     def _clean_mem(self):
-        torch.cuda.empty_cache()
-        # gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+        else:
+            gc.collect()
 
     def _open_pil_image(self, path: Path) -> Image:
         return PIL.Image.open(path).convert('RGB')

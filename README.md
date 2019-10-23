@@ -40,6 +40,7 @@ We'll get into the details in a bit, but first let's see some pretty pictures an
 * Much less "blue bias"
 * **Video** - it actually looks good!  
 * **NoGAN** - a new and weird but highly effective way to do GAN training for image to image.
+* **CPU** - now it's possible to run the prediction on CPU!
 
 ## Example Videos
 
@@ -222,6 +223,8 @@ Special thanks to Matt Robinson and María Benavente for their image Colab noteb
 * **(Colorization Alone) A decent graphics card**. Approximately 4GB+ memory video cards should be sufficient.
 * **Linux (or maybe Windows 10)**  I'm using Ubuntu 16.04, but nothing about this precludes Windows 10 support as far as I know.  I just haven't tested it and am not going to make it a priority for now.  
 
+**CPU:** Prediction is now available to run it on CPU.
+
 #### Easy Install
 
 You should now be able to do a simple install with Anaconda. Here are the steps:
@@ -242,6 +245,8 @@ jupyter lab
 ```
 
 From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
+
+**CPU:** Prediction notebooks will check if you have an available CPU or GPU. It will run the prediction automatically on the available device.
 
 > **Note:** You can also now do "conda activate deoldify" if you have the latest version of conda and in fact that's now recommended. But a lot of people don't have that yet so I'm not going to make it the default instruction here yet.
 
