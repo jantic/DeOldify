@@ -1,30 +1,38 @@
 # import the necessary packages
 import os
+import sys
+import requests
+import ssl
 from flask import Flask
 from flask import request
+from flask import jsonify
 from flask import send_file
 
 
+from app_utils import download
 from app_utils import generate_random_filename
+from app_utils import clean_me
 from app_utils import clean_all
 from app_utils import create_directory
 from app_utils import get_model_bin
+from app_utils import convertToJPG
 
+from os import path
 import torch
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-if torch.cuda.is_available():
-    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-    torch.backends.cudnn.benchmark = True
-
-print('Using device:', device)
-
+import fastai
 from deoldify.visualize import *
+from pathlib import Path
 import traceback
 
 
+torch.backends.cudnn.benchmark=True
+
+
+os.environ['CUDA_VISIBLE_DEVICES']='0'
+
 app = Flask(__name__)
+
 
 
 # define a predict function as an endpoint
