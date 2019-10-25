@@ -246,7 +246,7 @@ jupyter lab
 
 From there you can start running the notebooks in Jupyter Lab, via the url they provide you in the console.  
 
-**CPU:** Prediction notebooks will check if you have an available CPU or GPU. It will run the prediction automatically on the available device.
+**CPU:** You need to set CPU on the notebook to run the prediction using your CPU.
 
 > **Note:** You can also now do "conda activate deoldify" if you have the latest version of conda and in fact that's now recommended. But a lot of people don't have that yet so I'm not going to make it the default instruction here yet.
 

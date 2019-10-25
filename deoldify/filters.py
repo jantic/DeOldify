@@ -14,7 +14,9 @@ from PIL import Image as PilImage
 
 class IFilter(ABC):
     @abstractmethod
-    def filter(self, orig_image:PilImage, filtered_image:PilImage, render_factor:int)->PilImage:
+    def filter(
+        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int
+    ) -> PilImage:
         pass   
   
 class BaseFilter(IFilter):
