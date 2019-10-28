@@ -19,10 +19,7 @@ def gen_inference_wide(
 
 
 def gen_learner_wide(
-    data: ImageDataBunch,
-    gen_loss=FeatureLoss(),
-    arch=models.resnet101,
-    nf_factor: int = 2,
+    data: ImageDataBunch, gen_loss, arch=models.resnet101, nf_factor: int = 2
 ) -> Learner:
     return unet_learner_wide(
         data,
@@ -96,10 +93,7 @@ def gen_inference_deep(
 
 
 def gen_learner_deep(
-    data: ImageDataBunch,
-    gen_loss=FeatureLoss(),
-    arch=models.resnet34,
-    nf_factor: float = 1.5,
+    data: ImageDataBunch, gen_loss, arch=models.resnet34, nf_factor: float = 1.5
 ) -> Learner:
     return unet_learner_deep(
         data,
