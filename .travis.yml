@@ -1,0 +1,10 @@
+sudo: false
+language: python
+install: pip install tox
+matrix:
+  include:
+  - python: "3.6"
+    env: TOX_ENV=static
+  - python: "3.6"
+    env: TOX_ENV=format
+script: tox -e $TOX_ENV
