@@ -248,6 +248,12 @@ From there you can start running the notebooks in Jupyter Lab, via the url they 
 
 **CPU:** You need to set CPU on the notebook to run the prediction using your CPU.
 
+```
+from utils.device import *
+
+device('cpu')
+```
+
 > **Note:** You can also now do "conda activate deoldify" if you have the latest version of conda and in fact that's now recommended. But a lot of people don't have that yet so I'm not going to make it the default instruction here yet.
 
 #### Note on test_images Folder

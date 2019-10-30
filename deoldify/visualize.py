@@ -17,6 +17,7 @@ import base64
 from IPython import display as ipythondisplay
 from IPython.display import HTML
 from IPython.display import Image as ipythonimage
+from utils.device import *
 
 
 class ModelImageVisualizer:
@@ -26,10 +27,8 @@ class ModelImageVisualizer:
         self.results_dir.mkdir(parents=True, exist_ok=True)
 
     def _clean_mem(self):
-        if torch.cuda.is_available():
+        if device.use_gpu:
             torch.cuda.empty_cache()
-        else:
-            gc.collect()
 
     def _open_pil_image(self, path: Path) -> Image:
         return PIL.Image.open(path).convert('RGB')

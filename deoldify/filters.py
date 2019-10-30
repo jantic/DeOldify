@@ -10,6 +10,7 @@ import math
 from scipy import misc
 import cv2
 from PIL import Image as PilImage
+from utils.device import *
 
 
 class IFilter(ABC):
@@ -45,7 +46,7 @@ class BaseFilter(IFilter):
         x.div_(255)
         x,y = self.norm((x,x), do_x=True)
 
-        if torch.cuda.is_available():
+        if device.use_gpu:
             batch = (x[None].cuda(), y[None])
         else:
             batch = (x[None], y[None])
