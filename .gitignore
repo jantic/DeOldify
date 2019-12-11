@@ -111,9 +111,7 @@ ColorizeTraining*[0-9]*.ipynb
 *Colorizer[0-9]*.ipynb
 lesson7-superres*.ipynb
 test.py
-result_images/*.jpg
-result_images/*.jpeg
-result_images/*.png
+result_images
 
 deoldify/fastai
 
