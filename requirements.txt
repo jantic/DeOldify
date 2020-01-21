@@ -1,4 +1,5 @@
 fastai==1.0.51
+wandb
 tensorboardX==1.6
 ffmpeg
 ffmpeg-python==0.1.17
