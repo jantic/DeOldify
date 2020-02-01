@@ -14,3 +14,4 @@ dependencies:
 - pip:
   - ffmpeg-python==0.1.17
   - opencv-python>=3.3.0.10
+  - wandb
