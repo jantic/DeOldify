@@ -21,23 +21,30 @@ import cv2
 
 # adapted from https://www.pyimagesearch.com/2016/04/25/watermarking-images-with-opencv-and-python/
 def get_watermarked(pil_image: Image) -> Image:
-    image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
-    (h, w) = image.shape[:2]
-    image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
-    full_watermark = cv2.imread('./resource_images/watermark.png', cv2.IMREAD_UNCHANGED)
-    pct = 0.05
-    (fwH, fwW) = full_watermark.shape[:2]
-    wH = int(pct * h)
-    wW = int((pct * h / fwH) * fwW)
-    watermark = cv2.resize(full_watermark, (wH, wW), interpolation=cv2.INTER_AREA)
-    overlay = np.zeros((h, w, 4), dtype="uint8")
-    overlay[h - wH - 10 : h - 10, 10 : 10 + wW] = watermark
-    # blend the two images together using transparent overlays
-    output = image.copy()
-    cv2.addWeighted(overlay, 0.5, output, 1.0, 0, output)
-    rgb_image = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
-    final_image = Image.fromarray(rgb_image)
-    return final_image
+    try:
+        image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+        (h, w) = image.shape[:2]
+        image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
+        full_watermark = cv2.imread(
+            './resource_images/watermark.png', cv2.IMREAD_UNCHANGED
+        )
+        pct = 0.05
+        (fwH, fwW) = full_watermark.shape[:2]
+        wH = int(pct * h)
+        wW = int((pct * h / fwH) * fwW)
+        watermark = cv2.resize(full_watermark, (wH, wW), interpolation=cv2.INTER_AREA)
+        overlay = np.zeros((h, w, 4), dtype="uint8")
+        (wH, wW) = watermark.shape[:2]
+        overlay[h - wH - 10 : h - 10, 10 : 10 + wW] = watermark
+        # blend the two images together using transparent overlays
+        output = image.copy()
+        cv2.addWeighted(overlay, 0.5, output, 1.0, 0, output)
+        rgb_image = cv2.cvtColor(output, cv2.COLOR_BGR2RGB)
+        final_image = Image.fromarray(rgb_image)
+        return final_image
+    except:
+        # Don't want this to crash everything, so let's just not watermark the image for now.
+        return pil_image
 
 
 class ModelImageVisualizer:
