@@ -108,11 +108,6 @@ class ModelImageVisualizer:
 
         return self._save_result_image(path, result)
 
-    def _close_plt(self):
-        plt.cla()
-        plt.clf()
-        plt.close()
-
     def _plot_comparison(
         self,
         figsize: (int, int),
@@ -121,7 +116,6 @@ class ModelImageVisualizer:
         orig: Image,
         result: Image,
     ):
-        self._close_plt()
         fig, axes = plt.subplots(1, 2, figsize=figsize)
         self._plot_image(
             orig,
@@ -145,7 +139,6 @@ class ModelImageVisualizer:
         display_render_factor: bool,
         result: Image,
     ):
-        self._close_plt()
         fig, axes = plt.subplots(1, 1, figsize=figsize)
         self._plot_image(
             result,
