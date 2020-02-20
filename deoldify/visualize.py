@@ -19,15 +19,14 @@ from IPython.display import HTML
 from IPython.display import Image as ipythonimage
 import cv2
 
+full_watermark = cv2.imread('./resource_images/watermark.png', cv2.IMREAD_UNCHANGED)
+
 # adapted from https://www.pyimagesearch.com/2016/04/25/watermarking-images-with-opencv-and-python/
 def get_watermarked(pil_image: Image) -> Image:
     try:
         image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
         (h, w) = image.shape[:2]
         image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
-        full_watermark = cv2.imread(
-            './resource_images/watermark.png', cv2.IMREAD_UNCHANGED
-        )
         pct = 0.05
         (fwH, fwW) = full_watermark.shape[:2]
         wH = int(pct * h)
@@ -109,6 +108,11 @@ class ModelImageVisualizer:
 
         return self._save_result_image(path, result)
 
+    def _close_plt(self):
+        plt.cla()
+        plt.clf()
+        plt.close()
+
     def _plot_comparison(
         self,
         figsize: (int, int),
@@ -117,6 +121,7 @@ class ModelImageVisualizer:
         orig: Image,
         result: Image,
     ):
+        self._close_plt()
         fig, axes = plt.subplots(1, 2, figsize=figsize)
         self._plot_image(
             orig,
@@ -140,6 +145,7 @@ class ModelImageVisualizer:
         display_render_factor: bool,
         result: Image,
     ):
+        self._close_plt()
         fig, axes = plt.subplots(1, 1, figsize=figsize)
         self._plot_image(
             result,
