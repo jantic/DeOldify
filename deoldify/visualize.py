@@ -27,12 +27,12 @@ def get_watermarked(pil_image: Image) -> Image:
         (h, w) = image.shape[:2]
         image = np.dstack([image, np.ones((h, w), dtype="uint8") * 255])
         pct = 0.05
-        (fwH, fwW) = full_watermark.shape[:2]
-        wH = int(pct * h)
-        wW = int((pct * h / fwH) * fwW)
         full_watermark = cv2.imread(
             './resource_images/watermark.png', cv2.IMREAD_UNCHANGED
         )
+        (fwH, fwW) = full_watermark.shape[:2]
+        wH = int(pct * h)
+        wW = int((pct * h / fwH) * fwW)
         watermark = cv2.resize(full_watermark, (wH, wW), interpolation=cv2.INTER_AREA)
         overlay = np.zeros((h, w, 4), dtype="uint8")
         (wH, wW) = watermark.shape[:2]
