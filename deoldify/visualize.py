@@ -19,7 +19,6 @@ from IPython.display import HTML
 from IPython.display import Image as ipythonimage
 import cv2
 
-full_watermark = cv2.imread('./resource_images/watermark.png', cv2.IMREAD_UNCHANGED)
 
 # adapted from https://www.pyimagesearch.com/2016/04/25/watermarking-images-with-opencv-and-python/
 def get_watermarked(pil_image: Image) -> Image:
@@ -31,6 +30,9 @@ def get_watermarked(pil_image: Image) -> Image:
         (fwH, fwW) = full_watermark.shape[:2]
         wH = int(pct * h)
         wW = int((pct * h / fwH) * fwW)
+        full_watermark = cv2.imread(
+            './resource_images/watermark.png', cv2.IMREAD_UNCHANGED
+        )
         watermark = cv2.resize(full_watermark, (wH, wW), interpolation=cv2.INTER_AREA)
         overlay = np.zeros((h, w, 4), dtype="uint8")
         (wH, wW) = watermark.shape[:2]
