@@ -1,6 +1,7 @@
 name: deoldify
 channels:
 - fastai
+- pytorch
 - conda-forge
 - defaults
 dependencies:
