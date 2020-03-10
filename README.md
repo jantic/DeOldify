@@ -1,10 +1,18 @@
 
 # DeOldify
 
-Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) |
+**Quick Start**: The easiest way to colorize images using DeOldify (for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
+
+The **most advanced** version of DeOldify image colorization is available here, exclusively.  Try a few images for free! [MyHeritiage In Color](https://www.myheritage.com/incolor)
+
+----------------------------
+
+Image (artistic) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) |
 Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
 
-**NEW** For those of you who are looking for a quick and easy way to run the open source version of DeOldify, for free, try this!  I love this implementation: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
+**NEW** Having trouble with the default image colorizer, aka "artistic"?  Try the "stable" one below.  It generally won't produce colors that are as interesting as "artistic", but the glitches are noticeably reduced.  
+
+Image (stable) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColabStable.ipynb)
 
 Instructions on how to use the Colabs above have been kindly provided in video tutorial form by Old Ireland in Colour's John Breslin.  It's great! Click video image below to watch.
 
