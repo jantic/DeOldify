@@ -5,6 +5,8 @@
 
 The **most advanced** version of DeOldify image colorization is available here, exclusively.  Try a few images for free! [MyHeritiage In Color](https://www.myheritage.com/incolor)
 
+[<img src="https://s3.amazonaws.com/ir_public/media/AI-FYI_badge.png" alt="AI-FYI.com Pick">](https://www.youtube.com/watch?v=bjyv9s2mDBE)
+
 ----------------------------
 
 Image (artistic) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) |
