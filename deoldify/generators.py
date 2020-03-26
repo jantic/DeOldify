@@ -6,9 +6,9 @@ from .dataset import *
 
 # Weights are implicitly read from ./models/ folder
 def gen_inference_wide(
-    root_folder: Path, weights_name: str, nf_factor: int = 2, arch=models.resnet101
+    root_folder: Path, weights_name: str, nf_factor: int = 2, arch=models.resnet101, stats: tuple = imagenet_stats
 ) -> Learner:
-    data = get_dummy_databunch()
+    data = get_dummy_databunch(stats)
     learn = gen_learner_wide(
         data=data, gen_loss=F.l1_loss, nf_factor=nf_factor, arch=arch
     )
@@ -80,9 +80,9 @@ def unet_learner_wide(
 
 # Weights are implicitly read from ./models/ folder
 def gen_inference_deep(
-    root_folder: Path, weights_name: str, arch=models.resnet34, nf_factor: float = 1.5
+    root_folder: Path, weights_name: str, arch=models.resnet34, nf_factor: float = 1.5, stats: tuple = imagenet_stats
 ) -> Learner:
-    data = get_dummy_databunch()
+    data = get_dummy_databunch(stats=stats)
     learn = gen_learner_deep(
         data=data, gen_loss=F.l1_loss, arch=arch, nf_factor=nf_factor
     )
