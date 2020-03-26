@@ -180,7 +180,7 @@ class ModelImageVisualizer:
         render_factor: int,
         axes: Axes = None,
         figsize=(20, 20),
-        display_render_factor=35,
+        display_render_factor = False,
     ):
         if axes is None:
             _, axes = plt.subplots(figsize=figsize)
@@ -246,7 +246,7 @@ class VideoColorizer:
         ).run(capture_stdout=True)
 
     def _colorize_raw_frames(
-        self, source_path: Path, render_factor: int = None, post_process: bool = False,
+        self, source_path: Path, render_factor: int = None, post_process: bool = True,
         watermarked: bool = True,
     ):
         colorframes_folder = self.colorframes_root / (source_path.stem)
@@ -318,7 +318,7 @@ class VideoColorizer:
         source_url,
         file_name: str,
         render_factor: int = None,
-        post_process: bool = False,
+        post_process: bool = True,
         watermarked: bool = True,
 
     ) -> Path:
@@ -350,19 +350,18 @@ class VideoColorizer:
         return self._build_video(source_path)
 
 
-def get_video_colorizer(render_factor: int = 21, stats:tuple = imagenet_stats) -> VideoColorizer:
-    return get_stable_video_colorizer(render_factor=render_factor, stats=stats)
+def get_video_colorizer(render_factor: int = 21) -> VideoColorizer:
+    return get_stable_video_colorizer(render_factor=render_factor)
 
 
 def get_artistic_video_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeArtistic_gen',
     results_dir='result_images',
-    render_factor: int = 35,
-    stats:tuple = imagenet_stats
+    render_factor: int = 35
 ) -> VideoColorizer:
     learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
-    filtr = MasterFilter([ColorizerFilter(learn=learn, stats=stats)], render_factor=render_factor)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return VideoColorizer(vis)
 
@@ -371,33 +370,31 @@ def get_stable_video_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeVideo_gen',
     results_dir='result_images',
-    render_factor: int = 21,
-    stats:tuple = imagenet_stats
+    render_factor: int = 21
 ) -> VideoColorizer:
     learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
-    filtr = MasterFilter([ColorizerFilter(learn=learn,stats=stats)], render_factor=render_factor)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return VideoColorizer(vis)
 
 
 def get_image_colorizer(
-    render_factor: int = 35, artistic: bool = True, stats: tuple = imagenet_stats
+    render_factor: int = 35, artistic: bool = True
 ) -> ModelImageVisualizer:
     if artistic:
-        return get_artistic_image_colorizer(render_factor=render_factor, stats=stats)
+        return get_artistic_image_colorizer(render_factor=render_factor)
     else:
-        return get_stable_image_colorizer(render_factor=render_factor, stats=stats)
+        return get_stable_image_colorizer(render_factor=render_factor)
 
 
 def get_stable_image_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeStable_gen',
     results_dir='result_images',
-    render_factor: int = 35,
-    stats: tuple = imagenet_stats
+    render_factor: int = 35
 ) -> ModelImageVisualizer:
-    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name, stats=stats)
-    filtr = MasterFilter([ColorizerFilter(learn=learn, stats=stats)], render_factor=render_factor)
+    learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis
 
@@ -406,11 +403,10 @@ def get_artistic_image_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeArtistic_gen',
     results_dir='result_images',
-    render_factor: int = 35,
-    stats: tuple = imagenet_stats
+    render_factor: int = 35
 ) -> ModelImageVisualizer:
-    learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name, stats=stats)
-    filtr = MasterFilter([ColorizerFilter(learn=learn, stats=stats)], render_factor=render_factor)
+    learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
+    filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filtr, results_dir=results_dir)
     return vis
 

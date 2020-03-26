@@ -21,7 +21,7 @@ class IFilter(ABC):
 
 
 class BaseFilter(IFilter):
-    def __init__(self, learn: Learner, stats:tuple = imagenet_stats):
+    def __init__(self, learn: Learner, stats: tuple = imagenet_stats):
         super().__init__()
         self.learn = learn
         self.norm, self.denorm = normalize_funcs(*stats)
@@ -60,21 +60,20 @@ class BaseFilter(IFilter):
 
 
 class ColorizerFilter(BaseFilter):
-    def __init__(self, learn: Learner, stats: tuple = imagenet_stats, map_to_orig: bool = True):
+    def __init__(self, learn: Learner, stats: tuple = imagenet_stats):
         super().__init__(learn=learn, stats=stats)
         self.render_base = 16
-        self.map_to_orig = map_to_orig
 
     def filter(
-        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int,post_process: bool = False
-    ) -> PilImage:
+        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int, post_process: bool = True) -> PilImage:
         render_sz = render_factor * self.render_base
         model_image = self._model_process(orig=filtered_image, sz=render_sz)
+        raw_color = self._unsquare(model_image, orig_image)
 
-        if self.map_to_orig:
-            return self._post_process(model_image, orig_image, post_process )
+        if post_process:
+            return self._post_process(raw_color, orig_image)
         else:
-            return self._post_process(model_image, filtered_image, post_process)
+            return raw_color
 
     def _transform(self, image: PilImage) -> PilImage:
         return image.convert('LA').convert('RGB')
@@ -84,10 +83,7 @@ class ColorizerFilter(BaseFilter):
     # save a lot on memory and processing in the model, yet get a great high
     # resolution result at the end.  This is primarily intended just for
     # inference
-    def _post_process(self, raw_color: PilImage, orig: PilImage, post_process: bool) -> PilImage:
-        raw_color = self._unsquare(raw_color, orig)
-        if not post_process:
-            return raw_color
+    def _post_process(self, raw_color: PilImage, orig: PilImage) -> PilImage:
         color_np = np.asarray(raw_color)
         orig_np = np.asarray(orig)
         color_yuv = cv2.cvtColor(color_np, cv2.COLOR_BGR2YUV)
@@ -106,8 +102,7 @@ class MasterFilter(BaseFilter):
         self.render_factor = render_factor
 
     def filter(
-        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int = None,post_process: bool = False
-    ) -> PilImage:
+        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int = None, post_process: bool = True) -> PilImage:
         render_factor = self.render_factor if render_factor is None else render_factor
         for filter in self.filters:
             filtered_image = filter.filter(orig_image, filtered_image, render_factor, post_process)
