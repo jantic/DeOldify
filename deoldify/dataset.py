@@ -14,9 +14,10 @@ def get_colorize_data(
     random_seed: int = None,
     keep_pct: float = 1.0,
     num_workers: int = 8,
+    stats: tuple = imagenet_stats,
     xtra_tfms=[],
 ) -> ImageDataBunch:
-
+    
     src = (
         ImageImageList.from_folder(crappy_path, convert_mode='RGB')
         .use_partial_data(sample_pct=keep_pct, seed=random_seed)
@@ -33,7 +34,7 @@ def get_colorize_data(
             tfm_y=True,
         )
         .databunch(bs=bs, num_workers=num_workers, no_check=True)
-        .normalize(imagenet_stats, do_y=True)
+        .normalize(stats, do_y=True)
     )
 
     data.c = 3

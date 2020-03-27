@@ -72,8 +72,10 @@ class ModelImageVisualizer:
         path: str = 'test_images/image.png',
         figsize: (int, int) = (20, 20),
         render_factor: int = None,
+        
         display_render_factor: bool = False,
         compare: bool = False,
+        post_process: bool = True,
         watermarked: bool = True,
     ) -> Path:
         img = self._get_image_from_url(url)
@@ -84,6 +86,7 @@ class ModelImageVisualizer:
             render_factor=render_factor,
             display_render_factor=display_render_factor,
             compare=compare,
+            post_process = post_process,
             watermarked=watermarked,
         )
 
@@ -94,11 +97,12 @@ class ModelImageVisualizer:
         render_factor: int = None,
         display_render_factor: bool = False,
         compare: bool = False,
+        post_process: bool = True,
         watermarked: bool = True,
     ) -> Path:
         path = Path(path)
         result = self.get_transformed_image(
-            path, render_factor, watermarked=watermarked
+            path, render_factor, post_process=post_process,watermarked=watermarked
         )
         orig = self._open_pil_image(path)
         if compare:
@@ -156,12 +160,13 @@ class ModelImageVisualizer:
         return result_path
 
     def get_transformed_image(
-        self, path: Path, render_factor: int = None, watermarked: bool = True
+        self, path: Path, render_factor: int = None, post_process: bool = True,
+        watermarked: bool = True,
     ) -> Image:
         self._clean_mem()
         orig_image = self._open_pil_image(path)
         filtered_image = self.filter.filter(
-            orig_image, orig_image, render_factor=render_factor
+            orig_image, orig_image, render_factor=render_factor,post_process=post_process
         )
 
         if watermarked:
@@ -175,7 +180,7 @@ class ModelImageVisualizer:
         render_factor: int,
         axes: Axes = None,
         figsize=(20, 20),
-        display_render_factor: bool = False,
+        display_render_factor = False,
     ):
         if axes is None:
             _, axes = plt.subplots(figsize=figsize)
@@ -241,7 +246,8 @@ class VideoColorizer:
         ).run(capture_stdout=True)
 
     def _colorize_raw_frames(
-        self, source_path: Path, render_factor: int = None, watermarked: bool = True
+        self, source_path: Path, render_factor: int = None, post_process: bool = True,
+        watermarked: bool = True,
     ):
         colorframes_folder = self.colorframes_root / (source_path.stem)
         colorframes_folder.mkdir(parents=True, exist_ok=True)
@@ -250,9 +256,10 @@ class VideoColorizer:
 
         for img in progress_bar(os.listdir(str(bwframes_folder))):
             img_path = bwframes_folder / img
+
             if os.path.isfile(str(img_path)):
                 color_image = self.vis.get_transformed_image(
-                    str(img_path), render_factor=render_factor, watermarked=watermarked
+                    str(img_path), render_factor=render_factor, post_process=post_process,watermarked=watermarked
                 )
                 color_image.save(str(colorframes_folder / img))
 
@@ -311,33 +318,34 @@ class VideoColorizer:
         source_url,
         file_name: str,
         render_factor: int = None,
+        post_process: bool = True,
         watermarked: bool = True,
+
     ) -> Path:
         source_path = self.source_folder / file_name
         self._download_video_from_url(source_url, source_path)
         return self._colorize_from_path(
-            source_path, render_factor=render_factor, watermarked=watermarked
+            source_path, render_factor=render_factor, post_process=post_process,watermarked=watermarked
         )
 
     def colorize_from_file_name(
-        self, file_name: str, render_factor: int = None, watermarked: bool = True
+        self, file_name: str, render_factor: int = None,  watermarked: bool = True, post_process: bool = True,
     ) -> Path:
         source_path = self.source_folder / file_name
         return self._colorize_from_path(
-            source_path, render_factor=render_factor, watermarked=watermarked
+            source_path, render_factor=render_factor,  post_process=post_process,watermarked=watermarked
         )
 
     def _colorize_from_path(
-        self, source_path: Path, render_factor: int = None, watermarked: bool = True
+        self, source_path: Path, render_factor: int = None,  watermarked: bool = True, post_process: bool = True
     ) -> Path:
         if not source_path.exists():
             raise Exception(
                 'Video at path specfied, ' + str(source_path) + ' could not be found.'
             )
-
         self._extract_raw_frames(source_path)
         self._colorize_raw_frames(
-            source_path, render_factor=render_factor, watermarked=watermarked
+            source_path, render_factor=render_factor,post_process=post_process,watermarked=watermarked
         )
         return self._build_video(source_path)
 
@@ -350,7 +358,7 @@ def get_artistic_video_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeArtistic_gen',
     results_dir='result_images',
-    render_factor: int = 35,
+    render_factor: int = 35
 ) -> VideoColorizer:
     learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
@@ -362,7 +370,7 @@ def get_stable_video_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeVideo_gen',
     results_dir='result_images',
-    render_factor: int = 21,
+    render_factor: int = 21
 ) -> VideoColorizer:
     learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
@@ -383,7 +391,7 @@ def get_stable_image_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeStable_gen',
     results_dir='result_images',
-    render_factor: int = 35,
+    render_factor: int = 35
 ) -> ModelImageVisualizer:
     learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
@@ -395,7 +403,7 @@ def get_artistic_image_colorizer(
     root_folder: Path = Path('./'),
     weights_name: str = 'ColorizeArtistic_gen',
     results_dir='result_images',
-    render_factor: int = 35,
+    render_factor: int = 35
 ) -> ModelImageVisualizer:
     learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
     filtr = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
