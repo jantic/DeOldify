@@ -112,7 +112,10 @@ class ModelImageVisualizer:
         else:
             self._plot_solo(figsize, render_factor, display_render_factor, result)
 
-        return self._save_result_image(path, result)
+        orig.close()
+        result_path = self._save_result_image(path, result)
+        result.close()
+        return result_path
 
     def _plot_comparison(
         self,
