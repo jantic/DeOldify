@@ -43,7 +43,7 @@ class FeatureLoss(nn.Module):
         self.hooks.remove()
 
 
-# Includes wasserstein loss
+# Refactored code, originally from https://github.com/VinceMarron/style_transfer
 class WassFeatureLoss(nn.Module):
     def __init__(self, layer_wgts=[5, 15, 2], wass_wgts=[3.0, 0.7, 0.01]):
         super().__init__()
