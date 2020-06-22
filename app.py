@@ -90,6 +90,7 @@ if __name__ == '__main__':
 
 
     image_colorizer = get_image_colorizer(artistic=True)
+    image_colorizer.results_dir = Path(results_img_directory)
     
     port = 5000
     host = '0.0.0.0'
