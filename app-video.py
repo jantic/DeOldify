@@ -79,6 +79,7 @@ if __name__ == '__main__':
     get_model_bin(video_model_url, os.path.join(model_directory, 'ColorizeVideo_gen.pth'))
 
     video_colorizer = get_video_colorizer()
+    video_colorizer.result_folder = Path(results_video_directory)
     
     port = 5000
     host = '0.0.0.0'
