@@ -367,3 +367,19 @@ Follow [#DeOldify](https://twitter.com/search?q=%23Deoldify) or [Jason Antic](ht
 All code in this repository is under the MIT license as specified by the LICENSE file.
 
 The model weights listed in this readme under the "Pretrained Weights" section are trained by ourselves and are released under the MIT license.
+
+## A Statement on Open Source Support
+
+We believe that open source has done a lot of good for the world.  After all, DeOldify simply wouldn't exist without it. But we also believe that there needs to be boundaries on just how much is reasonable to be expected from an open source project maintained by just two developers.
+
+Our stance is that we're providing the code and documentation on research that we believe is beneficial to the world.  What we have provided are new takes and developer friendly takes on colorization, GANs, and video. This is the culmination of well over a year of continuous work, free for you. What wasn't free was shouldered by us, the developers.  We left our jobs, bought expensive GPUs, and had huge electric bills as a result of dedicating ourselves to this.
+
+What we haven't provided here is a ready to use free "product" or "app", and we don't ever intend on providing that.  It's going to remain a Linux based project without Windows support, coded in Python, and requiring people to have some extra technical background to be comfortable using it.  Others have stepped in with their own apps made with DeOldify, some paid and some free, which is what we want! We're instead focusing on what we believe we can do best- making better commercial models that people will pay for.  
+Does that mean you're not getting the very best for free?  Of course. We simply don't believe that we're obligated to provide that, nor is it feasible! We compete on research and sell that.  Not a GUI or web service that wraps said research- that part isn't something we're going to be great at anyways. We're not about to shoot ourselves in the foot by giving away our actual competitive advantage for free, quite frankly.
+
+We're also not willing to go down the rabbit hole of providing endless, open ended and personalized support on this open source project.  Our position is this:  If you have the proper background and resources, the project provides more than enough to get you started. We know this because we've seen plenty of people using it and making money off of their own projects with it.  
+
+Thus, if you have an issue come up and it happens to be an actual bug that having it be fixed will benefit users generally, then great- that's something we'll be happy to look into. 
+
+In contrast, if you're asking about something that really amounts to asking for personalized and time consuming support that won't benefit anybody else, we're not going to help. It's simply not in our interest to do that. We have bills to pay, after all. And if you're asking for help on something that can already be derived from the documentation or code?  That's simply annoying, and we're not going to pretend to be ok with that.
+
