@@ -230,7 +230,7 @@ Special thanks to Matt Robinson and María Benavente for their image Colab noteb
 
 * **(Training Only) BEEFY Graphics card**.  I'd really like to have more memory than the 11 GB in my GeForce 1080TI (11GB).  You'll have a tough time with less.  The Generators and Critic are ridiculously large.  
 * **(Colorization Alone) A decent graphics card**. Approximately 4GB+ memory video cards should be sufficient.
-* **Linux**  I'm using Ubuntu 18.04, and I know 16.04 works fine too.  **Windows is not supported and any issues brought up related to this will not be investigated.**
+* **Linux**.  I'm using Ubuntu 18.04, and I know 16.04 works fine too.  **Windows is not supported and any issues brought up related to this will not be investigated.**
 
 #### Easy Install
 
