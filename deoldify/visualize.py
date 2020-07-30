@@ -235,8 +235,8 @@ class VideoColorizer:
         ydl_opts = {
             'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4',
             'outtmpl': str(source_path),
-            'retries': 5,
-            'fragment-retries': 5
+            'retries': 30,
+            'fragment-retries': 30
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([source_url])
