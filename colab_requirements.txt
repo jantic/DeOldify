@@ -6,4 +6,4 @@ youtube-dl>=2019.4.17
 jupyterlab
 opencv-python>=3.3.0.10
 pillow
-pytorch==1.0.1
+pytorch==1.0.2
