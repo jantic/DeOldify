@@ -28,8 +28,8 @@ import traceback
 
 torch.backends.cudnn.benchmark=True
 
-
-os.environ['CUDA_VISIBLE_DEVICES']='0'
+#uncomment below line to utilise Nvidea GPU's
+#os.environ['CUDA_VISIBLE_DEVICES']='0'
 
 app = Flask(__name__)
 
