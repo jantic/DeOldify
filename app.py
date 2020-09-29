@@ -83,10 +83,10 @@ if __name__ == '__main__':
     create_directory(results_img_directory)
 
     model_directory = '/data/models/'
-    create_directory(model_directory)
+    #create_directory(model_directory)
     
-    artistic_model_url = 'https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0'
-    get_model_bin(artistic_model_url, os.path.join(model_directory, 'ColorizeArtistic_gen.pth'))
+    #artistic_model_url = 'https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0'
+    #get_model_bin(artistic_model_url, os.path.join(model_directory, 'ColorizeArtistic_gen.pth'))
 
 
     image_colorizer = get_image_colorizer(artistic=True)
