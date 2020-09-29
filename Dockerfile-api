@@ -10,7 +10,17 @@ RUN mkdir -p /root/.torch/models
 
 RUN mkdir -p /data/models
 
+RUN wget -O /root/.torch/models/vgg16_bn-6c64b313.pth https://download.pytorch.org/models/vgg16_bn-6c64b313.pth
+
+RUN wget -O /root/.torch/models/resnet34-333f7ec4.pth https://download.pytorch.org/models/resnet34-333f7ec4.pth
+
 ADD . /data/
+
+#incase models/ColorizeArtistic_gen.pth is already available
+
+COPY /models/ColorizeArtistic_gen.pth /data/models/ColorizeArtistic_gen.pth
+
+#RUN wget -O /data/models/ColorizeArtistic_gen.pth https://www.dropbox.com/s/zkehq1uwahhbc2o/ColorizeArtistic_gen.pth?dl=0 
 
 WORKDIR /data
 
