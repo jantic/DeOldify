@@ -119,6 +119,7 @@ deoldify/fastai
 fastai
 *.pth
 video
+colorized_image*.png
 test_images/*.jpg
 test_images/*.JPG
 test_images/*.PNG
