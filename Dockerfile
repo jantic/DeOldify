@@ -14,7 +14,7 @@ RUN wget -O /root/.torch/models/vgg16_bn-6c64b313.pth https://download.pytorch.o
 
 RUN wget -O /root/.torch/models/resnet34-333f7ec4.pth https://download.pytorch.org/models/resnet34-333f7ec4.pth
 
-Resnet 101 is used by stable and resnet 34 by artistic
+#Resnet 101 is used by stable and resnet 34 by artistic
 
 RUN wget -O /root/.torch/models/resnet101-5d3b4d8f.pth https://download.pytorch.org/models/resnet101-5d3b4d8f.pth
 
