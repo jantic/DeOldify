@@ -1,0 +1,1 @@
+this works . docker can be built and run . duplicating library to create a bare bone version
