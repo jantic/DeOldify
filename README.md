@@ -297,6 +297,7 @@ Building Docker
 ```console
 cd DeOldify && docker build -t deoldify_api -f Dockerfile-api .
 ```
+> **Note:** The above command produces a docker image configured for image processing.  To build a docker image for video processing, edit the Dockerfile-api file, replacing `CMD ["app.py"]` with `CMD ["app-video.py"]`
 
 Running Docker
 ```console
