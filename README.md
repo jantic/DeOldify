@@ -18,7 +18,7 @@ Instructions on how to use the Colabs above have been kindly provided in video t
 
 [![](http://img.youtube.com/vi/VaEl0faDw38/0.jpg)](http://www.youtube.com/watch?v=VaEl0faDw38)
 
-Get more updates on [Twitter <img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/citnaj).
+Get more updates on [Twitter <img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/DeOldify).
 
 
 ## Table of Contents
@@ -361,7 +361,7 @@ We suspect some of you are going to want access to the original DeOldify model f
 
 ## Want More?
 
-Follow [#DeOldify](https://twitter.com/search?q=%23Deoldify) or [Jason Antic](https://twitter.com/citnaj) on Twitter.
+Follow [#DeOldify](https://twitter.com/search?q=%23Deoldify) on Twitter.
 
 ## License
 
