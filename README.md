@@ -333,9 +333,9 @@ The colorization inference notebooks should be able to guide you from here. The 
 
 ### Completed Generator Weights
 
-- [Artistic](https://deepai-opensource-codebases-models.s3-us-west-2.amazonaws.com/deoldify/ColorizeArtistic_gen.pth)
+- [Artistic](https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth)
 - [Stable](https://www.dropbox.com/s/usf7uifrctqw9rl/ColorizeStable_gen.pth?dl=0)
-- [Video](https://deepai-opensource-codebases-models.s3-us-west-2.amazonaws.com/deoldify/ColorizeVideo_gen.pth)
+- [Video](https://data.deepai.org/deoldify/ColorizeVideo_gen.pth)
 
 ### Completed Critic Weights
 
