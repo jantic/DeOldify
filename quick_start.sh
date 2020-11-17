@@ -16,10 +16,6 @@ function usage {
 	echo "usage : $0 image_api  -- to start image api"
 	echo "usage : $0 video_api  -- to start video api"
 	echo ''
-	echo 'you can add non mandatory arguments'
-	echo "usage : $0 image_api port host -- for custom port or host"
-	echo ''
-	echo ''
 }
 
 NOTEBOOK_PASSWORD=$2
