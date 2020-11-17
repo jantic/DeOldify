@@ -14,7 +14,7 @@ echo "usage : $0 image  -- to test image api"
 echo "usage : $0 video  -- to test video api"
 echo ''
 echo 'you can add non mandatory arguments'
-echo "usage : $0 image $port $host -- for custom port or host"
+echo "usage : $0 image port host -- for custom port or host"
 echo ''
 echo ''
 
