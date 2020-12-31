@@ -93,6 +93,7 @@ class ModelImageVisualizer:
     def plot_transformed_image(
         self,
         path: str,
+        results_dir = None,
         figsize: (int, int) = (20, 20),
         render_factor: int = None,
         display_render_factor: bool = False,
@@ -101,6 +102,8 @@ class ModelImageVisualizer:
         watermarked: bool = True,
     ) -> Path:
         path = Path(path)
+        if results_dir is None:
+            results_dir = Path(self.results_dir)
         result = self.get_transformed_image(
             path, render_factor, post_process=post_process,watermarked=watermarked
         )
@@ -113,7 +116,7 @@ class ModelImageVisualizer:
             self._plot_solo(figsize, render_factor, display_render_factor, result)
 
         orig.close()
-        result_path = self._save_result_image(path, result)
+        result_path = self._save_result_image(path, result, results_dir=results_dir)
         result.close()
         return result_path
 
@@ -157,8 +160,10 @@ class ModelImageVisualizer:
             display_render_factor=display_render_factor,
         )
 
-    def _save_result_image(self, source_path: Path, image: Image) -> Path:
-        result_path = self.results_dir / source_path.name
+    def _save_result_image(self, source_path: Path, image: Image, results_dir = None) -> Path:
+        if results_dir is None:
+            results_dir = Path(self.results_dir)
+        result_path = results_dir / source_path.name
         image.save(result_path)
         return result_path
 
@@ -384,12 +389,12 @@ def get_stable_video_colorizer(
 
 
 def get_image_colorizer(
-    render_factor: int = 35, artistic: bool = True
+    root_folder: Path = Path('./'), render_factor: int = 35, artistic: bool = True
 ) -> ModelImageVisualizer:
     if artistic:
-        return get_artistic_image_colorizer(render_factor=render_factor)
+        return get_artistic_image_colorizer(root_folder=root_folder, render_factor=render_factor)
     else:
-        return get_stable_image_colorizer(render_factor=render_factor)
+        return get_stable_image_colorizer(root_folder=root_folder, render_factor=render_factor)
 
 
 def get_stable_image_colorizer(
