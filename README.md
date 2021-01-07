@@ -3,7 +3,7 @@
 
 **Quick Start**: The easiest way to colorize images using DeOldify (for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
 
-The **most advanced** version of DeOldify image colorization is available here, exclusively.  Try a few images for free! [MyHeritiage In Color](https://www.myheritage.com/incolor)
+The **most advanced** version of DeOldify image colorization is available here, exclusively.  Try a few images for free! [MyHeritage In Color](https://www.myheritage.com/incolor)
 
 ----------------------------
 
