@@ -318,7 +318,7 @@ Starting the video api
 ```console
 cd DeOldify && ./quickstart.sh image_api
 ```
-your notebook will be accessible on port 5000
+your api will be accessible on port 5000
 
 ### Docker for Jupyter
 
