@@ -263,7 +263,62 @@ The images in the `test_images` folder have been removed because they were using
 
 The notebook `ColorizeTrainingWandb` has been created to log and monitor results through [Weights & Biases](https://www.wandb.com/). You can find a description of typical training by consulting [W&B Report](https://app.wandb.ai/borisd13/DeOldify/reports?view=borisd13%2FDeOldify).
 
+
 ## Docker
+
+## Quickstart
+We have build for you a quickstart script for you in order to get up to speed in a minute. It's even compatible if you don't have GPU and will automatically adjust it's configuration according to your hardware (running on CPU will be slow with no surprise).
+
+### Quickstart usage
+```console
+./quick_start.sh
+missing first argument
+
+	  _____        ____  _     _ _  __
+	 |  __ \      / __ \| |   | (_)/ _|
+	 | |  | | ___| |  | | | __| |_| |_ _   _
+	 | |  | |/ _ \ |  | | |/ _` | |  _| | | |
+	 | |__| |  __/ |__| | | (_| | | | | |_| |
+	 |_____/ \___|\____/|_|\__,_|_|_|  \__, |
+	                                    __/ |
+	                                   |___/
+
+
+usage : ./quick_start.sh notebook password -- to start the notebook with password
+             leave empty for no password (not recommended)
+usage : ./quick_start.sh image_api  -- to start image api
+usage : ./quick_start.sh video_api  -- to start video api
+```
+
+### Quickstart jupyter notebook
+Cloning
+```console
+git clone https://github.com/jantic/DeOldify.git DeOldify
+```
+
+Starting the notebook
+```console
+cd DeOldify && ./quickstart.sh notebook my_super_password
+```
+
+your notebook will be accessible on port 8888
+
+### Quickstart APIs
+Cloning
+```console
+git clone https://github.com/jantic/DeOldify.git DeOldify
+```
+
+Starting the image api
+```console
+cd DeOldify && ./quickstart.sh image_api
+```
+
+Starting the video api
+```console
+cd DeOldify && ./quickstart.sh image_api
+```
+your API will be accessible on port 5000
 
 ### Docker for Jupyter
 
@@ -304,14 +359,24 @@ Running Docker
 echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -d deoldify_api
 ```
 
-Calling the API for image processing
+Calling the API for image processing for a remote image
 ```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"source_url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
+curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
 ```
 
-Calling the API for video processing
+Calling the API for image processing for a local image
 ```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: application/octet-stream" -H "Content-Type: application/json" -d "{\"source_url\":\"https://v.redd.it/d1ku57kvuf421/HLSPlaylist.m3u8\", \"render_factor\":35}" --output colorized_video.mp4
+curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: image/jpeg" -F "file=@slave-family-P.jpeg" -F "render_factor=35" --output colorized_image.png
+```
+
+Calling the API for video processing for a remote video
+```console
+curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: application/octet-stream" -H "Content-Type: application/json" -d "{\"url\":\"https://v.redd.it/d1ku57kvuf421/HLSPlaylist.m3u8\", \"render_factor\":35}" --output colorized_video.mp4
+```
+
+Calling the API for video processing for a local video
+```console
+curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: application/octet-stream" -H "Content-Type: video/mpeg" -F "file=@chaplin.mp4"  -F "render_factor=35" --output colorized_video.mp4
 ```
 > **Note:** If you don't have Nvidia Docker, [here](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20) is the installation guide.
 
