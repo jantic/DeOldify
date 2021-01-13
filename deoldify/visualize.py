@@ -70,6 +70,7 @@ class ModelImageVisualizer:
         self,
         url: str,
         path: str = 'test_images/image.png',
+        results_dir:Path = None,
         figsize: (int, int) = (20, 20),
         render_factor: int = None,
         
@@ -82,6 +83,7 @@ class ModelImageVisualizer:
         img.save(path)
         return self.plot_transformed_image(
             path=path,
+            results_dir=results_dir,
             figsize=figsize,
             render_factor=render_factor,
             display_render_factor=display_render_factor,
@@ -93,7 +95,7 @@ class ModelImageVisualizer:
     def plot_transformed_image(
         self,
         path: str,
-        results_dir = None,
+        results_dir:Path = None,
         figsize: (int, int) = (20, 20),
         render_factor: int = None,
         display_render_factor: bool = False,
