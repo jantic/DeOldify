@@ -263,7 +263,62 @@ The images in the `test_images` folder have been removed because they were using
 
 The notebook `ColorizeTrainingWandb` has been created to log and monitor results through [Weights & Biases](https://www.wandb.com/). You can find a description of typical training by consulting [W&B Report](https://app.wandb.ai/borisd13/DeOldify/reports?view=borisd13%2FDeOldify).
 
+
 ## Docker
+
+## Quickstart
+We have build for you a quickstart script for you in order to get up to speed in a minute. It's even compatible if you don't have GPU and will automatically adjust it's configuration according to your hardware (running on CPU will be slow with no surprise).
+
+### Quickstart usage
+```console
+./quick_start.sh
+missing first argument
+
+	  _____        ____  _     _ _  __
+	 |  __ \      / __ \| |   | (_)/ _|
+	 | |  | | ___| |  | | | __| |_| |_ _   _
+	 | |  | |/ _ \ |  | | |/ _` | |  _| | | |
+	 | |__| |  __/ |__| | | (_| | | | | |_| |
+	 |_____/ \___|\____/|_|\__,_|_|_|  \__, |
+	                                    __/ |
+	                                   |___/
+
+
+usage : ./quick_start.sh notebook password -- to start the notebook with password
+             leave empty for no password (not recommended)
+usage : ./quick_start.sh image_api  -- to start image api
+usage : ./quick_start.sh video_api  -- to start video api
+```
+
+### Quickstart jupyter notebook
+Cloning
+```console
+git clone https://github.com/jantic/DeOldify.git DeOldify
+```
+
+Starting the notebook
+```console
+cd DeOldify && ./quickstart.sh notebook my_super_password
+```
+
+your notebook will be accessible on port 8888
+
+### Quickstart APIs
+Cloning
+```console
+git clone https://github.com/jantic/DeOldify.git DeOldify
+```
+
+Starting the image api
+```console
+cd DeOldify && ./quickstart.sh image_api
+```
+
+Starting the video api
+```console
+cd DeOldify && ./quickstart.sh image_api
+```
+your notebook will be accessible on port 5000
 
 ### Docker for Jupyter
 
