@@ -380,6 +380,24 @@ curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: application/octet
 ```
 > **Note:** If you don't have Nvidia Docker, [here](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20) is the installation guide.
 
+### Caching the model to improve API booting time
+The API is made to download the model (if not already present locally) at boot time.
+
+Adding the your model to the local subdirectory of the project "data/models" for instance :
+- "/home/ubutun/deoldify/data/models/ColorizeArtistic_gen.pth" (image model)
+- "/home/ubutun/deoldify/data/models/ColorizeVideo_gen.pth" (video model)
+
+both models are available here:
+- [Image Model](https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth)
+- [Video Model](https://data.deepai.org/deoldify/ColorizeVideo_gen.pth)
+
+for ubuntu you could do :
+```bash
+$ wget -O /home/ubutun/deoldify/data/models/ColorizeArtistic_gen.pth https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth
+$ ## Then build the image
+$ docker build -t api -f Dockerfile-api .
+```
+
 ### Installation Details
 
 This project is built around the wonderful Fast.AI library.  Prereqs, in summary:
