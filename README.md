@@ -298,7 +298,7 @@ git clone https://github.com/jantic/DeOldify.git DeOldify
 
 Starting the notebook
 ```console
-cd DeOldify && ./quickstart.sh notebook my_super_password
+cd DeOldify && ./quick_start.sh notebook my_super_password
 ```
 
 your notebook will be accessible on port 8888
@@ -311,12 +311,12 @@ git clone https://github.com/jantic/DeOldify.git DeOldify
 
 Starting the image api
 ```console
-cd DeOldify && ./quickstart.sh image_api
+cd DeOldify && ./quick_start.sh image_api
 ```
 
 Starting the video api
 ```console
-cd DeOldify && ./quickstart.sh image_api
+cd DeOldify && ./quick_start.sh image_api
 ```
 your API will be accessible on port 5000
 
