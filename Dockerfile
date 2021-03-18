@@ -1,4 +1,4 @@
-From nvcr.io/nvidia/pytorch:19.04-py3
+FROM nvcr.io/nvidia/pytorch:19.04-py3
 
 RUN apt-get -y update && apt-get install -y \
 	python3-pip \
@@ -20,24 +20,20 @@ RUN wget -O /root/.torch/models/resnet34-333f7ec4.pth https://download.pytorch.o
 COPY Dockerfile ColorizeArtistic_gen.* /data/models/
 COPY Dockerfile ColorizeVideo_gen.* /data/models/
 
-
-RUN pip install --upgrade pip
-
-RUN pip install versioneer==0.18
-RUN pip install tensorboardX==1.6
-RUN pip install Flask==1.1.1
-RUN pip install pillow==6.1
-RUN pip install numpy==1.16
-RUN pip install scikit-image==0.15.0
-RUN pip install requests==2.21.0
-RUN pip install ffmpeg==1.4
-RUN pip install ffmpeg-python==0.1.17
-RUN pip install youtube-dl>=2019.4.17
-RUN pip install jupyterlab==1.2.4
-RUN pip install opencv-python>=3.3.0.10
-
-RUN pip install fastai==1.0.51
-
+RUN pip install --upgrade pip \
+	&& pip install versioneer==0.18 \
+		tensorboardX==1.6 \
+		Flask==1.1.1 \
+		pillow==6.1 \
+		numpy==1.16 \
+		scikit-image==0.15.0 \
+		requests==2.21.0 \
+		ffmpeg==1.4 \
+		ffmpeg-python==0.1.17 \
+		youtube-dl>=2019.4.17 \
+		jupyterlab==1.2.4 \
+		opencv-python>=3.3.0.10 \
+		fastai==1.0.51
 
 ADD . /data/
 
