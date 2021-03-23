@@ -6,4 +6,4 @@ ffmpeg-python==0.1.17
 youtube-dl>=2019.4.17
 jupyterlab
 opencv-python>=3.3.0.10
-pillow==6.2.2
+pillow==8.1.1
