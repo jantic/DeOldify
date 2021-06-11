@@ -13,7 +13,7 @@ dependencies:
 - tensorboardX=1.6
 - youtube-dl>=2019.4.17
 - jupyterlab
-- pillow=8.1.1
+- pillow=8.2.0
 - pip:
   - ffmpeg-python==0.1.17
   - opencv-python>=3.3.0.10
