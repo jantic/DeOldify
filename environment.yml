@@ -9,12 +9,11 @@ dependencies:
 - python>=3.7.3
 - fastai=1.0.51
 - pytorch=1.0.1
-- ffmpeg=4.1.1
 - tensorboardX=1.6
 - youtube-dl>=2019.4.17
 - jupyterlab
 - pillow=8.2.0
 - pip:
-  - ffmpeg-python==0.1.17
+  - ffmpeg-python
   - opencv-python>=3.3.0.10
   - wandb
