@@ -1,9 +1,9 @@
 
 # DeOldify
 
-**Quick Start**: The easiest way to colorize images using DeOldify (for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
+**Quick Start**: The easiest way to colorize images using open source DeOldify (for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
 
-**Desktop (New)**: Want to run DeOldify for photos on Windows desktop. ColorfulSoft made such a thing here and it really works-  https://github.com/ColorfulSoft/DeOldify.NET . No GPU required!
+**Desktop (New)**: Want to run open source DeOldify for photos on Windows desktop. ColorfulSoft made such a thing here and it really works-  https://github.com/ColorfulSoft/DeOldify.NET . No GPU required!
 
 The **most advanced** version of DeOldify image colorization is available here, exclusively.  Try a few images for free! [MyHeritage In Color](https://www.myheritage.com/incolor)
 
