@@ -66,16 +66,19 @@ def process_image():
             except:
                 render_factor = 30
 
+        result = None
+
         try:
-            image_colorizer.plot_transformed_image(path=input_path, figsize=(20,20),
-                render_factor=int(render_factor), display_render_factor=True, compare=False)
+            result = image_colorizer.get_transformed_image(input_path, render_factor=render_factor, post_process=True, watermarked=True)
         except:
             convertToJPG(input_path)
-            image_colorizer.plot_transformed_image(path=input_path, figsize=(20,20),
-            render_factor=int(render_factor), display_render_factor=True, compare=False)
+            result = image_colorizer.get_transformed_image(input_path, render_factor=render_factor, post_process=True, watermarked=True)
+        finally:
+            if result is not None:
+                result.save(output_path, quality=95)
+                result.close()
 
         callback = send_file(output_path, mimetype='image/jpeg')
-        
         return callback, 200
 
     except:
