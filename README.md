@@ -257,6 +257,8 @@ From there you can start running the notebooks in Jupyter Lab, via the url they 
 
 > **Note:** You can also now do "conda activate deoldify" if you have the latest version of conda and in fact that's now recommended. But a lot of people don't have that yet so I'm not going to make it the default instruction here yet.
 
+> **Alternative Install:** User daddyparodz has kindly created an installer script for Linux that may make things easier:  https://github.com/daddyparodz/AutoDeOldifyLocal
+
 #### Note on test_images Folder
 
 The images in the `test_images` folder have been removed because they were using Git LFS and that costs a lot of money when GitHub actually charges for bandwidth on a popular open source project (they had a billing bug for while that was recently fixed).  The notebooks that use them (the image test ones) still point to images in that directory that I (Jason) have personally and I'd like to keep it that way because, after all, I'm by far the primary and most active developer.  But they won't work for you.  Still, those notebooks are a convenient template for making your own tests if you're so inclined.
