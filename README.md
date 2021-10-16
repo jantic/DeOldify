@@ -257,7 +257,7 @@ From there you can start running the notebooks in Jupyter Lab, via the url they 
 
 > **Note:** You can also now do "conda activate deoldify" if you have the latest version of conda and in fact that's now recommended. But a lot of people don't have that yet so I'm not going to make it the default instruction here yet.
 
-> **Alternative Install:** User daddyparodz has kindly created an installer script for Linux that may make things easier:  https://github.com/daddyparodz/AutoDeOldifyLocal
+**Alternative Install:** User daddyparodz has kindly created an installer script for Ubuntu, and in particular Ubuntu on WSL, that may make things easier:  https://github.com/daddyparodz/AutoDeOldifyLocal
 
 #### Note on test_images Folder
 
