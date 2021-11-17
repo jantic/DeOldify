@@ -4,7 +4,10 @@ RUN apt-get -y update && apt-get install -y \
 	python3-pip \
 	software-properties-common \
 	wget \
+	ca-certificates \
 	ffmpeg
+
+RUN update-ca-certificates -f
 
 RUN mkdir -p /root/.torch/models
 
