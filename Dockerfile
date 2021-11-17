@@ -5,8 +5,11 @@ RUN apt-get -y update && apt-get install -y \
 	software-properties-common \
 	wget \
 	ca-certificates \
+	libcurl4-openssl-dev \
+	libssl-dev \
 	ffmpeg
 
+RUN apt-get clean
 RUN update-ca-certificates -f
 
 RUN mkdir -p /root/.torch/models
@@ -42,8 +45,8 @@ ADD . /data/
 WORKDIR /data
 
 # force download of file if not provided by local cache
-RUN [[ ! -f /data/models/ColorizeArtistic_gen.pth ]] && wget --no-check-certificate -O /data/models/ColorizeArtistic_gen.pth https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth
-RUN [[ ! -f /data/models/ColorizeVideo_gen.pth ]] && wget --no-check-certificate -O /data/models/ColorizeVideo_gen.pth https://data.deepai.org/deoldify/ColorizeVideo_gen.pth
+RUN [[ ! -f /data/models/ColorizeArtistic_gen.pth ]] && wget -O /data/models/ColorizeArtistic_gen.pth https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth
+RUN [[ ! -f /data/models/ColorizeVideo_gen.pth ]] && wget -O /data/models/ColorizeVideo_gen.pth https://data.deepai.org/deoldify/ColorizeVideo_gen.pth
 
 COPY run_notebook.sh /usr/local/bin/run_notebook
 COPY run_image_api.sh /usr/local/bin/run_image_api
