@@ -1,6 +1,9 @@
+from fastai.basic_train import Learner
 from fastai.core import *
+from fastai.layers import NormType, conv_layer
 from fastai.torch_core import *
 from fastai.vision import *
+from fastai.vision.data import ImageDataBunch
 from fastai.vision.gan import AdaptiveLoss, accuracy_thresh_expand
 
 _conv_args = dict(leaky=0.2, norm_type=NormType.Spectral)

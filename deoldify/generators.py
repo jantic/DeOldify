@@ -1,7 +1,11 @@
+from fastai.basic_data import DataBunch
+from fastai.basic_train import Learner
+from fastai.layers import NormType
+from fastai.torch_core import SplitFuncOrIdxList, apply_init, to_device
 from fastai.vision import *
-from fastai.vision.learner import cnn_config
+from fastai.vision.learner import cnn_config, create_body
+from torch import nn
 from .unet import DynamicUnetWide, DynamicUnetDeep
-from .loss import FeatureLoss
 from .dataset import *
 
 # Weights are implicitly read from ./models/ folder

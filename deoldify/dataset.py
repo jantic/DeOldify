@@ -1,9 +1,7 @@
-import fastai
 from fastai import *
 from fastai.core import *
 from fastai.vision.transform import get_transforms
 from fastai.vision.data import ImageImageList, ImageDataBunch, imagenet_stats
-from .augs import noisify
 
 
 def get_colorize_data(

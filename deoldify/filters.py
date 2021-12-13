@@ -1,15 +1,14 @@
-from numpy import ndarray
+from fastai.basic_data import DatasetType
+from fastai.basic_train import Learner
 from abc import ABC, abstractmethod
-from .critics import colorize_crit_learner
 from fastai.core import *
 from fastai.vision import *
 from fastai.vision.image import *
 from fastai.vision.data import *
 from fastai import *
-import math
-from scipy import misc
 import cv2
 from PIL import Image as PilImage
+from deoldify import device as device_settings
 
 
 class IFilter(ABC):
@@ -24,6 +23,10 @@ class BaseFilter(IFilter):
     def __init__(self, learn: Learner, stats: tuple = imagenet_stats):
         super().__init__()
         self.learn = learn
+        
+        if not device_settings.is_gpu():
+            self.learn.model = self.learn.model.cpu()
+        
         self.device = next(self.learn.model.parameters()).device
         self.norm, self.denorm = normalize_funcs(*stats)
 
@@ -107,7 +110,7 @@ class ColorizerFilter(BaseFilter):
 
 
 class MasterFilter(BaseFilter):
-    def __init__(self, filters: [IFilter], render_factor: int):
+    def __init__(self, filters: List[IFilter], render_factor: int):
         self.filters = filters
         self.render_factor = render_factor
 

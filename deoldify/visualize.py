@@ -1,12 +1,8 @@
 from fastai.core import *
 from fastai.vision import *
 from matplotlib.axes import Axes
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from .filters import IFilter, MasterFilter, ColorizerFilter
 from .generators import gen_inference_deep, gen_inference_wide
-from tensorboardX import SummaryWriter
-from scipy import misc
 from PIL import Image
 import ffmpeg
 import youtube_dl
@@ -71,7 +67,7 @@ class ModelImageVisualizer:
         url: str,
         path: str = 'test_images/image.png',
         results_dir:Path = None,
-        figsize: (int, int) = (20, 20),
+        figsize: Tuple[int, int] = (20, 20),
         render_factor: int = None,
         
         display_render_factor: bool = False,
@@ -96,7 +92,7 @@ class ModelImageVisualizer:
         self,
         path: str,
         results_dir:Path = None,
-        figsize: (int, int) = (20, 20),
+        figsize: Tuple[int, int] = (20, 20),
         render_factor: int = None,
         display_render_factor: bool = False,
         compare: bool = False,
@@ -124,7 +120,7 @@ class ModelImageVisualizer:
 
     def _plot_comparison(
         self,
-        figsize: (int, int),
+        figsize: Tuple[int, int],
         render_factor: int,
         display_render_factor: bool,
         orig: Image,
@@ -148,7 +144,7 @@ class ModelImageVisualizer:
 
     def _plot_solo(
         self,
-        figsize: (int, int),
+        figsize: Tuple[int, int],
         render_factor: int,
         display_render_factor: bool,
         result: Image,
@@ -205,7 +201,7 @@ class ModelImageVisualizer:
                 backgroundcolor='black',
             )
 
-    def _get_num_rows_columns(self, num_images: int, max_columns: int) -> (int, int):
+    def _get_num_rows_columns(self, num_images: int, max_columns: int) -> Tuple[int, int]:
         columns = min(num_images, max_columns)
         rows = num_images // columns
         rows = rows if rows * columns == num_images else rows + 1
