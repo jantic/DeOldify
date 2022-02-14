@@ -5,15 +5,13 @@ channels:
 - conda-forge
 - defaults
 dependencies:
-- pip
 - python>=3.7.3
 - fastai=1.0.51
 - pytorch=1.0.1
 - tensorboardX=1.6
 - youtube-dl>=2019.4.17
-- jupyterlab
-- pillow>=8.0.0
-- pip:
-  - ffmpeg-python
-  - opencv-python>=3.3.0.10
-  - wandb
+- ipykernel
+- pillow<9
+- ffmpeg-python
+- opencv-python-headless>=3.3.0.10
+- wandb
