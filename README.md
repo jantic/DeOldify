@@ -10,8 +10,23 @@ The **most advanced** version of DeOldify image colorization is available here, 
 **Huggingface Web Demo (New)**: Integrated to [Huggingface Spaces](https://huggingface.co/spaces) with [Gradio](https://github.com/gradio-app/gradio). See demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/akhaliq/deoldify)
 
 ----------------------------
+You can run the notebooks in this repo in AWS SageMaker Studio Lab:
+
+
+You can sign up for SageMaker Studio Lab and use it for free (without an AWS account).  You can run for 4 hours with GPU or 12 hours with CPU and then logout and log back in for another session.  Your data, notebooks and custom accounts are persisted.  After clicking the launch button below, choose "download whole repo" and then "build conda environment" when prompted. 
+
 [![Open In SageMaker Studio Lab](https://studiolab.sagemaker.aws/studiolab.svg)](https://studiolab.sagemaker.aws/import/github/https://github.com/rsignell-usgs/DeOldify/blob/master/ImageColorizer.ipynb)
 
+Once the environment is built, you just need to download the trained models before running the notebooks.  Open a terminal and type:
+```
+cd $HOME/DeOldify
+mkdir models
+cd models
+wget https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth
+wget https://www.dropbox.com/s/usf7uifrctqw9rl/ColorizeStable_gen.pth
+wget https://data.deepai.org/deoldify/ColorizeVideo_gen.pth
+```
+----------------------------
 Image (artistic) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) |
 Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
 
