@@ -2,7 +2,7 @@ wandb
 fastai==1.0.60
 tensorboardX>=1.6
 ffmpeg-python
-yt-dlp
+youtube-dl
 jupyterlab
 opencv-python>=3.3.0.10
 Pillow==9.1.0

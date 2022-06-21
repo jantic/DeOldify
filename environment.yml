@@ -10,7 +10,7 @@ dependencies:
 - torchvision
 - torchaudio
 - tensorboardX=1.6
-- yt-dlp
+- youtube-dl
 - jupyterlab
 - pillow>=9.0.0
 - ffmpeg
