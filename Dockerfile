@@ -28,17 +28,17 @@ COPY Dockerfile ColorizeVideo_gen.* /data/models/
 
 RUN pip install --upgrade pip \
 	&& pip install versioneer==0.18 \
-		tensorboardX==1.6 \
-		Flask==1.1.1 \
-		pillow==6.1 \
-		numpy==1.16 \
-		scikit-image==0.15.0 \
-		requests==2.21.0 \
-		ffmpeg-python==0.1.17 \
-		youtube-dl>=2019.4.17 \
-		jupyterlab==1.2.4 \
+		tensorboardX \
+		Flask \
+		pillow>=9.0.0 \
+		numpy \
+		scikit-image \
+		requests \
+		ffmpeg-python \
+		youtube-dl \
+		jupyterlab \
 		opencv-python>=3.3.0.10 \
-		fastai==1.0.51
+		fastai==1.0.60
 
 ADD . /data/
 
