@@ -3,6 +3,6 @@ tensorboardX>=1.6
 ffmpeg-python
 youtube-dl
 opencv-python>=3.3.0.10
-Pillow==9.1.0
+Pillow
 tornado
 imgaug==0.2.6
