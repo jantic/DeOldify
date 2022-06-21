@@ -5,11 +5,12 @@ channels:
 - defaults
 dependencies:
 - pip
+- fastai=1.0.60
 - python>=3.7.3
 - pytorch=1.11.0
 - torchvision
 - torchaudio
-- tensorboardX=1.6
+- tensorboardX
 - youtube-dl
 - jupyterlab
 - pillow>=9.0.0
