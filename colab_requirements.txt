@@ -3,5 +3,5 @@ tensorboardX==1.6
 ffmpeg-python
 youtube-dl>=2019.4.17
 opencv-python>=3.3.0.10
-pillow
+pillow==8.3.2
 tornado~=5.1.0
