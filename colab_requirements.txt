@@ -1,7 +1,7 @@
-fastai==1.0.51
-tensorboardX==1.6
+fastai==1.0.60
+tensorboardX>=1.6
 ffmpeg-python
-youtube-dl>=2019.4.17
+yt-dlp
 opencv-python>=3.3.0.10
-pillow==8.3.2
-tornado~=5.1.0
+Pillow==9.1.0
+tornado
