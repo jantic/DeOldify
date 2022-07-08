@@ -1,4 +1,4 @@
-FROM nvcr.io/nvidia/pytorch:19.04-py3
+FROM nvcr.io/nvidia/pytorch:22.06-py3
 
 RUN apt-get -y update && apt-get install -y \
 	python3-pip \
@@ -28,9 +28,9 @@ COPY Dockerfile ColorizeVideo_gen.* /data/models/
 
 RUN pip install --upgrade pip \
 	&& pip install versioneer==0.18 \
-		tensorboardX \
+		tensorboardX>=1.6 \
 		Flask \
-		pillow>=9.0.0 \
+		Pillow==9.1.0 \
 		numpy \
 		scikit-image \
 		requests \
@@ -38,7 +38,11 @@ RUN pip install --upgrade pip \
 		youtube-dl \
 		jupyterlab \
 		opencv-python>=3.3.0.10 \
-		fastai==1.0.60
+		fastai==1.0.60 \
+		wandb \
+		--extra-index-url https://download.pytorch.org/whl/cu113 \
+		torch==1.11.0 \
+		torchvision==0.12.0
 
 ADD . /data/
 
