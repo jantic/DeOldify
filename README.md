@@ -3,7 +3,7 @@
 
 **Quick Start**: The easiest way to colorize images using open source DeOldify (for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
 
-**Desktop (New)**: Want to run open source DeOldify for photos on Windows desktop? ColorfulSoft made such a thing here and it really works-  https://github.com/ColorfulSoft/DeOldify.NET . No GPU required!
+**Desktop**: Want to run open source DeOldify for photos on Windows desktop? ColorfulSoft made such a thing here and it really works-  https://github.com/ColorfulSoft/DeOldify.NET . No GPU required!
 
 The **most advanced** version of DeOldify image colorization is available here, exclusively.  Try a few images for free! [MyHeritage In Color](https://www.myheritage.com/incolor)
 
@@ -14,7 +14,7 @@ The **most advanced** version of DeOldify image colorization is available here, 
 Image (artistic) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) |
 Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
 
-**NEW** Having trouble with the default image colorizer, aka "artistic"?  Try the "stable" one below.  It generally won't produce colors that are as interesting as "artistic", but the glitches are noticeably reduced.  
+Having trouble with the default image colorizer, aka "artistic"?  Try the "stable" one below.  It generally won't produce colors that are as interesting as "artistic", but the glitches are noticeably reduced.  
 
 Image (stable) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColabStable.ipynb)
 
@@ -38,7 +38,6 @@ Get more updates on [Twitter <img src="resource_images/Twitter_Social_Icon_Round
 - [Getting Started Yourself](#getting-started-yourself)
     - [Easiest Approach](#easiest-approach)
     - [Your Own Machine](#your-own-machine-not-as-easy)
-- [Docker](#docker)
 - [Pretrained Weights](#pretrained-weights)
 
 ## About DeOldify
@@ -269,150 +268,6 @@ The images in the `test_images` folder have been removed because they were using
 
 The notebook `ColorizeTrainingWandb` has been created to log and monitor results through [Weights & Biases](https://www.wandb.com/). You can find a description of typical training by consulting [W&B Report](https://app.wandb.ai/borisd13/DeOldify/reports?view=borisd13%2FDeOldify).
 
-
-## Docker
-
-## Quickstart
-We have build for you a quickstart script for you in order to get up to speed in a minute. It's even compatible if you don't have GPU and will automatically adjust it's configuration according to your hardware (running on CPU will be slow with no surprise).
-
-### Quickstart usage
-```console
-./quick_start.sh
-missing first argument
-
-	  _____        ____  _     _ _  __
-	 |  __ \      / __ \| |   | (_)/ _|
-	 | |  | | ___| |  | | | __| |_| |_ _   _
-	 | |  | |/ _ \ |  | | |/ _` | |  _| | | |
-	 | |__| |  __/ |__| | | (_| | | | | |_| |
-	 |_____/ \___|\____/|_|\__,_|_|_|  \__, |
-	                                    __/ |
-	                                   |___/
-
-
-usage : ./quick_start.sh notebook password -- to start the notebook with password
-             leave empty for no password (not recommended)
-usage : ./quick_start.sh image_api  -- to start image api
-usage : ./quick_start.sh video_api  -- to start video api
-```
-
-### Quickstart jupyter notebook
-Cloning
-```console
-git clone https://github.com/jantic/DeOldify.git DeOldify
-```
-
-Starting the notebook
-```console
-cd DeOldify && ./quick_start.sh notebook my_super_password
-```
-
-your notebook will be accessible on port 8888
-
-### Quickstart APIs
-Cloning
-```console
-git clone https://github.com/jantic/DeOldify.git DeOldify
-```
-
-Starting the image api
-```console
-cd DeOldify && ./quick_start.sh image_api
-```
-
-Starting the video api
-```console
-cd DeOldify && ./quick_start.sh image_api
-```
-your API will be accessible on port 5000
-
-### Docker for Jupyter
-
-You can build and run the docker using the following process:
-
-Cloning
-```console
-git clone https://github.com/jantic/DeOldify.git DeOldify
-```
-
-Building Docker
-```console
-cd DeOldify && docker build -t deoldify_jupyter -f Dockerfile .
-```
-
-Running Docker
-```console
-echo "http://$(curl ifconfig.io):8888" && nvidia-docker run --ipc=host --env NOTEBOOK_PASSWORD="pass123" -p 8888:8888 -it deoldify_jupyter
-```
-
-### Docker for API
-
-You can build and run the docker using the following process:
-
-Cloning
-```console
-git clone https://github.com/jantic/DeOldify.git DeOldify
-```
-
-Building Docker
-```console
-cd DeOldify && docker build -t deoldify_api -f Dockerfile-api .
-```
-> **Note:** The above command produces a docker image configured for image processing.  To build a docker image for video processing, edit the Dockerfile-api file, replacing `CMD ["app.py"]` with `CMD ["app-video.py"]`
-
-Running Docker
-```console
-echo "http://$(curl ifconfig.io):5000" && nvidia-docker run --ipc=host -p 5000:5000 -d deoldify_api
-```
-
-Calling the API for image processing for a remote image
-```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: application/json" -d "{\"url\":\"http://www.afrikanheritage.com/wp-content/uploads/2015/08/slave-family-P.jpeg\", \"render_factor\":35}" --output colorized_image.png
-```
-
-Calling the API for image processing for a local image
-```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: image/png" -H "Content-Type: image/jpeg" -F "file=@slave-family-P.jpeg" -F "render_factor=35" --output colorized_image.png
-```
-
-Calling the API for video processing for a remote video
-```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: application/octet-stream" -H "Content-Type: application/json" -d "{\"url\":\"https://v.redd.it/d1ku57kvuf421/HLSPlaylist.m3u8\", \"render_factor\":35}" --output colorized_video.mp4
-```
-
-Calling the API for video processing for a local video
-```console
-curl -X POST "http://MY_SUPER_API_IP:5000/process" -H "accept: application/octet-stream" -H "Content-Type: video/mpeg" -F "file=@chaplin.mp4"  -F "render_factor=35" --output colorized_video.mp4
-```
-> **Note:** If you don't have Nvidia Docker, [here](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)#installing-version-20) is the installation guide.
-
-### Caching the model to improve API booting time
-The API is made to download the model (if not already present locally) at boot time.
-
-Adding the your model to the local subdirectory of the project "data/models" for instance :
-- "/home/ubutun/deoldify/data/models/ColorizeArtistic_gen.pth" (image model)
-- "/home/ubutun/deoldify/data/models/ColorizeVideo_gen.pth" (video model)
-
-both models are available here:
-- [Image Model](https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth)
-- [Video Model](https://data.deepai.org/deoldify/ColorizeVideo_gen.pth)
-
-for ubuntu you could do :
-```bash
-$ wget -O /home/ubutun/deoldify/data/models/ColorizeArtistic_gen.pth https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth
-$ ## Then build the image
-$ docker build -t api -f Dockerfile-api .
-```
-
-### Installation Details
-
-This project is built around the wonderful Fast.AI library.  Prereqs, in summary:
-
-- **Fast.AI 1.0.51** (and its dependencies).  If you use any higher version you'll see grid artifacts in rendering and tensorboard will malfunction. So yeah...don't do that.
-- **PyTorch 1.0.1** Not the latest version of PyTorch- that will not play nicely with the version of FastAI above.  Note however that the conda install of FastAI 1.0.51 grabs the latest PyTorch, which doesn't work.  This is patched over by our own conda install but fyi.
-- **Jupyter Lab** `conda install -c conda-forge jupyterlab`
-- **Tensorboard** (i.e. install Tensorflow) and **TensorboardX** (https://github.com/lanpa/tensorboardX).  I guess you don't *have* to but man, life is so much better with it.  FastAI now comes with built in support for this- you just  need to install the prereqs: `conda install -c anaconda tensorflow-gpu` and `pip install tensorboardX`
-- **ImageNet** – Only if you're training, of course. It has proven to be a great dataset for my purposes.  http://www.image-net.org/download-images
 
 ## Pretrained Weights
 
