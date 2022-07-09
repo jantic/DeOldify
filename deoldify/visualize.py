@@ -5,7 +5,7 @@ from .filters import IFilter, MasterFilter, ColorizerFilter
 from .generators import gen_inference_deep, gen_inference_wide
 from PIL import Image
 import ffmpeg
-import youtube_dl
+import yt_dlp as youtube_dl
 import gc
 import requests
 from io import BytesIO
@@ -251,7 +251,7 @@ class VideoColorizer:
         self._purge_images(bwframes_folder)
         ffmpeg.input(str(source_path)).output(
             str(bwframe_path_template), format='image2', vcodec='mjpeg', qscale=0
-        ).run(capture_stdout=True)
+        ).run(quiet=True)
 
     def _colorize_raw_frames(
         self, source_path: Path, render_factor: int = None, post_process: bool = True,
@@ -287,7 +287,7 @@ class VideoColorizer:
             format='image2',
             vcodec='mjpeg',
             framerate=fps,
-        ).output(str(colorized_path), crf=17, vcodec='libx264').run(capture_stdout=True)
+        ).output(str(colorized_path), crf=17, vcodec='libx264').run(quiet=True)
 
         result_path = self.result_folder / source_path.name
         if result_path.exists():
