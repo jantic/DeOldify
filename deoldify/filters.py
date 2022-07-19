@@ -9,6 +9,7 @@ from fastai import *
 import cv2
 from PIL import Image as PilImage
 from deoldify import device as device_settings
+import logging
 
 
 class IFilter(ABC):
@@ -58,7 +59,7 @@ class BaseFilter(IFilter):
         except RuntimeError as rerr:
             if 'memory' not in str(rerr):
                 raise rerr
-            print('Warning: render_factor was set too high, and out of memory error resulted. Returning original image.')
+            logging.warn('Warning: render_factor was set too high, and out of memory error resulted. Returning original image.')
             return model_image
             
         out = result[0]
