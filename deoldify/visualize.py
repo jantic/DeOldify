@@ -264,6 +264,7 @@ class VideoColorizer:
 
     def _extract_raw_frames(self, source_path: Path):
         logging.info("Extracting raw frames")
+
         bwframes_folder = self.bwframes_root / (source_path.stem)
         bwframe_path_template = str(bwframes_folder / FRAME_NAME_TEMPLATE)
         bwframes_folder.mkdir(parents=True, exist_ok=True)
@@ -293,6 +294,7 @@ class VideoColorizer:
         self, source_path: Path, render_factor: int = None, post_process: bool = True,
         watermarked: bool = True, restart: bool = True
     ):
+        logging.info("Processing raw frames")
         colorframes_folder = self.colorframes_root / source_path.stem
         colorframes_folder.mkdir(parents=True, exist_ok=True)
 
