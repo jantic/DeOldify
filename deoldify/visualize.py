@@ -16,6 +16,10 @@ from IPython.display import Image as ipythonimage
 import cv2
 import logging
 
+
+FRAME_NAME_TEMPLATE = '%08d.jpg'
+
+
 # adapted from https://www.pyimagesearch.com/2016/04/25/watermarking-images-with-opencv-and-python/
 def get_watermarked(pil_image: Image) -> Image:
     try:
@@ -259,7 +263,7 @@ class VideoColorizer:
 
     def _extract_raw_frames(self, source_path: Path):
         bwframes_folder = self.bwframes_root / (source_path.stem)
-        bwframe_path_template = str(bwframes_folder / '%5d.jpg')
+        bwframe_path_template = str(bwframes_folder / FRAME_NAME_TEMPLATE)
         bwframes_folder.mkdir(parents=True, exist_ok=True)
         self._purge_images(bwframes_folder)
 
@@ -306,7 +310,7 @@ class VideoColorizer:
             source_path.name.replace('.mp4', '_no_audio.mp4')
         )
         colorframes_folder = self.colorframes_root / (source_path.stem)
-        colorframes_path_template = str(colorframes_folder / '%5d.jpg')
+        colorframes_path_template = str(colorframes_folder / FRAME_NAME_TEMPLATE)
         colorized_path.parent.mkdir(parents=True, exist_ok=True)
         if colorized_path.exists():
             colorized_path.unlink()
