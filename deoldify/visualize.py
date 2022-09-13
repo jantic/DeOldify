@@ -262,12 +262,21 @@ class VideoColorizer:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([source_url])
 
-    def _extract_raw_frames(self, source_path: Path):
-        logging.info("Extracting raw frames")
+    def _extract_raw_frames(self, source_path: Path, restart: bool = True):
 
-        bwframes_folder = self.bwframes_root / (source_path.stem)
+
+        bwframes_folder = self.bwframes_root / source_path.stem
         bwframe_path_template = str(bwframes_folder / FRAME_NAME_TEMPLATE)
         bwframes_folder.mkdir(parents=True, exist_ok=True)
+
+        completed_file = bwframes_folder / '.completed'
+
+        if os.path.exists(completed_file) and not restart:
+            logging.info("B&W frames already extracted")
+            return
+
+        logging.info("Extracting raw frames")
+
         self._purge_images(bwframes_folder)
 
         process = (
@@ -281,6 +290,10 @@ class VideoColorizer:
 
         try:
             process.run()
+
+            with open(completed_file, "w") as fout:
+                fout.write("Finished processing")
+
         except ffmpeg.Error as e:
             logging.error("ffmpeg error: {0}".format(e), exc_info=True)
             logging.error('stdout:' + e.stdout.decode('UTF-8'))
@@ -303,7 +316,7 @@ class VideoColorizer:
 
         bwframes_folder = self.bwframes_root / (source_path.stem)
 
-        source_images = os.listdir(str(bwframes_folder))
+        source_images = glob.glob(os.path.join(bwframes_folder, '*.jpg'))
         source_images.sort()
 
         for image_name in progress_bar(source_images):
@@ -426,7 +439,7 @@ class VideoColorizer:
         if not source_path.exists():
             raise IOError('Video at path specfied, ' + str(source_path) + ' could not be found.')
 
-        self._extract_raw_frames(source_path)
+        self._extract_raw_frames(source_path, restart=restart)
         self._colorize_raw_frames(
             source_path, render_factor=render_factor, post_process=post_process, watermarked=watermarked, restart=restart
         )
