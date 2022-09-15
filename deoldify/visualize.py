@@ -18,9 +18,6 @@ import glob
 import logging
 
 
-FRAME_NAME_TEMPLATE = '%08d.jpg'
-
-
 # adapted from https://www.pyimagesearch.com/2016/04/25/watermarking-images-with-opencv-and-python/
 def get_watermarked(pil_image: Image) -> Image:
     try:
@@ -214,6 +211,9 @@ class ModelImageVisualizer:
 
 
 class VideoColorizer:
+
+    frame_name_template = '%08d.jpg'
+
     def __init__(self, vis: ModelImageVisualizer):
         self.vis = vis
         workfolder = Path('./video')
@@ -262,16 +262,15 @@ class VideoColorizer:
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.download([source_url])
 
-    def _extract_raw_frames(self, source_path: Path, restart: bool = True):
-
+    def _extract_raw_frames(self, source_path: Path, resume: bool = False):
 
         bwframes_folder = self.bwframes_root / source_path.stem
-        bwframe_path_template = str(bwframes_folder / FRAME_NAME_TEMPLATE)
         bwframes_folder.mkdir(parents=True, exist_ok=True)
 
         completed_file = bwframes_folder / '.completed'
+        already_extracted = os.path.exists(completed_file)
 
-        if os.path.exists(completed_file) and not restart:
+        if resume and already_extracted:
             logging.info("B&W frames already extracted")
             return
 
@@ -279,6 +278,7 @@ class VideoColorizer:
 
         self._purge_images(bwframes_folder)
 
+        bwframe_path_template = str(bwframes_folder / self.frame_name_template)
         process = (
             ffmpeg
                 .input(str(source_path))
@@ -305,25 +305,25 @@ class VideoColorizer:
 
     def _colorize_raw_frames(
         self, source_path: Path, render_factor: int = None, post_process: bool = True,
-        watermarked: bool = True, restart: bool = True
+        watermarked: bool = True, resume: bool = False
     ):
         logging.info("Processing raw frames")
         colorframes_folder = self.colorframes_root / source_path.stem
         colorframes_folder.mkdir(parents=True, exist_ok=True)
 
-        if restart:
+        if not resume:
             self._purge_images(colorframes_folder)
 
-        bwframes_folder = self.bwframes_root / (source_path.stem)
+        bwframes_folder = self.bwframes_root / source_path.stem
 
         source_images = glob.glob(os.path.join(bwframes_folder, '*.jpg'))
         source_images.sort()
 
-        for image_name in progress_bar(source_images):
-            source_image = str(bwframes_folder / image_name)
+        for source_image in progress_bar(source_images):
+            image_name = os.path.split(source_image)[-1]
             dest_image = str(colorframes_folder / image_name)
 
-            if os.path.exists(dest_image):
+            if os.path.isfile(dest_image):
                 continue
 
             if os.path.isfile(source_image):
@@ -337,7 +337,7 @@ class VideoColorizer:
             source_path.name.replace('.mp4', '_no_audio.mp4')
         )
         colorframes_folder = self.colorframes_root / (source_path.stem)
-        colorframes_path_template = str(colorframes_folder / FRAME_NAME_TEMPLATE)
+        colorframes_path_template = str(colorframes_folder / self.frame_name_template)
         colorized_path.parent.mkdir(parents=True, exist_ok=True)
         if colorized_path.exists():
             colorized_path.unlink()
@@ -408,24 +408,28 @@ class VideoColorizer:
         render_factor: int = None,
         post_process: bool = True,
         watermarked: bool = True,
-        restart: bool = True
+        resume: bool = False
 
     ) -> Path:
         video_path = self.source_folder / file_name
 
-        if restart or not os.path.exists(video_path):
+        already_downloaded = os.path.isfile(video_path)
+
+        if resume and already_downloaded:
+            logging.info("File already downloaded")
+        else:
             self._download_video_from_url(source_url, video_path)
 
         return self._colorize_from_path(
-            video_path, render_factor=render_factor, post_process=post_process, watermarked=watermarked, restart=restart
+            video_path, render_factor=render_factor, post_process=post_process, watermarked=watermarked, resume=resume
         )
 
     def colorize_from_file_name(
-            self, file_name: str, render_factor: int = None,  watermarked: bool = True, post_process: bool = True, restart: bool = True
+            self, file_name: str, render_factor: int = None,  watermarked: bool = True, post_process: bool = True, resume: bool = False
     ) -> Path:
         source_path = self.source_folder / file_name
         return self._colorize_from_path(
-            source_path, render_factor=render_factor,  post_process=post_process,watermarked=watermarked
+            source_path, render_factor=render_factor,  post_process=post_process, watermarked=watermarked, resume=resume
         )
 
     def _colorize_from_path(
@@ -434,14 +438,14 @@ class VideoColorizer:
             render_factor: int = None,
             watermarked: bool = True,
             post_process: bool = True,
-            restart: bool = False
+            resume: bool = False
     ) -> Path:
         if not source_path.exists():
             raise IOError('Video at path specfied, ' + str(source_path) + ' could not be found.')
 
-        self._extract_raw_frames(source_path, restart=restart)
+        self._extract_raw_frames(source_path, resume=resume)
         self._colorize_raw_frames(
-            source_path, render_factor=render_factor, post_process=post_process, watermarked=watermarked, restart=restart
+            source_path, render_factor=render_factor, post_process=post_process, watermarked=watermarked, resume=resume
         )
         return self._build_video(source_path)
 
