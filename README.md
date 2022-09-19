@@ -17,14 +17,14 @@ See demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hu
 
 ----------------------------
 
-Image (artistic) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb) |
-Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
+Image (artistic) [![Colab for images](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
+| Video [![Colab for video](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
 
 Having trouble with the default image colorizer, aka "artistic"?  Try the
 "stable" one below.  It generally won't produce colors that are as interesting as
 "artistic", but the glitches are noticeably reduced.
 
-Image (stable) [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColabStable.ipynb)
+Image (stable) [![Colab for stable model](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColabStable.ipynb)
 
 Instructions on how to use the Colabs above have been kindly provided in video
 tutorial form by Old Ireland in Colour's John Breslin.  It's great! Click video
@@ -32,7 +32,8 @@ image below to watch.
 
 [![DeOldify Tutorial](http://img.youtube.com/vi/VaEl0faDw38/0.jpg)](http://www.youtube.com/watch?v=VaEl0faDw38)
 
-Get more updates on [Twitter <img src="resource_images/Twitter_Social_Icon_Rounded_Square_Color.svg" width="16">](https://twitter.com/DeOldify).
+Get more updates on [Twitter
+![Twitter logo](resource_images/twitter.svg)](https://twitter.com/DeOldify).
 
 ## Table of Contents
 
@@ -373,8 +374,8 @@ Oh and I swear I'll document the code properly...eventually.  Admittedly I'm
 
 The easiest way to get started is to go straight to the Colab notebooks:
 
-Image [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
-| Video [<img src="https://colab.research.google.com/assets/colab-badge.svg" align="center">](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
+Image [![Colab for images](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
+| Video [![Colab for video](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/VideoColorizerColab.ipynb)
 
 Special thanks to Matt Robinson and María Benavente for their image Colab notebook
 contributions, and Robert Bell for the video Colab notebook work!
