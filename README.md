@@ -288,8 +288,8 @@ trained once (3 hours of direct GAN training).
 - **Video** - This model is optimized for smooth, consistent and flicker-free
 video.  This would definitely be the least colorful of the three models, but
 it's honestly not too far off from "stable". The model is the same as "stable"
-in terms of architecture, but differs in training.  It's trained for a mere
-2.2% of Imagenet data once at 192px, using only the initial generator/critic
+in terms of architecture, but differs in training.  It's trained for a mere 2.2% 
+of Imagenet data once at 192px, using only the initial generator/critic 
 pretrain/GAN NoGAN training (1 hour of direct GAN training).
 
 Because the training of the artistic and stable models was done before the
