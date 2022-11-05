@@ -228,6 +228,10 @@ class VideoColorizer:
         for f in glob.glob(pattern):
             os.remove(f)
 
+        completed_file = os.path.join(path, '.completed')
+        if os.path.exists(completed_file):
+            os.remove(completed_file)
+
     def _get_ffmpeg_probe(self, path:Path):
         try:
             probe = ffmpeg.probe(str(path))
