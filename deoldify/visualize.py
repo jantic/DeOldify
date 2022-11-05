@@ -353,6 +353,7 @@ class VideoColorizer:
         )
 
         try:
+            logging.info('Building video')
             process.run()
         except ffmpeg.Error as e:
             logging.error("ffmpeg error: {0}".format(e), exc_info=True)
@@ -366,13 +367,17 @@ class VideoColorizer:
         result_path = self.result_folder / source_path.name
         if result_path.exists():
             result_path.unlink()
+
         # making copy of non-audio version in case adding back audio doesn't apply or fails.
+        logging.info('Copying...')
         shutil.copyfile(str(colorized_path), str(result_path))
 
         # adding back sound here
         audio_file = Path(str(source_path).replace('.mp4', '.aac'))
         if audio_file.exists():
             audio_file.unlink()
+
+        logging.info('Extracting audio')
 
         os.system(
             'ffmpeg -y -i "'
@@ -386,6 +391,8 @@ class VideoColorizer:
         )
 
         if audio_file.exists():
+            logging.info('Combining')
+
             os.system(
                 'ffmpeg -y -i "'
                 + str(colorized_path)
