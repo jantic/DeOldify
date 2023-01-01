@@ -48,7 +48,6 @@ class BaseFilter(IFilter):
         return result
 
     def _model_process(self, orig: PilImage, sz: int) -> PilImage:
-
         model_image = self._get_model_ready_image(orig, sz)
         x = pil2tensor(model_image, np.float32)
         x = x.to(self.device)
@@ -135,7 +134,7 @@ class MasterFilter(BaseFilter):
 
         render_factor = self.render_factor if render_factor is None else render_factor
 
-        for filter in self.filters:
-            filtered_image = filter.filter(orig_image, filtered_image, render_factor, post_process)
+        for a_filter in self.filters:
+            filtered_image = a_filter.filter(orig_image, filtered_image, render_factor, post_process)
 
         return filtered_image

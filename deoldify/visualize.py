@@ -19,7 +19,7 @@ from IPython.display import HTML
 from IPython.display import Image as IpythonImage
 
 
-# adapted from https://www.pyimagesearch.com/2016/04/25/watermarking-images-with-opencv-and-python/
+# NOTE: adapted from https://www.pyimagesearch.com/2016/04/25/watermarking-images-with-opencv-and-python/
 def get_watermarked(pil_image: Image) -> Image:
 
     try:
@@ -175,7 +175,10 @@ class ModelImageVisualizer:
             display_render_factor=display_render_factor,
         )
 
-    def _save_result_image(self, source_path: Path, result_image: Image, results_dir=None) -> Path:
+    def _save_result_image(self,
+                           source_path: Path,
+                           result_image: Image,
+                           results_dir=None) -> Path:
         if results_dir is None:
             results_dir = Path(self.results_dir)
 
@@ -312,15 +315,15 @@ class VideoColorizer:
         if resume:
             bw_folder_file_count = len([f for f in bw_frames_folder.iterdir() if os.path.isfile(f)])
             if bw_folder_file_count == expected_frame_count:
-                logging.info('Resume is ON: all raw frames found, skipping extraction of raw frames.')
+                logging.info('Resume set to TRUE: all raw frames found, skipping extraction of raw frames.')
                 return
 
-            logging.info('Resume is ON: found %s frames but expected %s, proceeding to purge existing frames.' % (bw_folder_file_count, expected_frame_count))
+            logging.info('Resume set to TRUE: found %s frames but expected %s, proceeding to purge existing frames.' % (bw_folder_file_count, expected_frame_count))
 
         self._purge_images(bw_frames_folder)
 
 
-        # NOTE: we specify -vsync vfr to prevents frame duplication, more in the link below:
+        # NOTE: we specify "-vsync vfr" to prevent frame duplication, more in the link below:
         #       https://superuser.com/questions/1512575/why-total-frame-count-is-different-in-ffmpeg-than-ffprobe
         process = (
             ffmpeg
@@ -377,7 +380,7 @@ class VideoColorizer:
             remaining_source_file_count = len(remaining_source_files)
             already_done_file_count = all_source_file_count - remaining_source_file_count
 
-            logging.info('Resume is ON: %s out of %s frames all ready done, %s frames remaining.' % (
+            logging.info('Resume set to TRUE: %s out of %s frames all ready done, %s frames remaining.' % (
                 already_done_file_count,
                 all_source_file_count,
                 remaining_source_file_count))
@@ -455,8 +458,7 @@ class VideoColorizer:
                     str(audio_file),
                     str(result_path)))
 
-        logging.info('Build complete.')
-        logging.info('Video created here: ' + str(result_path))
+        logging.info('Build complete, video created here: %s' % str(result_path))
 
         return result_path
 
@@ -516,24 +518,22 @@ def get_video_colorizer(render_factor: int = 21) -> VideoColorizer:
     return stable_video_colorizer
 
 
-def get_artistic_video_colorizer(
-    root_folder: Path = Path('./'),
-    weights_name: str = 'ColorizeArtistic_gen',
-    results_dir='result_images',
-    render_factor: int = 35
-) -> VideoColorizer:
+def get_artistic_video_colorizer(root_folder: Path = Path('./'),
+                                 weights_name: str = 'ColorizeArtistic_gen',
+                                 results_dir='result_images',
+                                 render_factor: int = 35) -> VideoColorizer:
+
     learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
     filter_ = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filter_, results_dir=results_dir)
     return VideoColorizer(vis)
 
 
-def get_stable_video_colorizer(
-    root_folder: Path = Path('./'),
-    weights_name: str = 'ColorizeVideo_gen',
-    results_dir='result_images',
-    render_factor: int = 21
-) -> VideoColorizer:
+def get_stable_video_colorizer(root_folder: Path = Path('./'),
+                               weights_name: str = 'ColorizeVideo_gen',
+                               results_dir='result_images',
+                               render_factor: int = 21) -> VideoColorizer:
+
     learn = gen_inference_wide(root_folder=root_folder, weights_name=weights_name)
     filter_ = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filter_, results_dir=results_dir)
@@ -561,15 +561,15 @@ def get_stable_image_colorizer(root_folder: Path = Path('./'),
     return vis
 
 
-def get_artistic_image_colorizer(
-    root_folder: Path = Path('./'),
-    weights_name: str = 'ColorizeArtistic_gen',
-    results_dir='result_images',
-    render_factor: int = 35
-) -> ModelImageVisualizer:
+def get_artistic_image_colorizer(root_folder: Path = Path('./'),
+                                 weights_name: str = 'ColorizeArtistic_gen',
+                                 results_dir='result_images',
+                                 render_factor: int = 35) -> ModelImageVisualizer:
+
     learn = gen_inference_deep(root_folder=root_folder, weights_name=weights_name)
     filter_ = MasterFilter([ColorizerFilter(learn=learn)], render_factor=render_factor)
     vis = ModelImageVisualizer(filter_, results_dir=results_dir)
+
     return vis
 
 
