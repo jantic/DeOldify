@@ -7,7 +7,7 @@ dependencies:
 - pip
 - fastai=1.0.60
 - python=3.10
-- pytorch::pytorch=1.11.0
+- pytorch::pytorch=1.12.0
 - pytorch::torchvision
 - pytorch::torchaudio
 - tensorboardX

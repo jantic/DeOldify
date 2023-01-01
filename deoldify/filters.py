@@ -14,9 +14,11 @@ import logging
 
 class IFilter(ABC):
     @abstractmethod
-    def filter(
-        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int
-    ) -> PilImage:
+    def filter(self,
+               orig_image: PilImage,
+               filtered_image: PilImage,
+               render_factor: int,
+               post_process: bool) -> PilImage:
         pass
 
 
@@ -46,6 +48,7 @@ class BaseFilter(IFilter):
         return result
 
     def _model_process(self, orig: PilImage, sz: int) -> PilImage:
+
         model_image = self._get_model_ready_image(orig, sz)
         x = pil2tensor(model_image, np.float32)
         x = x.to(self.device)
@@ -53,13 +56,16 @@ class BaseFilter(IFilter):
         x, y = self.norm((x, x), do_x=True)
         
         try:
-            result = self.learn.pred_batch(
-                ds_type=DatasetType.Valid, batch=(x[None], y[None]), reconstruct=True
-            )
-        except RuntimeError as rerr:
-            if 'memory' not in str(rerr):
-                raise rerr
-            logging.warn('Warning: render_factor was set too high, and out of memory error resulted. Returning original image.')
+            result = self.learn.pred_batch(ds_type=DatasetType.Valid,
+                                           batch=(x[None], y[None]),
+                                           reconstruct=True)
+
+        except RuntimeError as runtime_error:
+            if 'memory' not in str(runtime_error):
+                raise runtime_error
+
+            logging.warning('Warning: render_factor was set too high, and out of memory error resulted. Returning original image.')
+
             return model_image
             
         out = result[0]
@@ -78,8 +84,12 @@ class ColorizerFilter(BaseFilter):
         super().__init__(learn=learn, stats=stats)
         self.render_base = 16
 
-    def filter(
-        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int, post_process: bool = True) -> PilImage:
+    def filter(self,
+               orig_image: PilImage,
+               filtered_image: PilImage,
+               render_factor: int,
+               post_process: bool = True) -> PilImage:
+
         render_sz = render_factor * self.render_base
         model_image = self._model_process(orig=filtered_image, sz=render_sz)
         raw_color = self._unsquare(model_image, orig_image)
@@ -92,32 +102,39 @@ class ColorizerFilter(BaseFilter):
     def _transform(self, image: PilImage) -> PilImage:
         return image.convert('LA').convert('RGB')
 
-    # This takes advantage of the fact that human eyes are much less sensitive to
-    # imperfections in chrominance compared to luminance.  This means we can
-    # save a lot on memory and processing in the model, yet get a great high
-    # resolution result at the end.  This is primarily intended just for
-    # inference
+    # This takes advantage of the fact that human eyes are much less sensitive to imperfections in chrominance
+    # compared to luminance. This means we can save a lot on memory and processing in the model, yet get a great
+    # high resolution result at the end. This is primarily intended just for inference.
     def _post_process(self, raw_color: PilImage, orig: PilImage) -> PilImage:
         color_np = np.asarray(raw_color)
         orig_np = np.asarray(orig)
         color_yuv = cv2.cvtColor(color_np, cv2.COLOR_BGR2YUV)
+
         # do a black and white transform first to get better luminance values
         orig_yuv = cv2.cvtColor(orig_np, cv2.COLOR_BGR2YUV)
         hires = np.copy(orig_yuv)
         hires[:, :, 1:3] = color_yuv[:, :, 1:3]
         final = cv2.cvtColor(hires, cv2.COLOR_YUV2BGR)
         final = PilImage.fromarray(final)
+
         return final
 
 
 class MasterFilter(BaseFilter):
-    def __init__(self, filters: List[IFilter], render_factor: int):
+    def __init__(self,
+                 filters: List[IFilter],
+                 render_factor: int):
         self.filters = filters
         self.render_factor = render_factor
 
-    def filter(
-        self, orig_image: PilImage, filtered_image: PilImage, render_factor: int = None, post_process: bool = True) -> PilImage:
+    def filter(self,
+               orig_image: PilImage,
+               filtered_image: PilImage,
+               render_factor: int = None,
+               post_process: bool = True) -> PilImage:
+
         render_factor = self.render_factor if render_factor is None else render_factor
+
         for filter in self.filters:
             filtered_image = filter.filter(orig_image, filtered_image, render_factor, post_process)
 
