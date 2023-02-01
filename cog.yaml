@@ -1,0 +1,24 @@
+build:
+  gpu: true
+  cuda: "11.6"
+  python_version: 3.8
+  system_packages:
+    - libgl1-mesa-glx
+    - libglib2.0-0
+  python_packages:
+    - torch==1.13.1 --extra-index-url https://download.pytorch.org/whl/cu116
+    - torchvision==0.14.1 --extra-index-url https://download.pytorch.org/whl/cu116
+    - numpy==1.21.6
+    - opencv-python==4.6.0.66
+    - fastai==1.0.60
+    - tensorboardX==1.6
+    - ffmpeg-python==0.2.0
+    - yt-dlp==2023.1.6
+    - Pillow==9.4.0
+    - tornado==6.2
+    - imgaug==0.2.6
+    - ipython==8.8.0
+  run:
+    - apt update -y && apt-get install ffmpeg -y
+
+predict: "predict_video.py:Predictor"
