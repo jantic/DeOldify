@@ -17,6 +17,6 @@ dependencies:
 - ffmpeg
 - pip:
   - ffmpeg-python
-  - opencv-python>=3.3.0.10
+  - opencv-python>=4.2.0.32
   - wandb
   - yt-dlp
