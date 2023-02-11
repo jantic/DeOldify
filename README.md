@@ -453,26 +453,26 @@ ImageColorizerStable.ipynb, and VideoColorizer.ipynb.
 ### Completed Generator Weights
 
 - [Artistic](https://data.deepai.org/deoldify/ColorizeArtistic_gen.pth)
-- [Stable](https://www.dropbox.com/s/usf7uifrctqw9rl/ColorizeStable_gen.pth?dl=0)
+- [Stable](https://www.dropbox.com/s/axsd2g85uyixaho/ColorizeStable_gen.pth?dl=0)
 - [Video](https://data.deepai.org/deoldify/ColorizeVideo_gen.pth)
 
 ### Completed Critic Weights
 
-- [Artistic](https://www.dropbox.com/s/1qd663zbk6ntzuy/ColorizeArtistic_crit.pth?dl=0)
-- [Stable](https://www.dropbox.com/s/wlqu6w88qwzcvfn/ColorizeStable_crit.pth?dl=0)
-- [Video](https://www.dropbox.com/s/oyl6qmwpdvpm95d/ColorizeVideo_crit.pth?dl=0)
+- [Artistic](https://www.dropbox.com/s/xpq2ip9occuzgen/ColorizeArtistic_crit.pth?dl=0)
+- [Stable](https://www.dropbox.com/s/s53699e9n84q6sp/ColorizeStable_crit.pth?dl=0)
+- [Video](https://www.dropbox.com/s/xnq1z1oppvgpgtn/ColorizeVideo_crit.pth?dl=0)
 
 ### Pretrain Only Generator Weights
 
-- [Artistic](https://www.dropbox.com/s/lbuv6911aivm9zi/ColorizeArtistic_PretrainOnly_gen.pth?dl=0)
-- [Stable](https://www.dropbox.com/s/6ita1pwyqjsmx4p/ColorizeStable_PretrainOnly_gen.pth?dl=0)
-- [Video](https://www.dropbox.com/s/tl4uzkwwapz68ca/ColorizeVideo_PretrainOnly_gen.pth?dl=0)
+- [Artistic](https://www.dropbox.com/s/h782d1zar3vdblw/ColorizeArtistic_PretrainOnly_gen.pth?dl=0)
+- [Stable](https://www.dropbox.com/s/mz5n9hiq6hmwjq7/ColorizeStable_PretrainOnly_gen.pth?dl=0)
+- [Video](https://www.dropbox.com/s/ix993ci6ve7crlk/ColorizeVideo_PretrainOnly_gen.pth?dl=0)
 
 ### Pretrain Only Critic Weights
 
-- [Artistic](https://www.dropbox.com/s/6td494kcjqfmh26/ColorizeArtistic_PretrainOnly_crit.pth?dl=0)
-- [Stable](https://www.dropbox.com/s/houkmrdivbia7z8/ColorizeStable_PretrainOnly_crit.pth?dl=0)
-- [Video](https://www.dropbox.com/s/80wpz16x7yudblh/ColorizeVideo_PretrainOnly_crit.pth?dl=0)
+- [Artistic](https://www.dropbox.com/s/gr81b3pkidwlrc7/ColorizeArtistic_PretrainOnly_crit.pth?dl=0)
+- [Stable](https://www.dropbox.com/s/007qj0kkkxt5gb4/ColorizeStable_PretrainOnly_crit.pth?dl=0)
+- [Video](https://www.dropbox.com/s/wafc1uogyjuy4zq/ColorizeVideo_PretrainOnly_crit.pth?dl=0)
 
 ## Want the Old DeOldify?
 
