@@ -15,6 +15,8 @@ exclusively.  Try a few images for free! [MyHeritage In Color](https://www.myher
 with [Gradio](https://github.com/gradio-app/gradio).
 See demo: [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/PaddlePaddle/deoldify)
 
+**Replicate:** Image: <a href="https://replicate.com/arielreplicate/deoldify_image"><img src="https://replicate.com/arielreplicate/deoldify_image/badge"></a> | Video: <a href="https://replicate.com/arielreplicate/deoldify_video"><img src="https://replicate.com/arielreplicate/deoldify_video/badge"></a>
+
 ----------------------------
 
 Image (artistic) [![Colab for images](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jantic/DeOldify/blob/master/ImageColorizerColab.ipynb)
