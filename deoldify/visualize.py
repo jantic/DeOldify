@@ -88,6 +88,36 @@ class ModelImageVisualizer:
             watermarked=watermarked,
         )
 
+    def _get_image_from_file(self, file_path: str) -> Image:
+        img = PIL.Image.open(file_path).convert('RGB')
+        return img
+    
+    def plot_transformed_image_from_file(
+        self,
+        file_path: str,
+        path: str = 'test_images/image.png',
+        results_dir:Path = None,
+        figsize: Tuple[int, int] = (20, 20),
+        render_factor: int = None,
+        
+        display_render_factor: bool = False,
+        compare: bool = False,
+        post_process: bool = True,
+        watermarked: bool = True,
+    ) -> Path:
+        img = self._get_image_from_file(file_path)
+        img.save(path)
+        return self.plot_transformed_image(
+            path=path,
+            results_dir=results_dir,
+            figsize=figsize,
+            render_factor=render_factor,
+            display_render_factor=display_render_factor,
+            compare=compare,
+            post_process = post_process,
+            watermarked=watermarked,
+        )
+
     def plot_transformed_image(
         self,
         path: str,
