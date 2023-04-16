@@ -347,7 +347,7 @@ class Learner():
             if batch is not None: xb,yb = batch
             else: xb,yb = self.data.one_batch(ds_type, detach=False, denorm=False)
             cb_handler = CallbackHandler(self.callbacks)
-            #xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
+            xb,yb = cb_handler.on_batch_begin(xb,yb, train=False)
             if not with_dropout: 
                 preds = loss_batch(self.model.eval(), xb, yb, cb_handler=cb_handler)
             else: 
