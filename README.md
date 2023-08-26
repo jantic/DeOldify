@@ -4,8 +4,9 @@
 **Quick Start**: The easiest way to colorize images using open source DeOldify
 (for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
 
-**Desktop**: Want to run open source DeOldify for photos on Windows desktop?
-ColorfulSoft made such a thing here and it really works-  <https://github.com/ColorfulSoft/DeOldify.NET>.
+**Desktop**: Want to run open source DeOldify for photos and videos on the desktop?
+* Stable Diffusion Web UI Plugin- Photos and video, cross-platform (NEW!). <https://github.com/SpenserCai/sd-webui-deoldify>
+* ColorfulSoft Windows GUI- No GPU required! Photos/Windows only. <https://github.com/ColorfulSoft/DeOldify.NET>.
 No GPU required!
 
 The **most advanced** version of DeOldify image colorization is available here,
