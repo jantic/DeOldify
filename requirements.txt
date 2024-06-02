@@ -8,6 +8,6 @@ jupyterlab
 opencv-python>=4.2.0.32
 Pillow==9.3.0
 --extra-index-url https://download.pytorch.org/whl/cu113
-torch==1.11.0
+torch==1.13.1
 torchvision==0.12.0
 ipywidgets
