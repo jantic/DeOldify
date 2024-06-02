@@ -6,6 +6,7 @@ channels:
 dependencies:
 - pip
 - fastai=1.0.60
+- mkl=2024.0
 - python=3.10
 - pytorch::pytorch=1.11.0
 - pytorch::torchvision
