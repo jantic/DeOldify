@@ -6,7 +6,7 @@ ffmpeg-python
 yt-dlp
 jupyterlab
 opencv-python>=4.2.0.32
-Pillow==9.3.0
+Pillow==10.0.1
 --extra-index-url https://download.pytorch.org/whl/cu113
 torch==1.11.0
 torchvision==0.12.0
