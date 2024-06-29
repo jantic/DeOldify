@@ -15,7 +15,6 @@ dependencies:
 - jupyterlab
 - pillow>=9.0.0
 - ipywidgets
-- ffmpeg
 - pip:
   - ffmpeg-python
   - opencv-python>=4.2.0.32
