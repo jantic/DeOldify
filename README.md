@@ -1,6 +1,8 @@
 
 # DeOldify
 
+**This Reposisitory is Archived**  This project was a wild ride since I started it back in 2018.  6 years ago as of this writing (October 19, 2024)!.  It's time for me to move on and put this repo in the archives as I simply don't have the time to attend to it anymore, and frankly it's ancient as far as deep-learning projects go at this point! ~Jason
+
 **Quick Start**: The easiest way to colorize images using open source DeOldify
 (for free!) is here: [DeOldify Image Colorization on DeepAI](https://deepai.org/machine-learning-model/colorizer)
 
