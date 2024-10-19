@@ -9,6 +9,8 @@
 * ColorfulSoft Windows GUI- No GPU required! Photos/Windows only. <https://github.com/ColorfulSoft/DeOldify.NET>.
 No GPU required!
 
+**In Browser (new!)**  Check out this Onnx-based in browser implementation:  https://github.com/akbartus/DeOldify-on-Browser
+
 The **most advanced** version of DeOldify image colorization is available here,
 exclusively.  Try a few images for free! [MyHeritage In Color](https://www.myheritage.com/incolor)
 
